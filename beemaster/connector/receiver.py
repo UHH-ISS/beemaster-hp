@@ -26,8 +26,9 @@ class Receiver(Flask):
 
 
     def __handle_post(self):
+        # TODO: this is a weak check that message is json. json.dumps/load my blow up. fix it.
         if 'application/json' in request.headers.get('Content-Type'):
             raw = json.dumps(request.json)
-            self.onData(raw)
+            self.onData(json.loads(raw))
             return Response('OK', 200)
         return Response('Unsupported Media Type', 415)
