@@ -1,6 +1,8 @@
 # Beemaster
 
-This file is currently just a placeholder.
+Start the connector via `python connector.py`.
+It will receive on port 8080 and dump a little text output to the console.
+You can use the `talk.sh` script to send something to the connector.
 
 ## TODOs
 
