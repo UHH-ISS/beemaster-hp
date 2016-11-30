@@ -26,7 +26,7 @@ Options:
                 (default: $_REQUIREMENTS)
     -e env      Define the environment directory.
                 (default: $_ENVDIR)
-    -a          Adds a symlink for easier environment sourcing.
+    -s          Adds a symlink for easier environment sourcing.
                 (use via '. $_SOURCENAME')"
     exit;
 }
@@ -42,7 +42,7 @@ function parseargs() {
                 _REQUIREMENTS=$OPTARG ;;
             e)
                 _ENVDIR=$OPTARG ;;
-            a)
+            s)
                 _ADDSOURCE=true ;;
             \?|*)
                 error_exit "Invalid argument -$OPTARG" ;;
@@ -65,6 +65,9 @@ function install() {
 }
 
 function setup() {
+    type virtualenv 2>/dev/null
+    [ $? != 0 ] && python -m virtualenv 2>/dev/null
+    [ $? != 0 ] && error_exit "'virtualenv' not found."
     $_VIRTUALENV $_ENVDIR
     . $_ENVDIR/bin/activate
     pip install -r $_REQUIREMENTS

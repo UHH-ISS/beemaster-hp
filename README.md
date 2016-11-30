@@ -1,13 +1,23 @@
 MP-IDS Honeypot
 ===============
 
+### Setup
+
+> Linux install only. For development on Windows please setup manually.
+
+Execute `./setup.sh` to setup the virtual environment. Use `-h` for more
+information. Source the environment with `. env/bin/activate` (or use the
+symlink, provided by `./setupt.sh -s`). Be aware, that the activation only
+applies for the current shell. Other shells/terminals/sessions need to source
+the environment again.
+
 ### TODOs
 
 - [x] add `requirements.txt`
-    - [ ] content _(currently not required)_
+    - [x] content
 - [x] add `setup.sh`
     - [x] can setup `virtualenv`
-    - [x] can add easier env-sourcing
+    - [x] can add easier env-sourcing (VM provides `pyenv` command).
 - [x] add `.gitignore`
 - [x] set base structure
 - [ ] set broker _(needs to be evaluated first)_
