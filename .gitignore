@@ -4,5 +4,6 @@ pyenv
 *.swp
 *.swo
 *.~
+*.pyc
 *.pyo
 __pycache__

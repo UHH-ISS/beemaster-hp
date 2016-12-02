@@ -12,8 +12,9 @@ _ENVDIR=env
 _REQUIREMENTS=requirements.txt
 _ADDSOURCE=false
 _SOURCENAME=pyenv
+_PYTHON2=$(which python2)
 
-function error() { echo -e "\033[31;1m[ERR]\033[m$@" >&2; }
+function error() { echo -e "\033[31;1m[ERR]\033[m $@" >&2; }
 function error_exit() { error $@; exit 1; }
 
 function usage() {
@@ -66,9 +67,11 @@ function install() {
 
 function setup() {
     type virtualenv 2>/dev/null
-    [ $? != 0 ] && python -m virtualenv 2>/dev/null
-    [ $? != 0 ] && error_exit "'virtualenv' not found."
-    $_VIRTUALENV $_ENVDIR
+    if [ $? != 0 ]; then
+        python -m virtualenv 2>/dev/null
+        [ $? != 0 ] && error_exit "'virtualenv' not found."
+    fi
+    $_VIRTUALENV -p $_PYTHON2 $_ENVDIR
     . $_ENVDIR/bin/activate
     pip install -r $_REQUIREMENTS
 }
