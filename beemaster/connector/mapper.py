@@ -6,6 +6,7 @@ Provides the Mapper, which maps json input data to Broker messages.
 import json
 import ConfigParser
 from pybroker import *
+import datetime
 
 class Mapper(object):
     def __init__(self, mapping):
@@ -20,11 +21,11 @@ class Mapper(object):
         sectionlist = self.parser.sections()
         for section in sectionlist:
             # Check if the section is valid. Type, name and at least one argument are always required
-            if (self.parser.has_option('type') and self.parser.has_option('name') and self.parser.has_option('arg0')):
+            if (self.parser.has_option(section, 'type') and self.parser.has_option(section, 'name') and self.parser.has_option(section, 'arg0')):
                 type = self.parser.get(section, 'type')
                 #Port types need 2 arguments
                 if (type == 'port'):
-                    if(not self.parser.has_option('arg1')):
+                    if(not self.parser.has_option(section, 'arg1')):
                         raise ValueError('Invalid section: ' + section + '. You need 2 arguments (Port number and protocol)')
             else:
                 raise ValueError('Invalid section: ' + section + '. Type, name or arg0 missing')
@@ -41,7 +42,6 @@ class Mapper(object):
 
     def map(self, pData):
         """map(data)
-#'{"timestamp": "2016-11-26T22:18:56.281464", "data": {"connection": {"remote_ip": "127.0.0.1", "remote_hostname": "", "id": 3019197952, "protocol": "pcap", "local_port": 4101, "local_ip": "127.0.0.1", "remote_port": 35324, "transport": "tcp"}}, "name": "dionaea", "origin": "dionaea.connection.free"}'
         Maps *data* to the appropriate Broker message.
 
         :param data:    The data to map. (json)
@@ -51,10 +51,7 @@ class Mapper(object):
 
         mapped = {}
         keys = self.flatten(pData)
-        #p = port(999,port.protocol_tcp)
-        #print(port.number(p))
-        #a = address_from_string("127.0.0.1")
-        #print(address.is_v6(a))
+
 
         #Go through every section in the mapping file
         sectionlist = self.parser.sections()
@@ -63,7 +60,7 @@ class Mapper(object):
 
             #It's a port
             if(type == 'port'):
-                protocol = self.parser.get('arg1')
+                protocol = self.parser.get(section, 'arg1')
 
                 if(keys[protocol] == 'tcp'):
                     protocol = port.protocol_tcp
@@ -85,12 +82,19 @@ class Mapper(object):
 
             #It's an IP or host address
             elif(type == 'address'):
-                a = address_from_string(keys[self.parser.get(section, 'arg0')])
+                a = address_from_string(str(keys[self.parser.get(section, 'arg0')]))
                 mapped[self.parser.get(section, 'name')] = a
 
             #It's an integer
             elif(type == 'int'):
                 mapped[self.parser.get(section, 'name')] = self.parser.get(section, 'arg0')
 
+            #It's a time point
+            elif(type == 'time_point'):
+                date = datetime.datetime.strptime(keys['timestamp'], '%Y-%m-%dT%H:%M:%S.%f')
+                timestamp = time_point((date - datetime.datetime.utcfromtimestamp(0)).total_seconds() * 1000.0)
+                mapped[self.parser.get(section, 'name')] = timestamp
 
-        return "xxx-some-broker-msg-xxx"
+
+
+        return mapped
