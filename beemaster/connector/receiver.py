@@ -61,5 +61,7 @@ class Receiver(Flask):
         if 'application/json' in request.headers.get('Content-Type'):
             raw = json.dumps(request.json)
             self.onData(json.loads(raw))
+            self.logToFile(raw)
+            #print()
             return Response('OK', 200)
         return Response('Unsupported Media Type', 415)
