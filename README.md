@@ -7,7 +7,7 @@ MP-IDS Honeypot
 
 Execute `./setup.sh` to setup the virtual environment. Use `-h` for more
 information. Source the environment with `. env/bin/activate` (or use the
-symlink, provided by `./setupt.sh -s`). Be aware, that the activation only
+symlink, provided by `./setup.sh -s`). Be aware, that the activation only
 applies for the current shell. Other shells/terminals/sessions need to source
 the environment again.
 
