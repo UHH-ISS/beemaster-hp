@@ -20,7 +20,7 @@ the environment again.
     - [x] can add easier env-sourcing (VM provides `pyenv` command).
 - [x] add `.gitignore`
 - [x] set base structure
-- [ ] set broker _(needs to be evaluated first)_
+- [x] set broker
 
 ### Code-Structure
 
