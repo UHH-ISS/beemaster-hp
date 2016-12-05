@@ -14,6 +14,7 @@ The module can be executed directly.
 from receiver import Receiver
 from mapper import Mapper
 from sender import Sender
+import yaml
 
 
 class Connector(object):
@@ -22,7 +23,10 @@ class Connector(object):
 
         Initialises the Connector and starts to listen to incoming messages.
         """
-        self.mapper = Mapper({'some': 'mapping'})
+        stream = open("mapping.yaml", "r")
+        mapperconf = yaml.load(stream)
+
+        self.mapper = Mapper(mapperconf)
         self.sender = Sender('127.0.0.1', 5000)
         self.receiver = Receiver("bm-connector", '0.0.0.0', 8080)
         self.receiver.listen("/", self.handle_receive)
@@ -37,7 +41,7 @@ class Connector(object):
         """
         # TODO: implement me
         print("Connector received:", message)
-        mapped = self.mapper.map(message)
+        mapped = self.mapper.transform(message)
         print("Mapped message is", mapped)
         success = self.sender.send(mapped)
         print("Connector did its job? ", success)

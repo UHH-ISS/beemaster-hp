@@ -5,42 +5,79 @@ Provides the Mapper, which maps json input data to Broker messages.
 """
 import json
 import ConfigParser
-from pybroker import *
+import pybroker as pb
 import datetime
 
 class Mapper(object):
+    def flatten(self, pData):
+        # Flattens the JSON file recursively so nested parts can be easily accessed
+
+        ret = {}
+        for keys in pData.keys():
+            if (isinstance(pData[keys], dict)):
+
+                recursive = self.flatten(pData[keys])
+                for element in recursive.keys():
+                    ret[keys + "/" + element] = recursive[element]
+            else:
+                ret[keys] = pData[keys]
+        return ret
+
+    def mapPort(self, section, keys):
+        # Maps a port
+
+        portProtocol = self.protocols[keys[section['arg1']]]
+        portNumber = keys[section['arg0']]
+
+        p = pb.port(portNumber, portProtocol)
+        return p
+
+    def mapAddress(self, section, keys):
+        # Maps an address (IP, not sure if host names are supported but they should be)
+        a = pb.address_from_string(str(keys[section['arg0']]))
+        return a
+
+    def mapInteger(self, section, keys):
+        # Maps an integer
+        i = int(keys[section['arg0']])
+        return i
+
+    def mapTimePoint(self, section, keys):
+        # Maps a time
+        date = datetime.datetime.strptime(keys[section['arg0']], '%Y-%m-%dT%H:%M:%S.%f')
+
+        # This sets the time_point as a double containing the amount of seconds since epoch
+        timestamp = pb.time_point((date - datetime.datetime.utcfromtimestamp(0)).total_seconds() * 1000.0)
+        return timestamp
+
     def __init__(self, mapping):
         """Mapper(mapping)
 
         :param mapping:     The mapping to use. (type?)
         """
-        self.mapping = mapping
-        self.parser = ConfigParser.ConfigParser()
-        self.parser.read('mapping.cfg')
+        
+        self.dictionary = mapping
+        self.typedict = {'port': self.mapPort, 'address': self.mapAddress, 'int': self.mapInteger, 'time_point': self.mapTimePoint}
 
-        sectionlist = self.parser.sections()
-        for section in sectionlist:
+        for key in self.dictionary:
+            section = self.dictionary[key]
+
             # Check if the section is valid. Type, name and at least one argument are always required
-            if (self.parser.has_option(section, 'type') and self.parser.has_option(section, 'name') and self.parser.has_option(section, 'arg0')):
-                type = self.parser.get(section, 'type')
+            if ('type' in section and 'name' in section and 'arg0' in section):
+                brokertype = section['type']
+                
                 #Port types need 2 arguments
-                if (type == 'port'):
-                    if(not self.parser.has_option(section, 'arg1')):
-                        raise ValueError('Invalid section: ' + section + '. You need 2 arguments (Port number and protocol)')
+                if (brokertype == 'port'):
+                    if(not 'arg1' in section):
+                        raise ValueError('Invalid section: ' + key + '. You need 2 arguments (Port number and protocol)')
             else:
-                raise ValueError('Invalid section: ' + section + '. Type, name or arg0 missing')
+                raise ValueError('Invalid section: ' + key + '. Type, name or arg0 missing')
 
-    def flatten(self, pData):
+        #save all the transport protocols in a dict
+        self.protocols = {'tcp': pb.port.protocol_tcp, 'udp': pb.port.protocol_udp, 'icmp': pb.port.protocol_icmp, 'unknown': pb.port.protocol_unknown}
 
-        ret = {}
-        for keys in pData.keys():
-            if (isinstance(pData[keys], dict)):
-                ret.update(self.flatten(pData[keys]))
-            else:
-                ret[keys] = pData[keys]
-        return ret
 
-    def map(self, pData):
+    def transform(self, pData):
         """map(data)
         Maps *data* to the appropriate Broker message.
 
@@ -49,52 +86,18 @@ class Mapper(object):
         """
         print("Mapper should map", pData)
 
-        mapped = {}
         keys = self.flatten(pData)
+        print(keys)
+
+        message = pb.message()
+        #Go through every section in the mapper dictionary
+        for key in self.dictionary:
+
+            section = self.dictionary[key]
 
 
-        #Go through every section in the mapping file
-        sectionlist = self.parser.sections()
-        for section in sectionlist:
-            type = self.parser.get(section, 'type')
+            brokerObject = self.typedict[section['type']](section, keys)
 
-            #It's a port
-            if(type == 'port'):
-                protocol = self.parser.get(section, 'arg1')
+            message.append(pb.data(brokerObject))
 
-                if(keys[protocol] == 'tcp'):
-                    protocol = port.protocol_tcp
-
-                elif(keys[protocol] == 'udp'):
-                    protocol = port.protocol_udp
-
-                #Not sure if we need this but I'll include it anyway
-                elif (keys[protocol] == 'icmp'):
-                    protocol = port.protocol_icmp
-
-                #Protocol unknown? wtf
-                else:
-                    protocol = port.protocol_unknown
-
-
-                p = port(keys[self.parser.get(section, 'arg0')], protocol)
-                mapped[self.parser.get(section, 'name')] = p
-
-            #It's an IP or host address
-            elif(type == 'address'):
-                a = address_from_string(str(keys[self.parser.get(section, 'arg0')]))
-                mapped[self.parser.get(section, 'name')] = a
-
-            #It's an integer
-            elif(type == 'int'):
-                mapped[self.parser.get(section, 'name')] = self.parser.get(section, 'arg0')
-
-            #It's a time point
-            elif(type == 'time_point'):
-                date = datetime.datetime.strptime(keys['timestamp'], '%Y-%m-%dT%H:%M:%S.%f')
-                timestamp = time_point((date - datetime.datetime.utcfromtimestamp(0)).total_seconds() * 1000.0)
-                mapped[self.parser.get(section, 'name')] = timestamp
-
-
-
-        return mapped
+        return message
