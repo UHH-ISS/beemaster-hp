@@ -60,7 +60,7 @@ class Receiver(Flask):
         #       json.dumps/load may blow up. fix it.
         if 'application/json' in request.headers.get('Content-Type'):
             raw = json.dumps(request.json)
-            self.onData(raw)
+            self.onData(json.loads(raw))
             self.logToFile(raw)
 
             return Response('OK', 200)
