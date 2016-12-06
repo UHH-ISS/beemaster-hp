@@ -8,6 +8,7 @@ import datetime
 import json
 import sys
 
+
 class Mapper(object):
 
     def __init__(self, mapping):
@@ -15,7 +16,6 @@ class Mapper(object):
 
         :param mapping:     The mapping to use. (type?)
         """
-        
         self.mapping = mapping
         self.type_conversions = {
             'address': self.__map_address,
@@ -32,12 +32,10 @@ class Mapper(object):
         if not mapped or not isinstance(mapped, str):
             self.__logUnknown(prop, value)
             return
-        
         handler = self.type_conversions.get(mapped)
         if not handler:
             self.__logUnimplemented(prop, value)
             return
-        
         return handler(value)
 
 
@@ -64,7 +62,7 @@ class Mapper(object):
     def __map_string(self, string):
         # TODO: does not work.
         # need nul terminated string for C++
-        return str(string) 
+        return str(string)
 
     def __map_time_point(self, time_str):
         # Maps a time
@@ -106,12 +104,18 @@ class Mapper(object):
         :param data:    The data to map. (json)
         :returns:       The corresponding Broker message. (type?)
         """
-        #print("Mapper should map", dioMsg)
+        # print("Mapper should map", dioMsg)
 
         message = pb.message()
 
-        for key, val in json.loads(dioMsg).iteritems():
-            brokerMsgs = self.__traverse_to_end(key, val, self.mapping)
+        event_name = self.mapping['name']
+        message.append(pb.data(event_name))
+
+        for key, val in dioMsg.iteritems():
+            lst = self.__traverse_to_end(key, val, self.mapping['mapping'])
+
+        for key, val in dioMsg.iteritems():
+            brokerMsgs = self.__traverse_to_end(key, val, self.mapping['mapping'])
             for brokerObject in brokerMsgs:
                 print("Add converted brokerObject '{}' to message".format(brokerObject))
                 if brokerObject:

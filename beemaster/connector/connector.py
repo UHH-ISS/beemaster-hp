@@ -11,6 +11,8 @@ mapping to be properly processed on the other side.
 
 The module can be executed directly.
 """
+from __future__ import print_function
+
 from receiver import Receiver
 from mapper import Mapper
 from sender import Sender
@@ -23,7 +25,8 @@ class Connector(object):
 
         Initialises the Connector and starts to listen to incoming messages.
         """
-        stream = open("mapping2.yaml", "r")
+        # TODO to be made dynamic
+        stream = open("mappings/dionaea/connection.yaml", "r")
         mapperconf = yaml.load(stream)
 
         self.mapper = Mapper(mapperconf)
@@ -40,12 +43,12 @@ class Connector(object):
         :param message:     The message to map and send. (json)
         """
         # TODO: implement me
-        #print "Connector received:", message
+        # print "Connector received:", message
         mapped = self.mapper.transform(message)
         print("Mapped message is", mapped)
         print("")
-        #success = self.sender.send(mapped)
-        #print("Connector did its job? ", success)
+        # success = self.sender.send(mapped)
+        # print("Connector did its job? ", success)
 
 
 if __name__ == '__main__':
