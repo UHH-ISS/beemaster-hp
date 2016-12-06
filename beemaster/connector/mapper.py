@@ -3,52 +3,12 @@
 
 Provides the Mapper, which maps json input data to Broker messages.
 """
-import json
-import ConfigParser
 import pybroker as pb
 import datetime
+import json
+import sys
 
 class Mapper(object):
-    def flatten(self, pData):
-        # Flattens the JSON file recursively so nested parts can be easily accessed
-
-        ret = {}
-        for keys in pData.keys():
-            if (isinstance(pData[keys], dict)):
-
-                recursive = self.flatten(pData[keys])
-                for element in recursive.keys():
-                    ret[keys + "/" + element] = recursive[element]
-            else:
-                ret[keys] = pData[keys]
-        return ret
-
-    def mapPort(self, section, keys):
-        # Maps a port
-
-        portProtocol = self.protocols[keys[section['arg1']]]
-        portNumber = keys[section['arg0']]
-
-        p = pb.port(portNumber, portProtocol)
-        return p
-
-    def mapAddress(self, section, keys):
-        # Maps an address (IP, not sure if host names are supported but they should be)
-        a = pb.address_from_string(str(keys[section['arg0']]))
-        return a
-
-    def mapInteger(self, section, keys):
-        # Maps an integer
-        i = int(keys[section['arg0']])
-        return i
-
-    def mapTimePoint(self, section, keys):
-        # Maps a time
-        date = datetime.datetime.strptime(keys[section['arg0']], '%Y-%m-%dT%H:%M:%S.%f')
-
-        # This sets the time_point as a double containing the amount of seconds since epoch
-        timestamp = pb.time_point((date - datetime.datetime.utcfromtimestamp(0)).total_seconds() * 1000.0)
-        return timestamp
 
     def __init__(self, mapping):
         """Mapper(mapping)
@@ -56,48 +16,105 @@ class Mapper(object):
         :param mapping:     The mapping to use. (type?)
         """
         
-        self.dictionary = mapping
-        self.typedict = {'port': self.mapPort, 'address': self.mapAddress, 'int': self.mapInteger, 'time_point': self.mapTimePoint}
+        self.mapping = mapping
+        self.type_conversions = {
+            'address': self.__map_address,
+            'int': self.__map_integer,
+            'time_point': self.__map_time_point,
+            'string': self.__map_string,
+            'port': self.__map_port
+        }
 
-        for key in self.dictionary:
-            section = self.dictionary[key]
-
-            # Check if the section is valid. Type, name and at least one argument are always required
-            if ('type' in section and 'name' in section and 'arg0' in section):
-                brokertype = section['type']
-                
-                #Port types need 2 arguments
-                if (brokertype == 'port'):
-                    if(not 'arg1' in section):
-                        raise ValueError('Invalid section: ' + key + '. You need 2 arguments (Port number and protocol)')
-            else:
-                raise ValueError('Invalid section: ' + key + '. Type, name or arg0 missing')
-
-        #save all the transport protocols in a dict
-        self.protocols = {'tcp': pb.port.protocol_tcp, 'udp': pb.port.protocol_udp, 'icmp': pb.port.protocol_icmp, 'unknown': pb.port.protocol_unknown}
+    def __map_final_type(self, prop, value, mapped):
+        #print "map final", prop, value, mapped
+        if isinstance(mapped, dict):
+            mapped = mapped.get(prop)
+        if not mapped or not isinstance(mapped, str):
+            self.__logUnknown(prop, value)
+            return
+        
+        handler = self.type_conversions.get(mapped)
+        if not handler:
+            self.__logUnimplemented(prop, value)
+            return
+        
+        return handler(value)
 
 
-    def transform(self, pData):
+    def __logUnknown(self, unknownProp, val):
+        # TODO: write to a file? put in bro msg?
+        print("Have no mapping configured for property '{}' with value '{}'".format(unknownProp, val))
+
+    def __logUnimplemented(self, prop, val):
+        # TODO: write to a file? put in bro msg?
+        print("No handler implemented for '{}' with value '{}'".format(prop, val))
+
+
+    def __map_port(self, port):
+        # Maps a port
+        # TODO: not quite accurate, add protocol correctly.
+        return pb.port(port, pb.port.protocol_tcp)
+
+    def __map_address(self, addr):
+        return pb.address_from_string(str(addr))
+
+    def __map_integer(self, num):
+        return int(num)
+
+    def __map_string(self, string):
+        # TODO: does not work.
+        # need nul terminated string for C++
+        return str(string) 
+
+    def __map_time_point(self, time_str):
+        # Maps a time
+        date = datetime.datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%S.%f')
+
+        # This sets the time_point as a double containing the amount of seconds since epoch
+        return pb.time_point((date - datetime.datetime.utcfromtimestamp(0)).total_seconds() * 1000.0)
+
+    def __traverse_to_end(self, key, child, currMap):
+        msgs = []
+        if key in currMap:
+            currMap = currMap.get(key) # step into
+            try:
+                new_key = dict(child).iterkeys().next()
+                if new_key:
+                    new_child = dict(child).get(new_key)
+                    if isinstance(new_child, dict):
+                        msgs.extend(self.__traverse_to_end(new_key, new_child, currMap))
+                    else:
+                        for prop, val in child.iteritems():
+                            brokerObj = self.__map_final_type(prop, val, currMap)
+                            if brokerObj:
+                                msgs.append(brokerObj)
+                else: # last iteration step befor plain object body is reached
+                    print("aww no key", key)
+            except ValueError:
+                ## cannot convert to dict, found higher level final mapping type.
+                brokerObj = self.__map_final_type(key, child, currMap)
+                if brokerObj:
+                    msgs.append(brokerObj)
+        else:
+            self.__logUnknown(key, child)
+        return msgs
+
+    def transform(self, dioMsg):
         """map(data)
         Maps *data* to the appropriate Broker message.
 
         :param data:    The data to map. (json)
         :returns:       The corresponding Broker message. (type?)
         """
-        print("Mapper should map", pData)
-
-        keys = self.flatten(pData)
-        print(keys)
+        #print("Mapper should map", dioMsg)
 
         message = pb.message()
-        #Go through every section in the mapper dictionary
-        for key in self.dictionary:
 
-            section = self.dictionary[key]
-
-
-            brokerObject = self.typedict[section['type']](section, keys)
-
-            message.append(pb.data(brokerObject))
+        for key, val in json.loads(dioMsg).iteritems():
+            brokerMsgs = self.__traverse_to_end(key, val, self.mapping)
+            for brokerObject in brokerMsgs:
+                print("Add converted brokerObject '{}' to message".format(brokerObject))
+                if brokerObject:
+                    message.append(pb.data(brokerObject))
 
         return message

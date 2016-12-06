@@ -23,7 +23,7 @@ class Connector(object):
 
         Initialises the Connector and starts to listen to incoming messages.
         """
-        stream = open("mapping.yaml", "r")
+        stream = open("mapping2.yaml", "r")
         mapperconf = yaml.load(stream)
 
         self.mapper = Mapper(mapperconf)
@@ -40,11 +40,12 @@ class Connector(object):
         :param message:     The message to map and send. (json)
         """
         # TODO: implement me
-        print("Connector received:", message)
+        #print "Connector received:", message
         mapped = self.mapper.transform(message)
         print("Mapped message is", mapped)
-        success = self.sender.send(mapped)
-        print("Connector did its job? ", success)
+        print("")
+        #success = self.sender.send(mapped)
+        #print("Connector did its job? ", success)
 
 
 if __name__ == '__main__':

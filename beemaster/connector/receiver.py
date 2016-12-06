@@ -37,7 +37,7 @@ class Receiver(Flask):
 
         :param text:    The data received.
         """
-        print(text)
+        #print(text)
         with open('./log.txt', 'a+') as log:
             json.dump(text, log)
             log.write('\n')
@@ -60,7 +60,7 @@ class Receiver(Flask):
         #       json.dumps/load may blow up. fix it.
         if 'application/json' in request.headers.get('Content-Type'):
             raw = json.dumps(request.json)
-            self.onData(json.loads(raw))
+            self.onData(raw)
             self.logToFile(raw)
 
             return Response('OK', 200)
