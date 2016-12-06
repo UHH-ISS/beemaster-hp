@@ -1,4 +1,5 @@
 env/
+lint-env/
 pyenv
 .ropeproject
 *.swp

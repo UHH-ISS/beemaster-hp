@@ -11,22 +11,17 @@ symlink, provided by `./setup.sh -s`). Be aware, that the activation only
 applies for the current shell. Other shells/terminals/sessions need to source
 the environment again.
 
-### TODOs
+### Notes
 
-- [x] add `requirements.txt`
-    - [x] content
-- [x] add `setup.sh`
-    - [x] can setup `virtualenv`
-    - [x] can add easier env-sourcing (VM provides `pyenv` command).
-- [x] add `.gitignore`
-- [x] set base structure
-- [x] set broker
+> @1jost: Would [tox](https://tox.readthedocs.io/en/latest/) be overkill? It
+> seems to be an awesome tool for environment and test management (primarily
+> meant for CI).
 
 ### Code-Structure
 
 Source directory: `beemaster/connector`
 
-If `python2` is used, code for `python3` compatibility.
+As `python2` is used, code for `python3` compatibility.
 
 ```python
 #!/usr/bin/env python
