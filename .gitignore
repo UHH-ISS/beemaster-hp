@@ -1,6 +1,7 @@
 env/
-lint-env/
+dev-env/
 pyenv
+devenv
 .ropeproject
 *.swp
 *.swo
