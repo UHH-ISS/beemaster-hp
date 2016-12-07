@@ -36,6 +36,8 @@ flake8-blind-except==0.1.1
 # https://github.com/gforcada/flake8-builtins
 flake8-builtins==0.2
 
+# TODO currently no check of trailing whitespaces...
+
 # PEP 0257 Styleguide:
 #   https://www.python.org/dev/peps/pep-0257/
 # Pydocstyle package:
