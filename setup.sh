@@ -16,11 +16,9 @@ _DEVSETUP=false
 _ADDSOURCE=false
 
 _ENVDIR=env
-_DEV_ENVDIR=dev-env
 _REQUIREMENTS=requirements.txt
 _DEV_REQUIREMENTS=dev-requirements.txt
 _SOURCENAME=pyenv
-_DEV_SOURCENAME=devenv
 
 _VIRTUALENV=virtualenv
 _PYTHON2=$(which python2 2>/dev/null)
@@ -49,11 +47,9 @@ Default variables:
     ADDSOURCE           = $_ADDSOURCE
 
     ENVDIR              = $_ENVDIR
-    DEV_ENVDIR          = $_DEV_ENVDIR
     REQUIREMENTS        = $_REQUIREMENTS
     DEV_REQUIREMENTS    = $_DEV_REQUIREMENTS
     SOURCENAME          = $_SOURCENAME
-    DEV_SOURCENAME      = $_DEV_SOURCENAME
 
     VIRTUALENV          = $_VIRTUALENV  ('python2 -m virtualenv' might be used)
     PYTHON2             = $_PYTHON2
@@ -84,7 +80,7 @@ function parseargs() {
 }
 
 function clean() {
-    rm -rf $_ENVDIR $_DEV_ENVDIR $_SOURCENAME $_DEV_SOURCENAME
+    rm -rf $_ENVDIR $_SOURCENAME flake8 .git/hooks/pre-commit
 }
 
 function install() {
@@ -129,35 +125,31 @@ function setup() {
     [ -e "$_libc_path" ] && _lib_path="$_libc_path"
     ln -s "$_lib_path" .
     cd "$current_dir"
-    deactivate 2>/dev/null
 
     if $_DEVSETUP; then
-        $_VIRTUALENV -p $_PYTHON2 $_DEV_ENVDIR
-        . $_DEV_ENVDIR/bin/activate
+        . $_ENVDIR/bin/activate
         pip install -r $_DEV_REQUIREMENTS
         deactivate 2>/dev/null
+        ln -sr $_ENVDIR/bin/flake8 .
+        ln -sr pre-commit .git/hooks/
     fi
+    deactivate 2>/dev/null
 }
 
 function update() {
     [ -d "$_ENVDIR" ] || error_exit "environment '$_ENVDIR' not found."
     . $_ENVDIR/bin/activate
     pip install -r $_REQUIREMENTS
-    deactivate 2>/dev/null
     if $_DEVSETUP; then
-        . $_DEV_ENVDIR/bin/activate
+        . $_ENVDIR/bin/activate
         pip install -r $_DEV_REQUIREMENTS
-        deactivate 2>/dev/null
     fi
+    deactivate 2>/dev/null
 }
 
 function addsource() {
     ln -sr $_ENVDIR/bin/activate $_SOURCENAME
     chmod +x $_SOURCENAME
-    if $_DEVSETUP; then
-        ln -sr $_DEV_ENVDIR/bin/activate $_DEV_SOURCENAME
-        chmod +x $_DEV_SOURCENAME
-    fi
 }
 
 parseargs $@

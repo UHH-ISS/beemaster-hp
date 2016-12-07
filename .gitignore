@@ -1,7 +1,6 @@
 env/
-dev-env/
 pyenv
-devenv
+flake8
 .ropeproject
 *.swp
 *.swo
