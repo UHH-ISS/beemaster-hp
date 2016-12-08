@@ -1,5 +1,6 @@
 env/
 pyenv
+flake8
 .ropeproject
 *.swp
 *.swo
