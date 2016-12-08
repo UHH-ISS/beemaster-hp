@@ -5,8 +5,6 @@ Provides the Mapper, which maps json input data to Broker messages.
 """
 import pybroker as pb
 import datetime
-import json
-import sys
 
 
 class Mapper(object):
@@ -19,11 +17,13 @@ class Mapper(object):
         self.mapping = mapping
         self.type_conversions = {
             'address': self.__map_address,
-            'int': self.__map_integer,
+            'count': self.__map_count,
             'time_point': self.__map_time_point,
             'string': self.__map_string,
             'port': self.__map_port
         }
+
+        #print(self.mapping['message'])
 
     def __map_final_type(self, prop, value, mapped):
         #print "map final", prop, value, mapped
@@ -40,11 +40,11 @@ class Mapper(object):
 
 
     def __logUnknown(self, unknownProp, val):
-        # TODO: write to a file? put in bro msg?
+        # TODO: write to a file?
         print("Have no mapping configured for property '{}' with value '{}'".format(unknownProp, val))
 
     def __logUnimplemented(self, prop, val):
-        # TODO: write to a file? put in bro msg?
+        # TODO: write to a file?
         print("No handler implemented for '{}' with value '{}'".format(prop, val))
 
 
@@ -56,11 +56,10 @@ class Mapper(object):
     def __map_address(self, addr):
         return pb.address_from_string(str(addr))
 
-    def __map_integer(self, num):
+    def __map_count(self, num):
         return int(num)
 
     def __map_string(self, string):
-        # TODO: does not work.
         # need nul terminated string for C++
         return str(string)
 
@@ -75,23 +74,20 @@ class Mapper(object):
         msgs = []
         if key in currMap:
             currMap = currMap.get(key) # step into
-            try:
-                new_key = dict(child).iterkeys().next()
-                if new_key:
-                    new_child = dict(child).get(new_key)
+            if isinstance(child, dict):
+                for new_key, new_child in child.iteritems():
                     if isinstance(new_child, dict):
                         msgs.extend(self.__traverse_to_end(new_key, new_child, currMap))
                     else:
-                        for prop, val in child.iteritems():
-                            brokerObj = self.__map_final_type(prop, val, currMap)
-                            if brokerObj:
-                                msgs.append(brokerObj)
-                else: # last iteration step befor plain object body is reached
-                    print("aww no key", key)
-            except ValueError:
-                ## cannot convert to dict, found higher level final mapping type.
-                brokerObj = self.__map_final_type(key, child, currMap)
-                if brokerObj:
+                        brokerObj = self.__map_final_type(new_key, new_child, currMap)
+                        if brokerObj:
+                            msgs.append(brokerObj)
+
+            #except ValueError:
+            #    ## cannot convert to dict, found higher level final mapping type.
+            else:
+               brokerObj = self.__map_final_type(key, child, currMap)
+               if brokerObj:
                     msgs.append(brokerObj)
         else:
             self.__logUnknown(key, child)
@@ -105,14 +101,11 @@ class Mapper(object):
         :returns:       The corresponding Broker message. (type?)
         """
         # print("Mapper should map", dioMsg)
-
+        print(dioMsg)
         message = pb.message()
 
         event_name = self.mapping['name']
         message.append(pb.data(event_name))
-
-        for key, val in dioMsg.iteritems():
-            lst = self.__traverse_to_end(key, val, self.mapping['mapping'])
 
         for key, val in dioMsg.iteritems():
             brokerMsgs = self.__traverse_to_end(key, val, self.mapping['mapping'])
@@ -120,5 +113,4 @@ class Mapper(object):
                 print("Add converted brokerObject '{}' to message".format(brokerObject))
                 if brokerObject:
                     message.append(pb.data(brokerObject))
-
         return message
