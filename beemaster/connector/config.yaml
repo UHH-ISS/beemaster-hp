@@ -1,0 +1,4 @@
+mapping: dionaea/connection.yaml
+listenPort: 8080
+sendPort: 5000
+sendIP: 127.0.0.1

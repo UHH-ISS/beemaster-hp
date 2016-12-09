@@ -17,6 +17,7 @@ from receiver import Receiver
 from mapper import Mapper
 from sender import Sender
 import yaml
+import os.path
 
 
 class Connector(object):
@@ -26,13 +27,23 @@ class Connector(object):
         Initialises the Connector and starts to listen to incoming messages.
         """
         # TODO to be made dynamic
-        stream = open("mappings/dionaea/connection.yaml", "r")
-        mapperconf = yaml.load(stream)
 
-        self.mapper = Mapper(mapperconf)
-        self.sender = Sender('127.0.0.1', 5000)
-        self.receiver = Receiver("bm-connector", '0.0.0.0', 8080)
-        self.receiver.listen("/", self.handle_receive)
+        stream = open("config.yaml", "r")
+        config = yaml.load(stream)
+
+        if 'mapping' in config and 'sendPort' in config and 'listenPort' in config and 'sendIP' in config:
+            stream = open("mappings/" + config['mapping'], "r")
+            mapperconf = yaml.load(stream)
+            self.mapper = Mapper(mapperconf)
+            self.sender = Sender(config['sendIP'], config['sendPort'])
+            self.receiver = Receiver("bm-connector", '0.0.0.0', config['listenPort'])
+            self.receiver.listen("/", self.handle_receive)
+        else:
+            raise LookupError('config incomplete')
+
+
+
+
 
     def handle_receive(self, message):
         """handle_receive(message)
