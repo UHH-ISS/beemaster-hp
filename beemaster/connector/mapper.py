@@ -71,24 +71,21 @@ class Mapper(object):
         return pb.time_point((date - datetime.datetime.utcfromtimestamp(0)).total_seconds() * 1000.0)
 
     def __traverse_to_end(self, key, child, currMap):
-        msgs = []
+        msgs = {}
         if key in currMap:
             currMap = currMap.get(key) # step into
             if isinstance(child, dict):
                 for new_key, new_child in child.iteritems():
                     if isinstance(new_child, dict):
-                        msgs.extend(self.__traverse_to_end(new_key, new_child, currMap))
+                        msgs.update(self.__traverse_to_end(new_key, new_child, currMap))
                     else:
                         brokerObj = self.__map_final_type(new_key, new_child, currMap)
                         if brokerObj:
-                            msgs.append(brokerObj)
-
-            #except ValueError:
-            #    ## cannot convert to dict, found higher level final mapping type.
+                            msgs[new_key] = brokerObj
             else:
                brokerObj = self.__map_final_type(key, child, currMap)
                if brokerObj:
-                    msgs.append(brokerObj)
+                    msgs[key] = brokerObj
         else:
             self.__logUnknown(key, child)
         return msgs
@@ -107,10 +104,20 @@ class Mapper(object):
         event_name = self.mapping['name']
         message.append(pb.data(event_name))
 
+        brokerMsgs = {}
         for key, val in dioMsg.iteritems():
-            brokerMsgs = self.__traverse_to_end(key, val, self.mapping['mapping'])
-            for brokerObject in brokerMsgs:
-                print("Add converted brokerObject '{}' to message".format(brokerObject))
-                if brokerObject:
-                    message.append(pb.data(brokerObject))
-        return message
+            brokerMsgs.update(self.__traverse_to_end(key, val, self.mapping['mapping']))
+
+        discard = 0
+        for item in self.mapping['message']:
+            if item in brokerMsgs:
+                print("Add converted brokerObject '{}' to message".format(brokerMsgs[item]))
+                message.append(pb.data(brokerMsgs[item]))
+            else:
+                discard = 1
+                break
+        if discard:
+            print("Message is invalid. Format unknown")
+            return
+        else:
+            return message
