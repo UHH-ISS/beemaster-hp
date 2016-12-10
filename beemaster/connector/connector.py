@@ -59,7 +59,7 @@ class Connector(object):
         mapped = self.mapper.transform(message)
         print("Mapped message is", mapped)
         print("")
-        #if(message):
+        #if(mapped):
             # success = self.sender.send(mapped)
             # print("Connector did its job? ", success)
 
