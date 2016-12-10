@@ -31,11 +31,12 @@ class Connector(object):
         stream = open("config.yaml", "r")
         config = yaml.load(stream)
 
-        if 'mapping' in config and 'sendPort' in config and 'listenPort' in config and 'sendIP' in config:
+        if 'mapping' in config and 'sendPort' in config and 'listenPort' in config and 'sendIP' in config\
+                and 'brokerTopic' in config and 'brokerEndpointName' in config:
             stream = open("mappings/" + config['mapping'], "r")
             mapperconf = yaml.load(stream)
             self.mapper = Mapper(mapperconf)
-            self.sender = Sender(config['sendIP'], config['sendPort'])
+            self.sender = Sender(config['sendIP'], config['sendPort'], config['brokerTopic'], config['brokerEndpointName'])
             self.receiver = Receiver("bm-connector", '0.0.0.0', config['listenPort'])
             self.receiver.listen("/", self.handle_receive)
         else:
