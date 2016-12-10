@@ -2,5 +2,5 @@ mapping: dionaea/connection.yaml
 listenPort: 8080
 sendPort: 5000
 sendIP: 127.0.0.1
-brokerTopic: Dionaea
-brokerEndpointName: Test
+brokerTopic: honeypot/dionaea/
+brokerEndpointName: dioEp

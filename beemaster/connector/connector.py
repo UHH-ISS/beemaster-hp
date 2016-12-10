@@ -36,7 +36,7 @@ class Connector(object):
             stream = open("mappings/" + config['mapping'], "r")
             mapperconf = yaml.load(stream)
             self.mapper = Mapper(mapperconf)
-            self.sender = Sender(config['sendIP'], config['sendPort'], config['brokerTopic'], config['brokerEndpointName'])
+            #self.sender = Sender(config['sendIP'], config['sendPort'], config['brokerEndpointName'], config['brokerTopic'])
             self.receiver = Receiver("bm-connector", '0.0.0.0', config['listenPort'])
             self.receiver.listen("/", self.handle_receive)
         else:
