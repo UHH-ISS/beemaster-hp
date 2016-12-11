@@ -147,7 +147,7 @@ class Connector(object):
         # TODO: implement me
         # print "Connector received:", message
         mapped = self.mapper.transform(message)
-        self.log("Mapped message is {}".format(mapped))
+        self.log("Mapped message is '{}'.".format(mapped))
         # if(mapped):
         #     success = self.sender.send(mapped)
         #     print("Connector did its job? ", success)
