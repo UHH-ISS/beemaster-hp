@@ -1,3 +1,4 @@
+PyYAML==3.12
 Flask==0.11.1
 # The following packages are dependencies of Flask.
 # The are listed to provide a proper install but may be changed later on in
@@ -7,4 +8,3 @@ itsdangerous==0.24
 Jinja2==2.8
 MarkupSafe==0.23
 Werkzeug==0.11.11
-PyYAML==3.12

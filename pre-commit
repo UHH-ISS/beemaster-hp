@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+
+# in case, the env is not installed
+_ENV="env/bin/python2"
+[ -e "$_ENV" ] || exit 0
+
+# in case, the env is installed
+$_ENV <<<"
+import os
+import sys
+
+from flake8.main import git
+
+if __name__ == '__main__':
+    sys.exit(
+        git.hook(
+            strict=git.config_for('strict'),
+            lazy=git.config_for('lazy'),
+        )
+    )
+"

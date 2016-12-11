@@ -1,5 +1,6 @@
 env/
 pyenv
+flake8
 .ropeproject
 *.swp
 *.swo
@@ -7,3 +8,4 @@ pyenv
 *.pyc
 *.pyo
 __pycache__
+log.txt
