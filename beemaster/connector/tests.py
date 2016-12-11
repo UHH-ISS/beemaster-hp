@@ -39,7 +39,7 @@ class mappings():
 class TestMapper(unittest.TestCase):
 
     def testStandard(self):
-        mapper = Mapper(mapperconf)
+        mapper = Mapper([mapperconf])
         testmap = mappings()
         testmessage = '{"timestamp": "2016-11-26T22:18:56.281464", "data": {"connection": {"remote_ip": "127.0.0.1", "remote_hostname": "", "id": 3019197952, "protocol": "pcap", "local_port": 4101, "local_ip": "127.0.0.1", "remote_port": 35324, "transport": "tcp"}}, "name": "dionaea", "origin": "dionaea.connection.free"}'
         expectedResult = pb.message()
@@ -57,7 +57,7 @@ class TestMapper(unittest.TestCase):
             self.assertEqual(expectedResult.pop(), mapResult.pop())
 
     def testEmpty(self):
-        mapper = Mapper(mapperconf)
+        mapper = Mapper([mapperconf])
         testmessage = '{"origin": "dionaea.connection.link", "timestamp": "2016-12-09T21:11:09.315143", "data": {"parent": {"protocol": "httpd", "local_port": 80, "local_ip": "127.0.0.1", "remote_hostname": "", "remote_port": 0, "id": 140386985909024, "transport": "tcp", "remote_ip": ""}, "child": {"protocol": "httpd", "local_port": 80, "local_ip": "127.0.0.1", "remote_hostname": "", "remote_port": 59268, "id": 140386985908744, "transport": "tcp", "remote_ip": "127.0.0.1"}}, "name": "dionaea"}'
 
         mapResult = mapper.transform(json.loads(testmessage))
@@ -66,10 +66,3 @@ class TestMapper(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
-
-
-
-
-
-#tests().standardtest()
