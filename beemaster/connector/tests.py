@@ -1,68 +1,90 @@
+# -*- coding: utf-8 -*-
+"""tests.py
+
+Provides various tests for the connector.
+"""
+from __future__ import with_statement
+
+from mapper import Mapper
+
 import unittest
 import pybroker as pb
-import datetime
-import json
-from mapper import Mapper
+from datetime import datetime
 import yaml
-
-stream = open("mappings/dionaea/connection.yaml", "r")
-mapperconf = yaml.load(stream)
-
-class mappings():
-    def map_port(self, port):
-        # Maps a port
-        # TODO: not quite accurate, add protocol correctly.
-        return pb.port(port, pb.port.protocol_tcp)
-
-
-    def map_address(self, addr):
-        return pb.address_from_string(str(addr))
-
-
-    def map_count(self, num):
-        return int(num)
-
-
-    def map_string(self, string):
-        # need nul terminated string for C++
-        return str(string)
-
-
-    def map_time_point(self, time_str):
-        # Maps a time
-        date = datetime.datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%S.%f')
-
-        # This sets the time_point as a double containing the amount of seconds since epoch
-        return pb.time_point((date - datetime.datetime.utcfromtimestamp(0)).total_seconds() * 1000.0)
 
 
 class TestMapper(unittest.TestCase):
+    """TestCases for mapper.Mapper."""
 
-    def testStandard(self):
-        mapper = Mapper([mapperconf])
-        testmap = mappings()
-        testmessage = '{"timestamp": "2016-11-26T22:18:56.281464", "data": {"connection": {"remote_ip": "127.0.0.1", "remote_hostname": "", "id": 3019197952, "protocol": "pcap", "local_port": 4101, "local_ip": "127.0.0.1", "remote_port": 35324, "transport": "tcp"}}, "name": "dionaea", "origin": "dionaea.connection.free"}'
-        expectedResult = pb.message()
-        expectedResult.append(pb.data(testmap.map_time_point("2016-11-26T22:18:56.281464")))
-        expectedResult.append(pb.data(testmap.map_count(3019197952)))
-        expectedResult.append(pb.data(testmap.map_address("127.0.0.1")))
-        expectedResult.append(pb.data(testmap.map_count("4101")))
-        expectedResult.append(pb.data(testmap.map_address("127.0.0.1")))
-        expectedResult.append(pb.data(testmap.map_count("35324")))
-        expectedResult.append(pb.data(testmap.map_string("tcp")))
+    VALID_INPUT_1 = {"timestamp": "2016-11-26T22:18:56.281464", "data":
+                     {"connection": {"remote_ip": "127.0.0.1",
+                                     "remote_hostname": "", "id": 3019197952,
+                                     "protocol": "pcap", "local_port": 4101,
+                                     "local_ip": "127.0.0.1", "remote_port":
+                                     35324, "transport": "tcp"}}, "name":
+                     "dionaea", "origin": "dionaea.connection.free"}
+    INVALID_INPUT_1 = {"origin": "dionaea.connection.link", "timestamp":
+                       "2016-12-09T21:11:09.315143",
+                       "data": {"parent": {"protocol": "httpd", "local_port":
+                                           80, "local_ip": "127.0.0.1",
+                                           "remote_hostname": "",
+                                           "remote_port": 0, "id":
+                                           140386985909024, "transport": "tcp",
+                                           "remote_ip": ""},
+                                "child": {"protocol": "httpd", "local_port":
+                                          80, "local_ip": "127.0.0.1",
+                                          "remote_hostname": "", "remote_port":
+                                          59268, "id": 140386985908744,
+                                          "transport": "tcp", "remote_ip":
+                                          "127.0.0.1"}},
+                       "name": "dionaea"}
 
-        mapResult = mapper.transform(json.loads(testmessage))
+    VALID_MAPPING = 'mappings/dionaea/connection.yaml'
 
-        while not expectedResult.empty():
-            self.assertEqual(expectedResult.pop(), mapResult.pop())
+    def setUp(self):
+        """Set up the default mapper."""
+        with open(self.VALID_MAPPING, 'r') as f:
+            mapping = yaml.load(f)
+        self.mapper = Mapper([mapping])     # [..] necessary as of format
 
-    def testEmpty(self):
-        mapper = Mapper([mapperconf])
-        testmessage = '{"origin": "dionaea.connection.link", "timestamp": "2016-12-09T21:11:09.315143", "data": {"parent": {"protocol": "httpd", "local_port": 80, "local_ip": "127.0.0.1", "remote_hostname": "", "remote_port": 0, "id": 140386985909024, "transport": "tcp", "remote_ip": ""}, "child": {"protocol": "httpd", "local_port": 80, "local_ip": "127.0.0.1", "remote_hostname": "", "remote_port": 59268, "id": 140386985908744, "transport": "tcp", "remote_ip": "127.0.0.1"}}, "name": "dionaea"}'
+    def testDefaultSuccess(self):
+        """Test the default successful scenario."""
+        def _map_time(inp):
+            date = datetime.strptime(inp, '%Y-%m-%dT%H:%M:%S.%f')
+            return pb.time_point((date - datetime.utcfromtimestamp(0))
+                                 .total_seconds() * 1000.0)
 
-        mapResult = mapper.transform(json.loads(testmessage))
+        def _map_addr(inp):
+            return pb.address_from_string(inp)
 
-        self.assertIsNone(mapResult)
+        expect = map(pb.data, (_map_time("2016-11-26T22:18:56.281464"),
+                               3019197952, _map_addr("127.0.0.1"), 4101,
+                               _map_addr("127.0.0.1"), 35324, "tcp"))
+
+        message = pb.message()
+        for i in expect:
+            message.append(i)
+
+        result = self.mapper.transform(self.VALID_INPUT_1)
+
+        while not message.empty():
+            self.assertEqual(message.pop(), result.pop())
+
+    def testFailure(self):
+        """Test empty output on an non-matching message."""
+        self.assertIsNone(self.mapper.transform(self.INVALID_INPUT_1))
+
+    def testMissingField(self):
+        """Test empty output on message, missing a field."""
+        del self.VALID_INPUT_1['timestamp']
+
+        self.assertIsNone(self.mapper.transform(self.VALID_INPUT_1))
+
+    # TODO require tests for:
+    #       - multiple mappings
+    #       - different inputs
+    #       - invalid mappings
+
 
 if __name__ == '__main__':
     unittest.main()
