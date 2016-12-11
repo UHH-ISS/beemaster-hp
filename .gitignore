@@ -8,3 +8,4 @@ flake8
 *.pyc
 *.pyo
 __pycache__
+log.txt

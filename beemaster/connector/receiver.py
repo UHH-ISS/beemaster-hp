@@ -37,7 +37,7 @@ class Receiver(Flask):
 
         :param text:    The data received.
         """
-        print(text)
+        # print(text)
         with open('./log.txt', 'a+') as log:
             json.dump(text, log)
             log.write('\n')

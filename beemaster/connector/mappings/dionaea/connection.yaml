@@ -1,0 +1,37 @@
+# on file per connection type
+#
+# name: name of the event (for bro)
+# mapping: the structure of the arriving json
+#          to map to the desired broker-type
+#          (implemented in mapper)
+# message: the structure of the message, as it
+#          will be put into the broker message
+name: connection
+mapping:
+    data:
+        connection:
+            id: count
+            local_ip: address
+            local_port: count
+            remote_ip: address
+            remote_port: count
+            remote_hostname: string
+            protocol: string
+            transport: string
+    timestamp: time_point
+    origin: string
+message:
+    - timestamp
+    - id
+    - local_ip
+    - local_port
+    - remote_ip
+    - remote_port
+    - transport
+# - still missing time format string and similar
+# - still unfortunate regarding the flattened names
+#
+# in Bro:
+# event connection(time_point, count, address,
+#                  count, address, count, string)
+# port wird auf bro seite zusammengesetzt
