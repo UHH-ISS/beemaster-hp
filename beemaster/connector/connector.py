@@ -11,7 +11,7 @@ mapping to be properly processed on the other side.
 
 The module can be executed directly.
 """
-from __future__ import print_function, unicode_literals, with_statement
+from __future__ import unicode_literals, with_statement
 
 from receiver import Receiver
 from mapper import Mapper
@@ -81,6 +81,8 @@ class Connector(object):
     See module description for more context.
     """
 
+    REQUIRED_KEYS = {"name", "mapping", "message"}
+
     def __init__(self, config_loc="config.yaml"):
         """Initialise the Connector and starts to listen to incoming messages.
 
@@ -113,17 +115,24 @@ class Connector(object):
         self.receiver.listen("/", self.handle_receive)
 
     def _read_mappings(self, location):
-        """Read the mappings into one dictionary."""
+        """Read the mappings into a list of dictionaries."""
         # os/fs errors here are allowed to terminate the program
         # yaml parse errors should not crash but log
-        mappings = {}
+        mappings = []
         for root, _, files in walk(location):
             for f in files:
                 filepath = os.path.join(root, f)
                 with open(filepath, "r") as fd:
+                    # TODO extract the below block?
                     try:
                         mp = yaml.load(fd)
-                        mappings[mp['name']] = mp
+                        for i in self.REQUIRED_KEYS:
+                            if i not in mp:
+                                raise LookupError(i)
+                        mappings.append(mp)
+                    except LookupError as e:
+                        self.log("Missing key '{}' in file '{}'. Ignoring."
+                                 .format(e.args[0], filepath))
                     except:
                         # TODO find correct exception types.
                         self.log("Failed to read mapping in '{}'. Ignoring."
