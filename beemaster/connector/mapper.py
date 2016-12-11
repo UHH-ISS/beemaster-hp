@@ -123,9 +123,16 @@ class Mapper(object):
 
             local_mapping = mapping['mapping']
             # the actual traversion
-            brokerMsg = {k2: v2 for k, v in dioMsg.iteritems() for k2, v2 in
-                         self._traverse_to_end(k, v, local_mapping)
-                         .iteritems()}
+            try:
+                brokerMsg = {k2: v2 for k, v in dioMsg.iteritems() for k2, v2
+                             in self._traverse_to_end(k, v, local_mapping)
+                             .iteritems()}
+            except Exception:
+                # TODO specify possible exception! maybe even custom ones in
+                #      _map_*.
+                self.log("Failed to convert message properly. "
+                         "Ignoring format.")
+                break
 
             # setting up the final message in desired order
             local_message = mapping['message']

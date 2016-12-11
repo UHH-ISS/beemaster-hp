@@ -132,7 +132,7 @@ class Connector(object):
                     except LookupError as e:
                         self.log("Missing key '{}' in file '{}'. Ignoring."
                                  .format(e.args[0], filepath))
-                    except:
+                    except Exception:
                         # TODO find correct exception types.
                         self.log("Failed to read mapping in '{}'. Ignoring."
                                  .format(filepath))

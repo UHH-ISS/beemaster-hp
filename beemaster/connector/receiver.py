@@ -11,6 +11,8 @@ from flask import Flask, request, json, Response
 # ATTENTION: The imported json is a custom implementation of the internal json
 #            module. https://github.com/pallets/flask/blob/master/flask/json.py
 
+import logging
+
 
 class Receiver(Flask):
     def __init__(self, name, address, port):
@@ -23,6 +25,9 @@ class Receiver(Flask):
         :param address:     Address to listen on. (str)
         :param port:        Port to listen on. (int)
         """
+        logger = logging.getLogger(self.__class__.__name__)
+        self.log = logger.info
+
         super(Receiver, self).__init__(name)
 
         self.name = name
@@ -37,7 +42,7 @@ class Receiver(Flask):
 
         :param text:    The data received.
         """
-        # print(text)
+        self.log(text)
         with open('./log.txt', 'a+') as log:
             json.dump(text, log)
             log.write('\n')
