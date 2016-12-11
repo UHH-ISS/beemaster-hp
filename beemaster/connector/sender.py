@@ -6,7 +6,13 @@ communication partner.
 """
 import pybroker as pb
 
+
 class Sender(object):
+    """The sender.
+
+    Sends Broker messages to an Broker endpoint.
+    """
+
     def __init__(self, address, port, brokerEndpointName, brokerTopic):
         """Sender(address, port)
 
@@ -18,25 +24,25 @@ class Sender(object):
         :param brokerEndpointName: The broker endpoint name to send to. (str)
         :param brokerTopic:        The broker topic to send to. (str)
         """
-
         self.brokerTopic = brokerTopic
-        #TODO: expansion version 1: add service discovery
+        # TODO: expansion version 1: add service discovery
         self.dioEp = pb.endpoint(brokerEndpointName)
-        # peer with broker endpoint. Broker endpoint has to listen to us to receive messages
+        # Peer with broker endpoint (has to listen to us to receive messages)
         self.dioEp.peer(address, port)
 
-        # TODO: in the future: provide a channel to listen, to accept commands, like deactivate file logging etc.
-        #self.broEp.listen(9999, "127.0.0.1") #needs also a queue
+        """
+        TODO: in the future:
+        provide a channel to accept commands (change config,
+        deactivate file logging etc.)
+        self.broEp.listen(9999, "127.0.0.1") #needs also a queue
+        """
 
     def send(self, msg):
-        """send(msg)
-
-        Sends the msg to the peer.
+        """Send the Broker message to the peer.
 
         :param msg:        The message to be sent. (Broker message)
         :returns:          None
         """
-
         self.dioEp.send(self.brokerTopic, msg)
 
         return
