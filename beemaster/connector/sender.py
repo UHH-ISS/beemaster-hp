@@ -36,6 +36,9 @@ class Sender(object):
         self.dioEp.peer(address, port)
 
         # TODO check, whether connection has been established.
+        # Seems like Broker handles re-peering itself. So when no connection is
+        # available, it annoys you with messages and later on reconnects with
+        # the other side.
 
         # TODO: in the future:
         # provide a channel to accept commands (change config,
@@ -47,6 +50,7 @@ class Sender(object):
 
         :param msg:        The message to be sent. (Broker message)
         """
-        # TODO recheck connection?! retry until connection re-established
+        # TODO recheck connection?! retry until connection re-established and
+        #      then resend message
         self.log("Going to send '{}'.".format(msg))
         self.dioEp.send(self.brokerTopic, msg)
