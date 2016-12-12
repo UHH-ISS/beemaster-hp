@@ -24,6 +24,8 @@ import logging
 logging.basicConfig(
     # TODO add/set log file
     # TODO adjust time format
+    # TODO add log settings to config
+    # TODO vary use of log-levels!
     level=logging.DEBUG,
     format="[ %(asctime)s | %(name)10s | %(levelname)8s ] %(message)s"
 )
@@ -76,7 +78,7 @@ class ConnConfig(dict):
 
 
 class Connector(object):
-    """The Connector.
+    """The Connector
 
     See module description for more context.
     """
@@ -103,9 +105,8 @@ class Connector(object):
         self.mapper = Mapper(mappings)
         self.log("Mappings read.")
 
-        self.sender = Sender(config.send.address, config.send.port)
-        # self.sender = Sender(config.send.address, config.send.port,
-        #                      config.broker.endpoint, config.broker.topic)
+        self.sender = Sender(config.send.address, config.send.port,
+                             config.broker.endpoint, config.broker.topic)
         self.log("Sender created.")
 
         # TODO value should not be const here.
@@ -148,9 +149,8 @@ class Connector(object):
         # print "Connector received:", message
         mapped = self.mapper.transform(message)
         self.log("Mapped message is '{}'.".format(mapped))
-        # if(mapped):
-        #     success = self.sender.send(mapped)
-        #     print("Connector did its job? ", success)
+        if(mapped):
+            self.sender.send(mapped)
 
 
 if __name__ == '__main__':
