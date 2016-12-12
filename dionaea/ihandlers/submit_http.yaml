@@ -1,7 +1,7 @@
 - name: submit_http
   config:
       # the url to send the submission requests to
-      url: "http://localhost"
+      url: "http://localhost:8080"
       # E-Mail (optional)
       # email: ""
       # username (optional)
