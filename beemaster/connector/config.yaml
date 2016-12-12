@@ -3,7 +3,7 @@ listen:
     port: 8080
 send:
     address: 127.0.0.1
-    port: 5000
+    port: 9999
 mappings: mappings/dionaea/
 broker:
     topic: honeypot/dionaea/
