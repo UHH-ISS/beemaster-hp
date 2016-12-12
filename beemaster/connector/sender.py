@@ -48,4 +48,5 @@ class Sender(object):
         :param msg:        The message to be sent. (Broker message)
         """
         # TODO recheck connection?! retry until connection re-established
+        self.log("Going to send '{}'.".format(msg))
         self.dioEp.send(self.brokerTopic, msg)

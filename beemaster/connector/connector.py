@@ -24,6 +24,8 @@ import logging
 logging.basicConfig(
     # TODO add/set log file
     # TODO adjust time format
+    # TODO add log settings to config
+    # TODO vary use of log-levels!
     level=logging.DEBUG,
     format="[ %(asctime)s | %(name)10s | %(levelname)8s ] %(message)s"
 )
@@ -76,7 +78,7 @@ class ConnConfig(dict):
 
 
 class Connector(object):
-    """The Connector.
+    """The Connector
 
     See module description for more context.
     """
