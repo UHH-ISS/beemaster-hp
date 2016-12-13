@@ -4,8 +4,9 @@
 Provides the Sender, which wraps Broker to send messages to the associated
 communication partner.
 """
-import pybroker as pb
+from __future__ import unicode_literals
 
+import pybroker as pb
 import logging
 
 

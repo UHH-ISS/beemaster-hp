@@ -40,7 +40,7 @@ class ConnConfig(dict):
 
     DEFAULT_CONFIG = {
         "listen": {
-            "address": "localhost",
+            "address": "0.0.0.0",
             "port": 8080
         },
         "send": {
@@ -64,10 +64,14 @@ class ConnConfig(dict):
             self.update(self.DEFAULT_CONFIG)
 
         # TODO build config checks in here?
-        for key, val in data.iteritems():
-            if isinstance(val, dict):
-                val = ConnConfig(val, False)
-            self[key] = val
+        self.update(data)
+
+    def update(self, ndict):
+        """Update the current dict with the new one."""
+        for k, v in ndict.iteritems():
+            if isinstance(v, dict):
+                v = ConnConfig(v, False)
+            self[k] = v
 
     def __getattr__(self, item):
         """Get the appropriate attribute."""
