@@ -129,6 +129,8 @@ function setup() {
     if $_DEVSETUP; then
         . $_ENVDIR/bin/activate
         pip install -r $_DEV_REQUIREMENTS
+        git config --bool flake8.strict true
+        git config --bool flake8.lazy true
         deactivate 2>/dev/null
         ln -sr $_ENVDIR/bin/flake8 .
         ln -sr pre-commit .git/hooks/

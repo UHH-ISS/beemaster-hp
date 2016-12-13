@@ -15,6 +15,11 @@ import logging
 
 
 class Receiver(Flask):
+    """Receiver
+
+    See module description.
+    """
+
     def __init__(self, name, address, port):
         """Receiver(name, address, port)
 
@@ -36,22 +41,19 @@ class Receiver(Flask):
         self.onData = self.logToFile    # fallback
 
     def logToFile(self, text):
-        """logToFile(text)
+        """OBSOLETE
 
-        Logs to a file (log.txt).
+        Log to a file (log.txt).
 
         :param text:    The data received.
         """
         # TODO adjust for logging only!
-        self.log(text)
         with open('./log.txt', 'a+') as log:
             json.dump(text, log)
             log.write('\n')
 
     def listen(self, route, onData):
-        """listen(route, onData)
-
-        Listens to messages on *route* and calls *onData*.
+        """Listen on *route* and call *onData*.
 
         :param route:       The path to listen on. (str)
         :param onData:      The callback function. (func(json))
@@ -62,12 +64,16 @@ class Receiver(Flask):
         self.run(host=self.address, port=self.port, debug=True)
 
     def __handle_post(self):
-        # TODO: this is a weak check that message is json.
-        #       json.dumps/load may blow up. fix it.
         if 'application/json' in request.headers.get('Content-Type'):
-            raw = json.dumps(request.json)
-            self.logToFile(raw)
-            self.onData(json.loads(raw))
+            try:
+                data = request.json
+                # TODO weak check:
+                data = json.loads(json.dumps(data))
+
+                self.log(data)
+                self.onData(data)
+            except Exception:
+                return Response('Bad Request', 400)
 
             return Response('OK', 200)
         return Response('Unsupported Media Type', 415)
