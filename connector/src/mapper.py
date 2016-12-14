@@ -83,7 +83,7 @@ class Mapper(object):
         # This sets the time_point as a double containing the amount of seconds
         # since epoch.
         return pb.time_point(
-            (date - datetime.utcfromtimestamp(0)).total_seconds() * 1000.0)
+            (date - datetime.utcfromtimestamp(0)).total_seconds())
 
     def _traverse_to_end(self, key, child, currMap, acc=None):
         """Traverse the structure to the end."""
