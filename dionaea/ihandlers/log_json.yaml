@@ -4,5 +4,5 @@
     # flat_data: true
     handlers:
       # log to file or dev null or a host machine here
-      - http://172.17.0.1:8080/
+      - http://connector:8080
       #- file://@LOCALESTATEDIR@/dionaea/dionaea.json
