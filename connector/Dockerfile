@@ -14,6 +14,7 @@ RUN apt-get install -y \
     python \
     python-dev \
     python-pip \
+    python-setuptools \
     libcurl4-openssl-dev \
     wget \
     libncurses5-dev \
@@ -43,6 +44,7 @@ WORKDIR /scratch/broker-git
 
 # use correct branches / submodules
 RUN git checkout topic/mfischer/broker-multihop
+RUN git submodule update
 RUN ./configure
 RUN make -j4 install
 
@@ -50,7 +52,7 @@ COPY src /opt/connector
 COPY requirements.txt /opt/connector/.
 
 WORKDIR /opt/connector
-
+RUN pip install --upgrade pip setuptools wheel 
 RUN pip install -r requirements.txt
 
 EXPOSE 8080
