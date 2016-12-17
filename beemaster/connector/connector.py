@@ -16,10 +16,11 @@ from __future__ import unicode_literals, with_statement
 from receiver import Receiver
 from mapper import Mapper
 from sender import Sender
-import yaml
+from argparse import ArgumentParser
 import os.path
 from os import walk
 import logging
+import yaml
 
 logging.basicConfig(
     # TODO add/set log file
@@ -29,6 +30,8 @@ logging.basicConfig(
     level=logging.DEBUG,
     format="[ %(asctime)s | %(name)10s | %(levelname)8s ] %(message)s"
 )
+
+DEFAULT_CONFIG_FILE = 'config.yaml'
 
 
 class ConnConfig(dict):
@@ -54,7 +57,7 @@ class ConnConfig(dict):
         }
     }
 
-    def __init__(self, data, is_root=True):
+    def __init__(self, data=None, is_root=True):
         """Create the ConnConfig with the read data.
 
         :param data:    The data to fill in.
@@ -64,7 +67,8 @@ class ConnConfig(dict):
             self.update(self.DEFAULT_CONFIG)
 
         # TODO build config checks in here?
-        self.update(data)
+        if data is not None:
+            self.update(data)
 
     def update(self, ndict):
         """Update the current dict with the new one."""
@@ -89,19 +93,19 @@ class Connector(object):
 
     REQUIRED_KEYS = {"name", "mapping", "message"}
 
-    def __init__(self, config_loc="config.yaml"):
+    def __init__(self, config=None):
         """Initialise the Connector and starts to listen to incoming messages.
 
-        :param config_loc:  Location of the configuration file.
+        :param config:      Configuration to use (default config if None).
         """
         # TODO default value shouldn't be hard wired, should it?
 
         logger = logging.getLogger(self.__class__.__name__)
         self.log = logger.info
 
-        with open(config_loc, "r") as conf:
-            config = ConnConfig(yaml.load(conf))
-        self.log("Configuration read.")
+        if config is None:
+            config = ConnConfig()
+            self.log("Falling back to default configuration.")
 
         # errors up to here are allowed to terminate the program
 
@@ -157,5 +161,69 @@ class Connector(object):
             self.sender.send(mapped)
 
 
+def main():
+    config = ConnConfig()
+    ap = ArgumentParser(description="""The Connector takes messages via http
+                        (mainly from a Honeypot), maps them to a Broker Message
+                        and sends them off to the specified destination.
+                        Mapping definitions have to be custom written for each
+                        input (see mappings/dionaea for examples).
+                        """)
+
+    # listen
+    ap.add_argument('--laddr', metavar="address",
+                    help="Address to listen on.")
+    ap.add_argument('--lport', metavar="port",
+                    type=int,
+                    help="Port to listen on.")
+    # send
+    ap.add_argument('--saddr', metavar="address",
+                    help="Address to send to.")
+    ap.add_argument('--sport', metavar="port",
+                    type=int,
+                    help="Port to send to.")
+    # mappings
+    ap.add_argument('--mappings', metavar="directory",
+                    help="Directory to look for mappings.")
+    # broker
+    ap.add_argument('--topic', metavar="topic",
+                    help="Topic for sent messages.")
+    ap.add_argument('--endpoint', metavar="name",
+                    help="Name for the broker endpoint.")
+
+    # the config file
+    ap.add_argument("config", nargs="?", metavar="file",
+                    default=DEFAULT_CONFIG_FILE,
+                    help="Configuration-file to use.")
+
+    # parse arguments
+    args = ap.parse_args()
+
+    # update with config-values
+    with open(args.config, "r") as conf:
+        config.update(yaml.load(conf))
+
+    # update config with settings
+    argmap = {'laddr': ['listen', 'address'],
+              'lport': ['listen', 'port'],
+              'saddr': ['send', 'address'],
+              'sport': ['send', 'port'],
+              'mappings': ['mappings'],
+              'topic': ['broker', 'topic'],
+              'endpoint': ['broker', 'endpoint']}
+    # TODO could be done nicer...
+    for argument, value in vars(args).iteritems():
+        if argument not in argmap:
+            continue
+        if value is None:
+            continue
+        vals = argmap[argument]
+        c = config
+        for v in vals[:-1]:
+            c = c[v]
+        c[vals[-1]] = value
+
+    Connector(config)
+
 if __name__ == '__main__':
-    connector = Connector()
+    main()
