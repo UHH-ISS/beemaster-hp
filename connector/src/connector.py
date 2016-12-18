@@ -96,8 +96,6 @@ class Connector(object):
 
         :param config_loc:  Location of the configuration file.
         """
-        # TODO default value shouldn't be hard wired, should it?
-
         logger = logging.getLogger(self.__class__.__name__)
         self.log = logger.info
 
@@ -151,8 +149,6 @@ class Connector(object):
 
         :param message:     The message to map and send. (json)
         """
-        # TODO: implement me
-        # print "Connector received:", message
         mapped = self.mapper.transform(message)
         self.log("Mapped message is '{}'.".format(mapped))
         if(mapped):
