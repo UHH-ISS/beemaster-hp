@@ -110,7 +110,8 @@ class Connector(object):
         self.log("Mappings read.")
 
         self.sender = Sender(config.send.address, config.send.port,
-                             config.broker.endpoint, config.broker.topic)
+                             config.broker.endpoint, config.broker.topic,
+                             config.connectorId)
         self.log("Sender created.")
 
         # TODO value should not be const here.
