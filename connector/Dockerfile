@@ -1,15 +1,16 @@
 FROM debian:stretch
 RUN apt-get update && apt-get install -y \
     build-essential \
-    git \
     cmake \
-    swig \
+    curl \
+    git \
+    librocksdb-dev \
     python \
     python-dev \
     python-pip \
-    librocksdb-dev \
-    curl \
-    --no-install-recommends
+    swig \
+    --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
 
 # Get actor framwork
 WORKDIR /scratch
