@@ -162,6 +162,11 @@ class Connector(object):
 
 
 def main():
+    """Run the connector.
+
+    Execute the connector with command line arguments and/or a configuration
+    file.
+    """
     config = ConnConfig()
     ap = ArgumentParser(description="""The Connector takes messages via http
                         (mainly from a Honeypot), maps them to a Broker Message
@@ -193,15 +198,15 @@ def main():
 
     # the config file
     ap.add_argument("config", nargs="?", metavar="file",
-                    default=DEFAULT_CONFIG_FILE,
                     help="Configuration-file to use.")
 
     # parse arguments
     args = ap.parse_args()
 
     # update with config-values
-    with open(args.config, "r") as conf:
-        config.update(yaml.load(conf))
+    if args.config:
+        with open(args.config, "r") as conf:
+            config.update(yaml.load(conf))
 
     # update config with settings
     argmap = {'laddr': ['listen', 'address'],
@@ -224,6 +229,7 @@ def main():
         c[vals[-1]] = value
 
     Connector(config)
+
 
 if __name__ == '__main__':
     main()
