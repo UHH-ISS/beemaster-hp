@@ -43,7 +43,7 @@ shell. Other shells/terminals/sessions need to source the environment again.
 
 ### Code-Structure
 
-Source directory: `beemaster/connector`
+Source directory: `connector`
 
 As `python2` is used, code for `python3` compatibility.
 
