@@ -8,3 +8,4 @@ mappings: mappings/dionaea/
 broker:
     topic: honeypot/dionaea/
     endpoint: dioEp
+#connectorId: It is important to set your unique ID here
