@@ -44,7 +44,7 @@ RUN make install
 
 # dionaea build:
 
-RUN git clone https://github.com/DinoTools/dionaea.git /opt/dionaea
+RUN git clone -b '0.6.0' https://github.com/DinoTools/dionaea.git /opt/dionaea
 WORKDIR /opt/dionaea
 RUN autoreconf -vif
 RUN ./configure \
@@ -70,7 +70,7 @@ RUN make install
 
 
 RUN mkdir -p /etc/dionaea/services-enabled /etc/dionaea/ihandlers-enabled
-RUN mkdir -p /var/dionaea/roots/{www,ftp} /var/dionaea/binaries
+RUN mkdir -p /var/dionaea/roots/ftp /var/dionaea/roots/www /var/dionaea/binaries
 
 # http, https
 EXPOSE 80
