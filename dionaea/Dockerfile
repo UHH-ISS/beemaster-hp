@@ -44,7 +44,7 @@ RUN make install
 
 # dionaea build:
 
-RUN git clone https://github.com/DinoTools/dionaea.git /opt/dionaea
+RUN git clone -b '0.6.0' https://github.com/DinoTools/dionaea.git /opt/dionaea
 WORKDIR /opt/dionaea
 RUN autoreconf -vif
 RUN ./configure \

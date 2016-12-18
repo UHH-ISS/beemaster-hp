@@ -10,7 +10,7 @@ name: dionaea_connection
 mapping:
     data:
         connection:
-            id: count
+            id: string
             local_ip: address
             local_port: count
             remote_ip: address
@@ -32,6 +32,6 @@ message:
 # - still unfortunate regarding the flattened names
 #
 # in Bro:
-# event connection(time_point, count, address,
+# event connection(time_point, string, address,
 #                  count, address, count, string)
 # port wird auf bro seite zusammengesetzt
