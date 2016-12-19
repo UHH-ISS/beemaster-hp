@@ -17,7 +17,7 @@ from receiver import Receiver
 from mapper import Mapper
 from sender import Sender
 import yaml
-import socket
+import platform
 import os.path
 from os import walk
 import logging
@@ -53,7 +53,7 @@ class ConnConfig(dict):
             "topic": "honeypot/dionaea/",
             "endpoint": "dioEp"
         },
-        "connectorId": socket.getfqdn()
+        "connectorId": platform.uname()[1]
     }
 
     def __init__(self, data, is_root=True):
