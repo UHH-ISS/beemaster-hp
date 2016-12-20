@@ -6,6 +6,7 @@ Provides various tests for the connector.
 from __future__ import with_statement
 
 from mapper import Mapper
+from connector import ConnConfig
 
 import unittest
 import pybroker as pb
@@ -101,14 +102,12 @@ class TestMapper(unittest.TestCase):
             message.append(i)
 
         result = self.mapper.transform(self.VALID_INPUT_1)
-        #while not message.empty():
-        #    print(message.pop())
-        #    print(result.pop())
+
         while not message.empty():
             self.assertEqual(str(message.pop()), str(result.pop()))
 
     def testDefaultSuccess2(self):
-        """Test the default successful scenario."""
+        """Test another default successful scenario."""
         def _map_time(inp):
             date = datetime.strptime(inp, '%Y-%m-%dT%H:%M:%S.%f')
             return pb.time_point((date - datetime.utcfromtimestamp(0))
@@ -126,9 +125,7 @@ class TestMapper(unittest.TestCase):
             message.append(i)
 
         result = self.mapper.transform(self.VALID_INPUT_2)
-        #while not message.empty():
-        #    print(message.pop())
-        #    print(result.pop())
+
         while not message.empty():
             self.assertEqual(str(message.pop()), str(result.pop()))
 
@@ -137,23 +134,23 @@ class TestMapper(unittest.TestCase):
         self.assertIsNone(self.mapper.transform(self.INVALID_INPUT_1))
 
     def testFailureIPTooLong(self):
-        """Test empty output on an non-matching message."""
+        """Test empty output when the IP is too long."""
         self.assertIsNone(self.mapper.transform(self.INVALID_INPUT_2))
 
     def testFailureCountIsString(self):
-        """Test empty output on an non-matching message."""
+        """Test empty output when an expected count is delivered as a string."""
         self.assertIsNone(self.mapper.transform(self.INVALID_INPUT_3))
 
     def testFailureIPMissingBytes(self):
-        """Test empty output on an non-matching message."""
+        """Test empty output when the IP is missing bytes."""
         self.assertIsNone(self.mapper.transform(self.INVALID_INPUT_4))
 
     def testFailureInvalidPort(self):
-        """Test empty output on an non-matching message."""
+        """Test empty output when the port is out of bounds."""
         self.assertIsNone(self.mapper.transform(self.INVALID_INPUT_5))
 
     def testFailureWrongFieldType(self):
-        """Test empty output on an non-matching message."""
+        """Test empty output when a field in the mapping is wrong and the message therefore unexpected."""
         with open(self.VALID_MAPPING, 'r') as f:
             mapping = yaml.load(f)
         mapping['mapping']['data'] = 'count'
@@ -161,8 +158,8 @@ class TestMapper(unittest.TestCase):
 
         self.assertIsNone(mapper.transform(self.VALID_INPUT_1))
 
-    def testFailureInvalidFieldType(self):
-        """Test empty output on an non-matching message."""
+    def testFailureInvalidConversionFunc(self):
+        """Test empty output when a conversion function is invalid."""
         with open(self.VALID_MAPPING, 'r') as f:
             mapping = yaml.load(f)
         mapping['mapping']['data']['connection']['id'] = 'list'
@@ -181,6 +178,68 @@ class TestMapper(unittest.TestCase):
     #       - different inputs
     #       - invalid mappings
 
+
+class TestConnConfig(unittest.TestCase):
+    """TestCases for connector.ConnConfig"""
+
+    def testDefaultSuccess(self):
+        """Test if default values are properly returned"""
+        cc = ConnConfig()
+
+        self.assertEqual('mappings', cc.mappings)
+        self.assertEqual('0.0.0.0', cc.listen['address'])
+        self.assertEqual(8080, cc.listen['port'])
+        self.assertEqual('127.0.0.1', cc.send['address'])
+        self.assertEqual(5000, cc.send['port'])
+        self.assertEqual('honeypot/dionaea/', cc.broker['topic'])
+        self.assertEqual('dioEp', cc.broker['endpoint'])
+
+    def testDefaultSuccess2(self):
+        """Test if default values still work if some are replaced. Also if replacing values works"""
+        cc = ConnConfig()
+
+        cc.update({'mappings': 'dionaea', 'listen': {'port': 7080, 'address': 'test'}})
+
+        self.assertEqual('dionaea', cc.mappings)
+        self.assertEqual('test', cc.listen['address'])
+        self.assertEqual(7080, cc.listen['port'])
+        self.assertEqual('127.0.0.1', cc.send['address'])
+        self.assertEqual(5000, cc.send['port'])
+        self.assertEqual('honeypot/dionaea/', cc.broker['topic'])
+        self.assertEqual('dioEp', cc.broker['endpoint'])
+
+    def testDefaultSuccess3(self):
+        """Test if default values still work if some are replaced at the initialization"""
+        cc = ConnConfig({'mappings': 'dionaea', 'listen': {'port': 7080, 'address': 'test'}})
+
+
+        self.assertEqual('dionaea', cc.mappings)
+        self.assertEqual('test', cc.listen['address'])
+        self.assertEqual(7080, cc.listen['port'])
+        self.assertEqual('127.0.0.1', cc.send['address'])
+        self.assertEqual(5000, cc.send['port'])
+        self.assertEqual('honeypot/dionaea/', cc.broker['topic'])
+        self.assertEqual('dioEp', cc.broker['endpoint'])
+
+    def testDefaultFailureMissingValue(self):
+        """Test value missing after a nested key is only partially replaced"""
+        cc = ConnConfig()
+
+        cc.update({'listen': {'port': 8080}})
+
+        self.assertEqual('mappings', cc.mappings)
+        self.assertFalse('address' in cc.listen)
+        self.assertEqual(8080, cc.listen['port'])
+        self.assertEqual('127.0.0.1', cc.send['address'])
+        self.assertEqual(5000, cc.send['port'])
+        self.assertEqual('honeypot/dionaea/', cc.broker['topic'])
+        self.assertEqual('dioEp', cc.broker['endpoint'])
+
+    def testDefaultFailureInvalidKey(self):
+        """Test exception being thrown when a key for updating the config is invalid (should not exist)"""
+        cc = ConnConfig()
+
+        self.assertRaises(Exception, cc.update, {'mappings': 'dionaea', 'address': 5000, 'listennnnnn': {'port': 8080}})
 
 if __name__ == '__main__':
     unittest.main()
