@@ -8,4 +8,4 @@ mappings: mappings/dionaea/
 broker:
     topic: honeypot/dionaea/
     endpoint: dioEp
-#connectorId: It_is_important_to_set_an_unique_ID_here_without_spaces
+#connectorId: It_is_important_to_set_a_unique_ID_here_without_spaces

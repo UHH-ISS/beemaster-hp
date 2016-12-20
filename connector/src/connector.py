@@ -162,6 +162,11 @@ class Connector(object):
 
 
 def main():
+    """Run the connector.
+
+    Execute the connector with command line arguments and/or a configuration
+    file.
+    """
     config = ConnConfig()
     ap = ArgumentParser(description="""The Connector takes messages via http
                         (mainly from a Honeypot), maps them to a Broker Message
@@ -224,6 +229,7 @@ def main():
         c[vals[-1]] = value
 
     Connector(config)
+
 
 if __name__ == '__main__':
     main()
