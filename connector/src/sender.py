@@ -16,7 +16,8 @@ class Sender(object):
     Sends Broker messages to an Broker endpoint.
     """
 
-    def __init__(self, address, port, brokerEndpointName, brokerTopic):
+    def __init__(self, address, port, brokerEndpointName, brokerTopic,
+                 connectorID):
         """Sender(address, port)
 
         Initialises the Sender. The address/port are used to peer to the
@@ -26,11 +27,13 @@ class Sender(object):
         :param port:               The port to send to. (int)
         :param brokerEndpointName: The broker endpoint name to send to. (str)
         :param brokerTopic:        The broker topic to send to. (str)
+        :param connectorID:        The connector ID. (str)
         """
         logger = logging.getLogger(self.__class__.__name__)
         self.log = logger.debug
 
         self.brokerTopic = brokerTopic
+        self.connectorID = connectorID
         # TODO: expansion version 1: add service discovery
         self.dioEp = pb.endpoint(brokerEndpointName)
         # Peer with broker endpoint (has to listen to us to receive messages)
@@ -53,5 +56,6 @@ class Sender(object):
         """
         # TODO recheck connection?! retry until connection re-established and
         #      then resend message
+        msg.append(pb.data(self.connectorID))
         self.log("Going to send '{}'.".format(msg))
         self.dioEp.send(self.brokerTopic, msg)
