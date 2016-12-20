@@ -28,7 +28,8 @@ class Mapper(object):
         logger = logging.getLogger(self.__class__.__name__)
         self.log = logger.info
 
-        self.mappings = mappings
+        self.mappings = sorted(mappings,
+                               key=lambda mapping: -len(mapping['message']))
 
     def _map_final_type(self, prop, value, mapped):
         """Try to map the final property."""
@@ -76,6 +77,8 @@ class Mapper(object):
         """Map a time_point."""
         # Maps a time
         date = datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%S.%f')
+        return pb.time_point(
+            (date - datetime.utcfromtimestamp(0)).total_seconds())
 
         # TODO 1jost: Could this be easier? It seems to produce a different
         #      result; would like to know what the difference is.
@@ -83,8 +86,13 @@ class Mapper(object):
 
         # This sets the time_point as a double containing the amount of seconds
         # since epoch.
-        return pb.time_point(
-            (date - datetime.utcfromtimestamp(0)).total_seconds())
+
+    def _map_array(self, array):
+        """Map an array of strings"""
+        string = ""
+        for s in array:
+            string += str(s) + ";"
+        return string
 
     def _traverse_to_end(self, key, child, currMap, acc=None):
         """Traverse the structure to the end."""
