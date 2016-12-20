@@ -53,10 +53,11 @@ class Mapper(object):
         self.log("No handler implemented for '{}' with value '{}'".
                  format(prop, val))
 
-    def _map_port(self, port):
+    def _map_port_count(self, port):
         """Map a port."""
-        # TODO: not quite accurate, add protocol correctly.
-        return pb.port(port, pb.port.protocol_tcp)
+        p = int(port)
+        if 0 <= p <= 65535:
+            return p
 
     def _map_address(self, addr):
         """Map an address."""
@@ -100,7 +101,7 @@ class Mapper(object):
                     self._traverse_to_end(k, v, currMap, acc)
             else:
                 brokerObj = self._map_final_type(key, child, currMap)
-                if brokerObj:
+                if brokerObj is not None:
                     acc[key] = brokerObj
 
         return acc

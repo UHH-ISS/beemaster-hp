@@ -12,9 +12,9 @@ mapping:
         connection:
             id: string
             local_ip: address
-            local_port: count
+            local_port: port_count
             remote_ip: address
-            remote_port: count
+            remote_port: port_count
             remote_hostname: string
             protocol: string
             transport: string
