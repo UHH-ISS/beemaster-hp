@@ -162,6 +162,7 @@ class Connector(object):
 
 
 def main():
+    """Parse given arguments"""
     config = ConnConfig()
     ap = ArgumentParser(description="""The Connector takes messages via http
                         (mainly from a Honeypot), maps them to a Broker Message
@@ -224,6 +225,7 @@ def main():
         c[vals[-1]] = value
 
     Connector(config)
+
 
 if __name__ == '__main__':
     main()

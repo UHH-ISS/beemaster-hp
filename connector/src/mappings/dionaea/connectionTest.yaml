@@ -1,0 +1,21 @@
+# on file per connection type
+#
+# name: name of the event (for bro)
+# mapping: the structure of the arriving json
+#          to map to the desired broker-type
+#          (implemented in mapper)
+# message: the structure of the message, as it
+#          will be put into the broker message
+name: dionaea_connection2
+mapping:
+    timestamp: time_point
+    origin: string
+message:
+    - timestamp
+# - still missing time format string and similar
+# - still unfortunate regarding the flattened names
+#
+# in Bro:
+# event connection(time_point, string, address,
+#                  count, address, count, string)
+# port wird auf bro seite zusammengesetzt
