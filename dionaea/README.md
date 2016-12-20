@@ -17,7 +17,7 @@ Instanciate a container by reading the image called ```dio-local```. Flag ```-p`
 
 ### Start Python Dummy Logger
 
-So far, the you have to adjust the ihandler configuration to make dionaea send its logs via HTTP to "localhost:8080". The logging dummy offers a rest endpoint for that port and writes everything into a file.
+So far, the you have to adjust the ihandler configuration to make dionaea send its logs via HTTP to "172.17.0.1:8080" to make them at the host machine available for the connector at "0.0.0.0:8080". The logging dummy offers a rest endpoint for that port and writes everything into a file.
 The current setting is made to be working in a docker environment. See: [milestone_durchstich](https://git.informatik.uni-hamburg.de/iss/mp-ids/blob/master/server/milestone-deployments/doku_milestone_durchstich.md)
 
 ```python logging-dummy.py```
