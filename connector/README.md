@@ -79,6 +79,7 @@ Once you create a mapping, be sure to create the corresponding event handler on 
 The Connector can be used as a Docker container, or locally for testing.
 
 ## With Docker
+
 If you want to use the connector in conjunction with Dionaea and Bro containers, use the following Compose file (and make sure all directories are present, or change them accordingly).
 
 ```
@@ -97,7 +98,12 @@ services:
 
 Then run `docker-compose build && docker-compose up`
 
-Instead of passing `config-docker.yaml` as an argument (which is a config adjusted for this Compose file), you could also pass your own values, f.e. `command: ["--sport","1337","--topic","leetevent/"]
+Instead of passing `config-docker.yaml` as an argument (which is a config adjusted for this Compose file), you could also pass your own values, f.e.: 
+```
+  connector:
+    command: ["--sport","1337","--topic","leetevent/"]
+```
+
 You can also run the connector as a standalone container by appending the correct arguments to the `docker run` command:
 
 ```
