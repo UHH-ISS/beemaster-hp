@@ -11,7 +11,7 @@ mapping to be properly processed on the other side.
 
 The module can be executed directly.
 """
-from __future__ import unicode_literals, with_statement
+from __future__ import with_statement
 
 from receiver import Receiver
 from mapper import Mapper
@@ -167,7 +167,6 @@ def main():
     Execute the connector with command line arguments and/or a configuration
     file.
     """
-    config = ConnConfig()
     ap = ArgumentParser(description="""The Connector takes messages via http
                         (mainly from a Honeypot), maps them to a Broker Message
                         and sends them off to the specified destination.
@@ -202,6 +201,8 @@ def main():
 
     # parse arguments
     args = ap.parse_args()
+
+    config = ConnConfig()
 
     # update with config-values
     if args.config:
