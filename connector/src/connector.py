@@ -16,7 +16,9 @@ from __future__ import unicode_literals, with_statement
 from receiver import Receiver
 from mapper import Mapper
 from sender import Sender
+
 from argparse import ArgumentParser
+import platform
 import os.path
 from os import walk
 import logging
@@ -54,7 +56,8 @@ class ConnConfig(dict):
         "broker": {
             "topic": "honeypot/dionaea/",
             "endpoint": "dioEp"
-        }
+        },
+        "connectorId": platform.uname()[1]
     }
 
     def __init__(self, data=None, is_root=True):
@@ -98,8 +101,6 @@ class Connector(object):
 
         :param config:      Configuration to use (default config if None).
         """
-        # TODO default value shouldn't be hard wired, should it?
-
         logger = logging.getLogger(self.__class__.__name__)
         self.log = logger.info
 
@@ -114,7 +115,8 @@ class Connector(object):
         self.log("Mappings read.")
 
         self.sender = Sender(config.send.address, config.send.port,
-                             config.broker.endpoint, config.broker.topic)
+                             config.broker.endpoint, config.broker.topic,
+                             config.connectorId)
         self.log("Sender created.")
 
         # TODO value should not be const here.
@@ -153,8 +155,6 @@ class Connector(object):
 
         :param message:     The message to map and send. (json)
         """
-        # TODO: implement me
-        # print "Connector received:", message
         mapped = self.mapper.transform(message)
         self.log("Mapped message is '{}'.".format(mapped))
         if(mapped):
@@ -162,6 +162,11 @@ class Connector(object):
 
 
 def main():
+    """Run the connector.
+
+    Execute the connector with command line arguments and/or a configuration
+    file.
+    """
     config = ConnConfig()
     ap = ArgumentParser(description="""The Connector takes messages via http
                         (mainly from a Honeypot), maps them to a Broker Message
@@ -224,6 +229,7 @@ def main():
         c[vals[-1]] = value
 
     Connector(config)
+
 
 if __name__ == '__main__':
     main()
