@@ -24,6 +24,7 @@ class TestMapper(unittest.TestCase):
                                      "local_ip": "127.0.0.1", "remote_port":
                                      35324, "transport": "tcp"}}, "name":
                      "dionaea", "origin": "dionaea.connection.free"}
+    # remote as IPv6
     VALID_INPUT_2 = {"timestamp": "2016-11-26T22:18:56.281464", "data":
                      {"connection": {"remote_ip":
                                      "2001:0:509c:564e:34ae:3a9a:3f57:fd91",
@@ -32,8 +33,10 @@ class TestMapper(unittest.TestCase):
                                      "local_ip": "127.0.0.1", "remote_port":
                                      65535, "transport": "tcp"}}, "name":
                      "dionaea", "origin": "dionaea.connection.free"}
+    # minimal
     VALID_INPUT_3 = {"timestamp": "2016-11-26T22:18:56.281464", "origin":
                      "dionaea.connection.free"}
+    # missing keys (wrong layer)
     INVALID_INPUT_1 = {"origin": "dionaea.connection.link", "timestamp":
                        "2016-12-09T21:11:09.315143",
                        "data": {"parent": {"protocol": "httpd", "local_port":
@@ -49,6 +52,7 @@ class TestMapper(unittest.TestCase):
                                           "transport": "tcp", "remote_ip":
                                           "127.0.0.1"}},
                        "name": "dionaea"}
+    # invalid IPv4 address
     INVALID_INPUT_2 = {"timestamp": "2016-11-26T22:18:56.281464", "data":
                        {"connection": {"remote_ip": "12.12.12.12.12",
                                        "remote_hostname": "", "id": 3019197952,
@@ -56,6 +60,7 @@ class TestMapper(unittest.TestCase):
                                        "local_ip": "127.0.0.1", "remote_port":
                                        35324, "transport": "tcp"}}, "name":
                        "dionaea", "origin": "dionaea.connection.free"}
+    # port is a string
     INVALID_INPUT_3 = {"timestamp": "2016-11-26T22:18:56.281464", "data":
                        {"connection": {"remote_ip": "127.0.0.1",
                                        "remote_hostname": "", "id": 3019197952,
@@ -64,6 +69,7 @@ class TestMapper(unittest.TestCase):
                                        "local_ip": "127.0.0.1", "remote_port":
                                        35324, "transport": "tcp"}}, "name":
                        "dionaea", "origin": "dionaea.connection.free"}
+    # invalid remote IP
     INVALID_INPUT_4 = {"timestamp": "2016-11-26T22:18:56.281464", "data":
                        {"connection": {"remote_ip": "12...12",
                                        "remote_hostname": "", "id": 3019197952,
@@ -71,6 +77,7 @@ class TestMapper(unittest.TestCase):
                                        "local_ip": "127.0.0.1", "remote_port":
                                        35324, "transport": "tcp"}}, "name":
                        "dionaea", "origin": "dionaea.connection.free"}
+    # ???
     INVALID_INPUT_5 = {"timestamp": "2016-11-26T22:18:56.281464", "data":
                        {"connection": {"remote_ip": "127.0.0.1",
                                        "remote_hostname": "", "id": 3019197952,
@@ -78,6 +85,7 @@ class TestMapper(unittest.TestCase):
                                        "local_ip": "127.0.0.1", "remote_port":
                                        353242, "transport": "tcp"}}, "name":
                        "dionaea", "origin": "dionaea.connection.free"}
+    # id is a float
     INVALID_INPUT_6 = {"timestamp": "2016-11-26T22:18:56.281464", "data":
                        {"connection": {"remote_ip": "127.0.0.1",
                                        "remote_hostname": "", "id": 300.212354,
@@ -87,6 +95,7 @@ class TestMapper(unittest.TestCase):
                        "dionaea", "origin": "dionaea.connection.free"}
 
     VALID_MAPPING = 'mappings/dionaea/connection.yaml'
+    # TODO this shouldn't be necessary
     VALID_MAPPING2 = 'mappings/dionaea/connectionTest.yaml'
 
     def setUp(self):
@@ -255,36 +264,46 @@ class TestMapper(unittest.TestCase):
 class TestConnConfig(unittest.TestCase):
     """TestCases for connector.ConnConfig"""
 
+    def setUp(self):
+        """Set up the default setup"""
+        self.default = ConnConfig.DEFAULT_CONFIG
+        # TODO Should perform deep copy of dict, in case ConnConfig would
+        #      change it during __init__.
+        self.config = ConnConfig()
+
     def testDefaultSuccess(self):
         """Test if default values are properly returned"""
-        cc = ConnConfig()
+        dc = self.default
+        cc = self.config
 
-        self.assertEqual('mappings', cc.mappings)
-        self.assertEqual('0.0.0.0', cc.listen['address'])
-        self.assertEqual(8080, cc.listen['port'])
-        self.assertEqual('127.0.0.1', cc.send['address'])
-        self.assertEqual(5000, cc.send['port'])
-        self.assertEqual('honeypot/dionaea/', cc.broker['topic'])
-        self.assertEqual('dioEp', cc.broker['endpoint'])
+        self.assertEqual(dc['mappings'], cc.mappings)
+        self.assertEqual(dc['listen']['address'], cc.listen.address)
+        self.assertEqual(dc['listen']['port'], cc.listen.port)
+        self.assertEqual(dc['send']['address'], cc.send.address)
+        self.assertEqual(dc['send']['port'], cc.send.port)
+        self.assertEqual(dc['broker']['topic'], cc.broker.topic)
+        self.assertEqual(dc['broker']['endpoint'], cc.broker.endpoint)
+        self.assertEqual(dc['connectorId'], cc.connectorId)
 
     def testSuccessUpdate(self):
         """Update Success
 
         Test if default values still work if some are replaced.
-        Also if replacing values works
+        Also if replacing values works.
         """
-        cc = ConnConfig()
-
-        cc.update({'mappings': 'dionaea', 'listen': {'port': 0,
-                                                     'address': 'test'}})
+        dc = self.default
+        cc = self.config
+        cc.update({'mappings': 'dionaea',
+                   'listen': {'port': 0, 'address': 'test'}})
 
         self.assertEqual('dionaea', cc.mappings)
-        self.assertEqual('test', cc.listen['address'])
-        self.assertEqual(0, cc.listen['port'])
-        self.assertEqual('127.0.0.1', cc.send['address'])
-        self.assertEqual(5000, cc.send['port'])
-        self.assertEqual('honeypot/dionaea/', cc.broker['topic'])
-        self.assertEqual('dioEp', cc.broker['endpoint'])
+        self.assertEqual('test', cc.listen.address)
+        self.assertEqual(0, cc.listen.port)
+        self.assertEqual(dc['send']['address'], cc.send.address)
+        self.assertEqual(dc['send']['port'], cc.send.port)
+        self.assertEqual(dc['broker']['topic'], cc.broker.topic)
+        self.assertEqual(dc['broker']['endpoint'], cc.broker.endpoint)
+        self.assertEqual(dc['connectorId'], cc.connectorId)
 
     def testSuccessInitUpdate(self):
         """Initialization Update Success
@@ -292,16 +311,18 @@ class TestConnConfig(unittest.TestCase):
         Test if default values still work if some are
         replaced at the initialization
         """
+        dc = self.default
         cc = ConnConfig({'mappings': 'dionaea', 'listen': {'port': 7080,
                                                            'address': 'test'}})
 
         self.assertEqual('dionaea', cc.mappings)
-        self.assertEqual('test', cc.listen['address'])
-        self.assertEqual(7080, cc.listen['port'])
-        self.assertEqual('127.0.0.1', cc.send['address'])
-        self.assertEqual(5000, cc.send['port'])
-        self.assertEqual('honeypot/dionaea/', cc.broker['topic'])
-        self.assertEqual('dioEp', cc.broker['endpoint'])
+        self.assertEqual('test', cc.listen.address)
+        self.assertEqual(7080, cc.listen.port)
+        self.assertEqual(dc['send']['address'], cc.send.address)
+        self.assertEqual(dc['send']['port'], cc.send.port)
+        self.assertEqual(dc['broker']['topic'], cc.broker.topic)
+        self.assertEqual(dc['broker']['endpoint'], cc.broker.endpoint)
+        self.assertEqual(dc['connectorId'], cc.connectorId)
 
     def testSuccessMissingValue(self):
         """Missing Value Success
@@ -309,18 +330,19 @@ class TestConnConfig(unittest.TestCase):
         Test value must not be missing after a nested key
         is only partially replaced
         """
-        cc = ConnConfig()
+        dc = self.default
+        cc = ConnConfig({'listen': {'port': 7080}})
 
-        cc.update({'listen': {'port': 7080}})
-
-        self.assertEqual('mappings', cc.mappings)
+        # the essential check:
         self.assertTrue('address' in cc.listen)
-        self.assertEqual('0.0.0.0', cc.listen['address'])
-        self.assertEqual(7080, cc.listen['port'])
-        self.assertEqual('127.0.0.1', cc.send['address'])
-        self.assertEqual(5000, cc.send['port'])
-        self.assertEqual('honeypot/dionaea/', cc.broker['topic'])
-        self.assertEqual('dioEp', cc.broker['endpoint'])
+        self.assertEqual(dc['listen']['address'], cc.listen.address)
+        self.assertEqual(7080, cc.listen.port)
+
+        # testing unrelated defaults:
+        self.assertEqual(dc['send']['address'], cc.send.address)
+        self.assertEqual(dc['mappings'], cc.mappings)
+        # We already have tests for the general behaviour of ConnConfig. We do
+        # not need to test everything everytime.
 
     def testFailureInvalidKey(self):
         """Invalid Key Failure
@@ -328,11 +350,11 @@ class TestConnConfig(unittest.TestCase):
         Test exception being thrown when a key for
         updating the config is invalid (should not exist)
         """
-        cc = ConnConfig()
-
-        self.assertRaises(Exception, cc.update, {'mappings': 'dionaea',
-                                                 'address': 5000,
-                                                 'listennnnn': {'port': 8080}})
+        # TODO maybe specify to something like ArgumentException or
+        #      KeyLookupError or something similar...
+        self.assertRaises(Exception, self.config.update,
+                          {'mappings': 'dionaea', 'address': 5000,
+                           'listennnnn': {'port': 8080}})
 
 
 if __name__ == '__main__':
