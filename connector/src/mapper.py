@@ -105,13 +105,13 @@ class Mapper(object):
 
         return acc
 
-    def transform(self, dioMsg):
+    def transform(self, data):
         """Map *data* to the appropriate Broker message.
 
         :param data:    The data to map. (json)
         :returns:       The corresponding Broker message. (pybroker.Message)
         """
-        self.log("Trying to map '{}'.".format(dioMsg))
+        self.log("Trying to map '{}'.".format(data))
 
         for mapping in self.mappings:
             event_name = mapping['name']
@@ -124,7 +124,7 @@ class Mapper(object):
             local_mapping = mapping['mapping']
             # the actual traversion
             try:
-                brokerMsg = {k2: v2 for k, v in dioMsg.iteritems() for k2, v2
+                brokerMsg = {k2: v2 for k, v in data.iteritems() for k2, v2
                              in self._traverse_to_end(k, v, local_mapping)
                              .iteritems()}
             except Exception:

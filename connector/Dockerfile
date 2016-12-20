@@ -44,4 +44,4 @@ RUN pip install -r requirements.txt
 
 EXPOSE 8080
 
-CMD ["/usr/bin/python","connector.py"]
+ENTRYPOINT ["/usr/bin/python","connector.py"]
