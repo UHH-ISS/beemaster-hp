@@ -6,7 +6,7 @@
 #          (implemented in mapper)
 # message: the structure of the message, as it
 #          will be put into the broker message
-name: dionaea_MySQL
+name: dionaea_mysql
 mapping:
     data:
         args: array
