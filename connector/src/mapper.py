@@ -88,9 +88,9 @@ class Mapper(object):
             (date - datetime.utcfromtimestamp(0)).total_seconds())
 
     def _map_array(self, array):
-        """Map an array of strings"""
+        """Map an array of strings and encode them in base64"""
         string = str((";".join(array)))
-        string = string.encode('unicode-escape')
+        string = string.encode('base64', 'strict')
         return str(string)
 
     def _traverse_to_end(self, key, child, currMap, acc=None):
