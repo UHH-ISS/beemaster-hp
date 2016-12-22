@@ -89,7 +89,7 @@ class Mapper(object):
 
     def _map_array(self, array):
         """Map an array of strings and encode them in base64"""
-        string = str((";".join(array)))
+        string = (";".join(array))
         string = string.encode('base64', 'strict')
         return str(string)
 
