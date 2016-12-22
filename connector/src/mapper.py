@@ -89,7 +89,7 @@ class Mapper(object):
             (date - datetime.utcfromtimestamp(0)).total_seconds())
 
     def _map_array(self, array):
-        """Map an array of strings and encode them in base64"""
+        """Map an array of strings and replace tabs with normal spaces"""
         string = ";".join(array)
         string = re.sub(r"\s+", ' ', string)
         return str(string)
