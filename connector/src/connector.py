@@ -157,7 +157,7 @@ class Connector(object):
         """
         mapped = self.mapper.transform(message)
         self.log("Mapped message is '{}'.".format(mapped))
-        if(mapped):
+        if mapped:
             self.sender.send(mapped)
 
 

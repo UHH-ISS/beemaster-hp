@@ -9,6 +9,7 @@ import pybroker as pb
 from datetime import datetime
 
 import logging
+import re
 
 
 class Mapper(object):
@@ -28,7 +29,8 @@ class Mapper(object):
         logger = logging.getLogger(self.__class__.__name__)
         self.log = logger.info
 
-        self.mappings = mappings
+        self.mappings = sorted(mappings,
+                               key=lambda mapping: -len(mapping['message']))
 
     def _map_final_type(self, prop, value, mapped):
         """Try to map the final property."""
@@ -85,6 +87,12 @@ class Mapper(object):
         # since epoch.
         return pb.time_point(
             (date - datetime.utcfromtimestamp(0)).total_seconds())
+
+    def _map_array(self, array):
+        """Map an array of strings and replace tabs with normal spaces"""
+        string = ";".join(array)
+        string = re.sub(r"\s+", ' ', string)
+        return str(string)
 
     def _traverse_to_end(self, key, child, currMap, acc=None):
         """Traverse the structure to the end."""

@@ -1,3 +1,4 @@
 #!/usr/bin/env sh
 
 curl -XPOST -d '{"timestamp": "2016-11-26T22:18:56.281464", "data": {"connection": {"remote_ip": "127.0.0.1", "remote_hostname": "", "id": 3019197952, "protocol": "pcap", "local_port": 4101, "local_ip": "127.0.0.1", "remote_port": 35324, "transport": "tcp"}}, "name": "dionaea", "origin": "dionaea.connection.free"}' -H 'Content-type: application/json' localhost:8080/
+curl -XPOST -d '{"data": {"args": ["show databases```;;--\""], "command": 3, "connection": {"id": 140273915464400, "local_ip": "172.17.15.2", "local_port": 3306, "protocol": "mysqld", "remote_hostname": "", "remote_ip": "172.17.0.1", "remote_port": 43682, "transport": "tcp"}}, "name": "dionaea", "origin": "dionaea.modules.python.mysql.command", "timestamp": "2016-12-21T18:23:27.488956"}' -H 'Content-type: application/json' localhost:8080/
