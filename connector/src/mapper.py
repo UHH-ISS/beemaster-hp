@@ -91,7 +91,7 @@ class Mapper(object):
     def _map_array(self, array):
         """Map an array of strings and encode them in base64"""
         string = ";".join(array)
-        string = re.escape(string)
+        string = re.sub(r"\s+", ' ', string)
         return str(string)
 
     def _traverse_to_end(self, key, child, currMap, acc=None):
