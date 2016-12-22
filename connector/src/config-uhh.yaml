@@ -1,0 +1,10 @@
+listen:
+    address: 0.0.0.0
+    port: 8080
+send:
+    address: 134.100.28.31
+    port: 9998
+mappings: mappings/dionaea/
+broker:
+    topic: honeypot/dionaea/
+    endpoint: dioEp
