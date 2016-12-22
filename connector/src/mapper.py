@@ -89,8 +89,8 @@ class Mapper(object):
 
     def _map_array(self, array):
         """Map an array of strings"""
-        string = (";".join(array))
-        string = string.encode('string-escape')
+        string = str((";".join(array)))
+        string = string.encode('unicode-escape')
         return str(string)
 
     def _traverse_to_end(self, key, child, currMap, acc=None):
