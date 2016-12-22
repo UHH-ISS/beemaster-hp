@@ -12,6 +12,7 @@ import unittest
 import pybroker as pb
 from datetime import datetime
 import yaml
+import re
 
 
 class TestMapper(unittest.TestCase):
@@ -39,6 +40,20 @@ class TestMapper(unittest.TestCase):
     # minimal
     VALID_INPUT_3 = {"timestamp": "2016-11-26T22:18:56.281464", "origin":
                      "dionaea.connection.free"}
+    # MySQL-Event Input
+    VALID_INPUT_MYSQL = {"data": {"args": ["show databases```;;--\""],
+                                  "command": 3,
+                                  "connection": {"id": 140273915464400,
+                                                 "local_ip": "172.17.15.2",
+                                                 "local_port": 3306,
+                                                 "protocol": "mysqld",
+                                                 "remote_hostname": "",
+                                                 "remote_ip": "172.17.0.1",
+                                                 "remote_port": 43682,
+                                                 "transport": "tcp"}},
+                         "name": "dionaea",
+                         "origin": "dionaea.modules.python.mysql.command",
+                         "timestamp": "2016-12-21T18:23:27.488956"}
     # missing keys (wrong layer)
     INVALID_INPUT_1 = {"origin": "dionaea.connection.link", "timestamp":
                        "2016-12-09T21:11:09.315143",
@@ -96,11 +111,26 @@ class TestMapper(unittest.TestCase):
                                        "local_ip": "127.0.0.1", "remote_port":
                                        35324, "transport": "tcp"}}, "name":
                        "dionaea", "origin": "dionaea.connection.free"}
+    # MySQL-Event Input
+    INVALID_INPUT_MYSQL = {"data": {"args": 125,
+                                    "command": 3,
+                                    "connection": {"id": 140273915464400,
+                                                   "local_ip": "172.17.15.2",
+                                                   "local_port": 3306,
+                                                   "protocol": "mysqld",
+                                                   "remote_hostname": "",
+                                                   "remote_ip": "172.17.0.1",
+                                                   "remote_port": 43682,
+                                                   "transport": "tcp"}},
+                           "name": "dionaea",
+                           "origin": "dionaea.modules.python.mysql.command",
+                           "timestamp": "2016-12-21T18:23:27.488956"}
 
     VALID_MAPPING = 'mappings/dionaea/connection.yaml'
     VALID_MAPPING2_DICT = {"name": "dionaea_connection2", "mapping":
                            {"timestamp": "time_point", "origin": "string"},
                            "message": ["timestamp"]}
+    VALID_MAPPING_MYSQL = 'mappings/dionaea/mysql.yaml'
 
     @staticmethod
     def _map_time(inp):
@@ -111,6 +141,12 @@ class TestMapper(unittest.TestCase):
     @staticmethod
     def _map_addr(inp):
         return pb.address_from_string(inp)
+
+    @staticmethod
+    def _map_array(inp):
+        string = ";".join(inp)
+        string = re.sub(r"\s+", ' ', string)
+        return str(string)
 
     def _compare_messages(self, mapper, expect, inp):
         """Compare messages
@@ -184,6 +220,49 @@ class TestMapper(unittest.TestCase):
 
         self._compare_messages(mapper, expect, self.VALID_INPUT_3)
 
+    def testSuccessMySQL(self):
+        """Test a correct mapping with the MySQL map."""
+        with open(self.VALID_MAPPING_MYSQL, 'r') as f:
+            mapping = yaml.load(f)
+        mapper = Mapper([mapping])
+
+        # works, as mapping2 is way more relaxed than the default mapping
+        expect = map(pb.data,
+                     ("dionaea_mysql",
+                      TestMapper._map_time("2016-12-21T18:23:27.488956"),
+                      140273915464400, TestMapper._map_addr("172.17.15.2"),
+                      3306, TestMapper._map_addr("172.17.0.1"),
+                      43682, "tcp", "show databases```;;--\""))
+
+        self._compare_messages(mapper, expect, self.VALID_INPUT_MYSQL)
+
+    def testSuccessMySQLAndDefault(self):
+        """Test correct mappings with the MySQL and default maps."""
+        with open(self.VALID_MAPPING_MYSQL, 'r') as f:
+            mapping = yaml.load(f)
+        with open(self.VALID_MAPPING, 'r') as f:
+            mapping2 = yaml.load(f)
+        mapper = Mapper([mapping, mapping2])
+
+        # works, as mapping2 is way more relaxed than the default mapping
+        expect = map(pb.data,
+                     ("dionaea_mysql",
+                      TestMapper._map_time("2016-12-21T18:23:27.488956"),
+                      140273915464400, TestMapper._map_addr("172.17.15.2"),
+                      3306, TestMapper._map_addr("172.17.0.1"), 43682, "tcp",
+                      "show databases```;;--\""))
+
+        self._compare_messages(mapper, expect, self.VALID_INPUT_MYSQL)
+
+        expect = map(pb.data,
+                     ("dionaea_connection",
+                      TestMapper._map_time("2016-11-26T22:18:56.281464"),
+                      3019197952, TestMapper._map_addr("127.0.0.1"), 0,
+                      TestMapper._map_addr("2001:0:509c:564e:34ae:3a9a:3f57:"
+                                           "fd91"), 65535, "tcp"))
+
+        self._compare_messages(self.mapper, expect, self.VALID_INPUT_2)
+
     def testFailureUnexpectedContent(self):
         """Test empty output on an non-matching message."""
         self.assertIsNone(self.mapper.transform(self.INVALID_INPUT_1))
@@ -238,6 +317,16 @@ class TestMapper(unittest.TestCase):
         del self.VALID_INPUT_1['timestamp']
 
         self.assertIsNone(self.mapper.transform(self.VALID_INPUT_1))
+
+    def testFailureMySQLWrongArgs(self):
+        """Test a MySQL mapping where the args have the wrong type."""
+        with open(self.VALID_MAPPING_MYSQL, 'r') as f:
+            mapping = yaml.load(f)
+        with open(self.VALID_MAPPING, 'r') as f:
+            mapping2 = yaml.load(f)
+        mapper = Mapper([mapping, mapping2])
+
+        self.assertIsNone(mapper.transform(self.INVALID_INPUT_MYSQL))
 
 
 class TestConnConfig(unittest.TestCase):
