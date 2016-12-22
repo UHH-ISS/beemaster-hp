@@ -7,6 +7,7 @@ from __future__ import with_statement
 
 from mapper import Mapper
 from connector import ConnConfig
+from sender import Sender
 
 import unittest
 import pybroker as pb
@@ -423,6 +424,42 @@ class TestConnConfig(unittest.TestCase):
         self.assertRaises(Exception, self.config.update,
                           {'mappings': 'dionaea', 'address': 5000,
                            'listennnnn': {'port': 8080}})
+
+
+class TestSender(unittest.TestCase):
+    """TestCases for sender.Sender"""
+
+    def testCannotPeer(self):
+        """Test sending a message to a not existing connection.
+        Should not raise an Exception or anything."""
+        sender = Sender("999.999.999.999", 9999, "brokerEndpointName",
+                        "broker/topic", "connectorID15")
+        # TODO: #86
+        self.assertIsNone(sender.send(pb.message()))
+
+    def testInvalidPort(self):
+        """Create a Sender with an invalid connection (port)."""
+        with self.assertRaises(NotImplementedError):
+            Sender("999.999.999.999", "9999", "brokerEndpointName",
+                   "broker/topic", "connectorID15")
+
+    def testSend(self):
+        """Test sending a message.
+        Should not raise an Exception or anything."""
+        # The machine running this code should be allowed to send to the server
+        # see: https://git.informatik.uni-hamburg.de/iss/mp-ids/tree/master/server
+        sender = Sender("134.100.28.31", 9998, "brokerEndpointName",
+                        "honeypot/unittest", "unittestSender")
+
+        self.assertIsNone(sender.send(pb.message()))
+
+    def testSendInvalidMessage(self):
+        """Test sending a message that is a simple string."""
+        sender = Sender("134.100.28.31", 9998, "brokerEndpointName",
+                        "honeypot/unittest", "unittestSender")
+
+        with self.assertRaises(AttributeError):
+            sender.send("")
 
 
 if __name__ == '__main__':
