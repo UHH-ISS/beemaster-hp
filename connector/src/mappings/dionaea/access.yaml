@@ -10,9 +10,9 @@ name: dionaea_access
 mapping:
     timestamp: time_point
     src_hostname: string
-    src_ip: string
+    src_ip: address
     src_port: port_count
-    dst_ip: string
+    dst_ip: address
     dst_port: port_count
     connection:
         type: string
