@@ -11,6 +11,7 @@ from sender import Sender
 
 import unittest
 import pybroker as pb
+from select import select
 from datetime import datetime
 import yaml
 import re
@@ -429,34 +430,102 @@ class TestConnConfig(unittest.TestCase):
 class TestSender(unittest.TestCase):
     """TestCases for sender.Sender"""
 
+    topic = "honeypotconnector/unittest"
+    ip = "127.0.0.1"
+    port = 9765
+
+    def testPeering(self):
+        """Test successful peer"""
+        i = 0
+        epl = pb.endpoint("listener")
+        icsl = epl.incoming_connection_status()
+
+        # To maintain the peering, the Sender needs to exist -> variable
+        sender = Sender(self.ip, self.port, "connector", self.topic,
+                        "unittestSender")
+        # true: endpoint is listening
+        self.assertTrue(epl.listen(self.port, self.ip))
+
+        select([icsl.fd()], [], [])
+        msgs = icsl.want_pop()
+
+        for m in msgs:
+            self.assertEqual(m.peer_name, "connector")
+            self.assertEqual(m.status,
+                             pb.incoming_connection_status.tag_established)
+            i += 1
+
+        # Be sure to have exactly one status message
+        self.assertEqual(i, 1)
+
     def testCannotPeer(self):
-        """Test sending a message to a not existing connection.
-        Should not raise an Exception or anything."""
-        sender = Sender("999.999.999.999", 9999, "brokerEndpointName",
-                        "broker/topic", "connectorID15")
-        # TODO: #86
-        self.assertIsNone(sender.send(pb.message()))
+        """
+        Try peering with not existing endpoint:
+
+        - Listen to not existing endpoint (tests Broker actually)
+        - Send message to not existing endpoint (test Sender)
+          Should not raise an Exception or anything.
+        """
+        iip = "999.999.999.999"
+        epl = pb.endpoint("listener")
+        self.assertFalse(epl.listen(self.port, iip))
+
+        sender = Sender(self.ip, self.port, "connector", self.topic,
+                        "unittestSender")
+        sender.send(pb.message([pb.data("hi")]))
+        # TODO: #86 - implement in Sender check, if peer was successful
+        # - if message was received by endpoint cannot be checked at this point
 
     def testInvalidPort(self):
+        """Create a Sender with an invalid connection (ip)."""
+        with self.assertRaises(NotImplementedError):
+            Sender(self.ip, "9999", "brokerEndpointName",
+                   self.topic, "connectorID15")
+
+    def testInvalidIp(self):
         """Create a Sender with an invalid connection (port)."""
         with self.assertRaises(NotImplementedError):
-            Sender("999.999.999.999", "9999", "brokerEndpointName",
-                   "broker/topic", "connectorID15")
+            Sender(self.port, self.port, "brokerEndpointName",
+                   self.topic, "connectorID15")
+            # Broker bindings do not check for valid IPs. Strings are accepted.
 
     def testSend(self):
-        """Test sending a message.
-        Should not raise an Exception or anything."""
-        # The machine running this code should be allowed to send to the server
-        # see: https://git.informatik.uni-hamburg.de/iss/mp-ids/tree/master/server
-        sender = Sender("134.100.28.31", 9998, "brokerEndpointName",
-                        "honeypot/unittest", "unittestSender")
+        """
+        Test sending a message.
 
-        self.assertIsNone(sender.send(pb.message()))
+        Should not raise an Exception or anything.
+        """
+        i = 0
+        port = self.port + 1
+        epname = "unittestSender"
+        msgcontent = "hi"
+        epl = pb.endpoint("listener")
+        mql = pb.message_queue(self.topic, epl)
+
+        sender = Sender(self.ip, port, "connector", self.topic, epname)
+        self.assertTrue(epl.listen(port, self.ip))
+
+        sender.send(pb.message([pb.data(msgcontent)]))
+
+        select([mql.fd()], [], [])
+        msgs = mql.want_pop()
+
+        for m in msgs:
+            for d in m:
+                i += 1
+                if i == 1:
+                    self.assertEqual(d.which(), pb.data.tag_string)
+                    self.assertEqual(d.as_string(), msgcontent)
+                if i == 2:
+                    self.assertEqual(d.which(), pb.data.tag_string)
+                    self.assertEqual(d.as_string(), epname)
+
+        self.assertEqual(i, 2)
 
     def testSendInvalidMessage(self):
         """Test sending a message that is a simple string."""
-        sender = Sender("134.100.28.31", 9998, "brokerEndpointName",
-                        "honeypot/unittest", "unittestSender")
+        sender = Sender(self.ip, self.port, "brokerEndpointName",
+                        self.topic, "unittestSender")
 
         with self.assertRaises(AttributeError):
             sender.send("")
