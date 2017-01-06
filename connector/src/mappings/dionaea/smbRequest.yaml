@@ -6,7 +6,7 @@
 #          (implemented in mapper)
 # message: the structure of the message, as it
 #          will be put into the broker message
-name: dionaea_smbRequest
+name: dionaea_smb_request
 mapping:
     data:
         opnum: count
