@@ -27,7 +27,7 @@ class Mapper(object):
         # TODO rework use of log-levels
 
         logger = logging.getLogger(self.__class__.__name__)
-        self.log = logger.info
+        self.log = logger
 
         self.mappings = sorted(mappings,
                                key=lambda mapping: -len(mapping['message']))
@@ -47,12 +47,12 @@ class Mapper(object):
 
     def _logUnknown(self, unknownProp, val):
         """Log an unknown item."""
-        self.log("No Mapping configured for property '{}' with value '{}'."
+        self.log.info("No Mapping configured for property '{}' with value '{}'."
                  .format(unknownProp, val))
 
     def _logUnimplemented(self, prop, val):
         """Log an unimplemented item."""
-        self.log("No handler implemented for '{}' with value '{}'".
+        self.log.info("No handler implemented for '{}' with value '{}'".
                  format(prop, val))
 
     def _map_port_count(self, port):
@@ -120,11 +120,11 @@ class Mapper(object):
         :param data:    The data to map. (json)
         :returns:       The corresponding Broker message. (pybroker.Message)
         """
-        self.log("Trying to map '{}'.".format(data))
+        self.log.debug("Trying to map '{}'.".format(data))
 
         for mapping in self.mappings:
             event_name = mapping['name']
-            self.log("Using mapping for '{}'.".format(event_name))
+            self.log.debug("Using mapping for '{}'.".format(event_name))
 
             message = pb.message()
             # prepending with event-name for broker
@@ -139,7 +139,7 @@ class Mapper(object):
             except Exception:
                 # TODO specify possible exception! maybe even custom ones in
                 #      _map_*.
-                self.log("Failed to convert message properly. "
+                self.log.info("Failed to convert message properly. "
                          "Ignoring format.")
                 break
 
@@ -147,15 +147,15 @@ class Mapper(object):
             local_message = mapping['message']
             for item in local_message:
                 if item not in brokerMsg:
-                    self.log("Invalid message. Format unknown.")
+                    self.log.debug("Invalid message. Format unknown.")
                     break
                 broker_item = brokerMsg[item]
-                self.log("Add converted brokerObject '{}' to message."
+                self.log.debug("Add converted brokerObject '{}' to message."
                          .format(broker_item))
                 # TODO would be nice to set the message in one step only
                 message.append(pb.data(broker_item))
             else:
                 return message
         else:
-            self.log("No valid mapping found. Discarding message.")
+            self.log.warn("No valid mapping found. Discarding message.")
             return

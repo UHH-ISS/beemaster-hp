@@ -29,7 +29,8 @@ logging.basicConfig(
     # TODO adjust time format
     # TODO add log settings to config
     # TODO vary use of log-levels!
-    level=logging.DEBUG,
+    #level=logging.DEBUG,
+    level=logging.INFO,
     format="[ %(asctime)s | %(name)10s | %(levelname)8s ] %(message)s"
 )
 
@@ -109,27 +110,27 @@ class Connector(object):
         :param config:      Configuration to use (default config if None).
         """
         logger = logging.getLogger(self.__class__.__name__)
-        self.log = logger.info
+        self.log = logger
 
         if config is None:
             config = ConnConfig()
-            self.log("Falling back to default configuration.")
+            self.log.info("Falling back to default configuration.")
 
         # errors up to here are allowed to terminate the program
 
         mappings = self._read_mappings(config.mappings)
         self.mapper = Mapper(mappings)
-        self.log("Mappings read.")
+        self.log.debug("Mappings read.")
 
         self.sender = Sender(config.send.address, config.send.port,
                              config.broker.endpoint_prefix + config.connectorId, config.broker.topic,
                              config.connectorId)
-        self.log("Sender created.")
+        self.log.info("Sender created.")
 
         # TODO value should not be const here.
         self.receiver = Receiver("bm-connector",
                                  config.listen.address, config.listen.port)
-        self.log("Receiver created.")
+        self.log.info("Receiver created.")
         self.receiver.listen("/", self.handle_receive)
 
     def _read_mappings(self, location):
@@ -149,11 +150,11 @@ class Connector(object):
                                 raise LookupError(i)
                         mappings.append(mp)
                     except LookupError as e:
-                        self.log("Missing key '{}' in file '{}'. Ignoring."
+                        self.log.error("Missing key '{}' in file '{}'. Ignoring."
                                  .format(e.args[0], filepath))
                     except Exception:
                         # TODO find correct exception types.
-                        self.log("Failed to read mapping in '{}'. Ignoring."
+                        self.log.error("Failed to read mapping in '{}'. Ignoring."
                                  .format(filepath))
         return mappings
 
@@ -163,7 +164,7 @@ class Connector(object):
         :param message:     The message to map and send. (json)
         """
         mapped = self.mapper.transform(message)
-        self.log("Mapped message is '{}'.".format(mapped))
+        self.log.debug("Mapped message is '{}'.".format(mapped))
         if mapped:
             self.sender.send(mapped)
 
