@@ -1,4 +1,4 @@
-# on file per connection type
+# one file per connection type
 #
 # name: name of the event (for bro)
 # mapping: the structure of the arriving json
@@ -31,13 +31,7 @@ message:
     - remote_ip
     - remote_port
     - transport
+    - protocol
     - opnum
     - uuid
     - origin
-# - still missing time format string and similar
-# - still unfortunate regarding the flattened names
-#
-# in Bro:
-# event connection(time_point, string, address,
-#                  count, address, count, string)
-# port wird auf bro seite zusammengesetzt
