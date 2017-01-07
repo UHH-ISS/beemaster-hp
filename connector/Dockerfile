@@ -44,4 +44,7 @@ RUN pip install -r requirements.txt
 
 EXPOSE 8080
 
+# copy stuff from within conf to src (note the trailing slash after conf)
+COPY conf/ /opt/connector
+
 ENTRYPOINT ["/usr/bin/python","connector.py"]

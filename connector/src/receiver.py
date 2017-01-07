@@ -61,7 +61,7 @@ class Receiver(Flask):
         self.onData = onData
 
         self.route(route, methods=['POST'])(self.__handle_post)
-        self.run(host=self.address, port=self.port, debug=True)
+        self.run(host=self.address, port=self.port, debug=False)
 
     def __handle_post(self):
         if 'application/json' in request.headers.get('Content-Type'):

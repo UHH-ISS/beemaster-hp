@@ -80,7 +80,9 @@ The Connector can be used as a Docker container, or locally for testing.
 
 ## With Docker
 
-If you want to use the connector in conjunction with Dionaea and Bro containers, use the following Compose file (and make sure all directories are present, or change them accordingly).
+If you want to use the connector in conjunction with Dionaea and Bro containers, you can use the following Compose file (and make sure all directories are present, or change them accordingly).
+
+By default (inside the container), the contents of the `conf` directory are copied into the `src` directory. Thus the `connector.py` can be started by passing the config file name directly (see the docker-compose file example below):
 
 ```
 version: '2'
@@ -96,7 +98,7 @@ services:
     build: ./mp-ids-hp/dionaea
 ```
 
-Then run `docker-compose build && docker-compose up`
+Then run `docker-compose up --build`
 
 Instead of passing `config-docker.yaml` as an argument (which is a config adjusted for this Compose file), you could also pass your own values, f.e.: 
 ```
@@ -115,7 +117,7 @@ docker run connector --sport 1337 --topic leetevent/
 
 Start the connector via `python connector.py` and use the correct arguments for your environment. This repository holds a configuration file that can be used for local testing, which is identical to the default configuration, apart from sending to port 9999.
 
-`python connector.py config-local.yaml`
+`python connector.py ../conf/config-local.yaml`
 
 It will receive on port 8080 and dump a little text output to the console.
 You can use the `talk.sh` script to send something to the connector.
