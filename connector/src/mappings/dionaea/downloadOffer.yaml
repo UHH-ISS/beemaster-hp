@@ -1,4 +1,4 @@
-# on file per connection type
+# one file per connection type
 #
 # name: name of the event (for bro)
 # mapping: the structure of the arriving json
@@ -6,11 +6,10 @@
 #          (implemented in mapper)
 # message: the structure of the message, as it
 #          will be put into the broker message
-name: dionaea_mysql
+name: dionaea_download_offer
 mapping:
     data:
-        args: array
-        command: count
+        url: string
         connection:
             id: string
             local_ip: address
@@ -32,4 +31,5 @@ message:
     - remote_port
     - transport
     - protocol
-    - args
+    - url
+    - origin
