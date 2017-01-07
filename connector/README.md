@@ -18,7 +18,7 @@ optional arguments:
   --sport port          Port to send to.
   --mappings directory  Directory to look for mappings.
   --topic topic         Topic for sent messages.
-  --endpoint name       Name for the broker endpoint.
+  --endpoint_prefix name       Prefix name for the broker endpoint.
 ```
 
 The positional argument accepts configuration files written in YAML with the following format:
@@ -33,7 +33,7 @@ send:
 mappings: mappings              # Directory to look for mappings.
 broker:
     topic: honeypot/dionaea/    # Topic for sent messages.
-    endpoint: dioEp             # Name for the broker endpoint.
+    endpoint_prefix: beemaster-connector-             # Prefix name for the broker endpoint.
 ```
 The values shown in the example above are the default that the connector falls back to, in case no arguments are passed to it.
 

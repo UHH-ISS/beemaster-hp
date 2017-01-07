@@ -55,7 +55,7 @@ class ConnConfig(dict):
         "mappings": "mappings",
         "broker": {
             "topic": "honeypot/dionaea/",
-            "endpoint": "dioEp"
+            "endpoint_prefix": "beemaster-connector-"
         },
         "connectorId": platform.uname()[1]
     }
@@ -122,7 +122,7 @@ class Connector(object):
         self.log("Mappings read.")
 
         self.sender = Sender(config.send.address, config.send.port,
-                             config.broker.endpoint, config.broker.topic,
+                             config.broker.endpoint_prefix + config.connectorId, config.broker.topic,
                              config.connectorId)
         self.log("Sender created.")
 
@@ -199,8 +199,8 @@ def main():
     # broker
     ap.add_argument('--topic', metavar="topic",
                     help="Topic for sent messages.")
-    ap.add_argument('--endpoint', metavar="name",
-                    help="Name for the broker endpoint.")
+    ap.add_argument('--endpoint_prefix', metavar="name",
+                    help="Name for the broker endpoint_prefix.")
 
     # the config file
     ap.add_argument("config", nargs="?", metavar="file",
@@ -223,7 +223,7 @@ def main():
               'sport': ['send', 'port'],
               'mappings': ['mappings'],
               'topic': ['broker', 'topic'],
-              'endpoint': ['broker', 'endpoint']}
+              'endpoint_prefix': ['broker', 'endpoint_prefix']}
     # TODO could be done nicer...
     for argument, value in vars(args).iteritems():
         if argument not in argmap:

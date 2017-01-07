@@ -7,4 +7,4 @@ send:
 mappings: mappings/dionaea/
 broker:
     topic: honeypot/dionaea/
-    endpoint: dioEp
+    endpoint_prefix: beemaster-connector-
