@@ -4,9 +4,10 @@
 Provides the Sender, which wraps Broker to send messages to the associated
 communication partner.
 """
-from __future__ import unicode_literals
+# The following import _must_ not be made, otherwise some python binding calls for broker distributed datastores do not work anymore. The import is left commented-out to avoid someone trapping in this issue.
+#from __future__ import unicode_literals
 
-import pybroker as pb
+from pybroker import *
 import logging
 
 
@@ -16,38 +17,42 @@ class Sender(object):
     Sends Broker messages to an Broker endpoint.
     """
 
-    def __init__(self, address, port, brokerEndpointName, brokerTopic,
-                 connectorID):
-        """Sender(address, port)
+    def __init__(self, master_address, port, broker_endpoint, broker_topic,
+                 connector_id):
+        """Sender(master_address, port)
 
-        Initialises the Sender. The address/port are used to peer to the
+        Initialises the Sender. The master_address/port are used to peer to the
         corresponding Broker partner.
 
-        :param address:            The address to send to. (str)
+        :param master_address:     The address/hostname of the master bro instance. (str)
         :param port:               The port to send to. (int)
-        :param brokerEndpointName: The broker endpoint name to send to. (str)
-        :param brokerTopic:        The broker topic to send to. (str)
-        :param connectorID:        The connector ID. (str)
+        :param broker_endpoint:    The broker endpoint name to use for connecting to the master. (str)
+        :param broker_topic:       The broker topic to send to. (str)
+        :param connector_id:       The connector ID. (str)
         """
         logger = logging.getLogger(self.__class__.__name__)
-        self.log = logger.debug
+        self.log = logger
 
-        self.brokerTopic = brokerTopic
-        self.connectorID = connectorID
-        # TODO: expansion version 1: add service discovery
-        self.dioEp = pb.endpoint(brokerEndpointName)
-        # Peer with broker endpoint (has to listen to us to receive messages)
-        self.dioEp.peer(address, port)
+        self.broker_topic = broker_topic
+        self.broker_endpoint = broker_endpoint
+        self.connector_id = connector_id
 
-        # TODO check, whether connection has been established.
-        # Seems like Broker handles re-peering itself. So when no connection is
-        # available, it annoys you with messages and later on reconnects with
-        # the other side.
+        self.connector_to_master = endpoint(broker_endpoint)
+        # Peer with broker endpoint of bro master instance (has to listen to us to receive messages)
+        self.connector_to_master.peer(master_address, port, 1)
+
+        # dedicated endpoint for sending to slaves
+        self.connector_to_slave = endpoint(connector_id)
+        # note: "connectors" is the name of the distributed datastore of the bro master
+        self.balanced_slaves = clone_create(self.connector_to_master, "connectors", 1)
+        self.current_slave = self.balanced_slaves.lookup(data(self.broker_endpoint), 10)
+        if self.current_slave != None:
+            self.log.info("Peered with slave {}".format(self.current_slave))
+            self.connector_to_slave.peer(self.current_slave, 1)
 
         # TODO: in the future:
         # provide a channel to accept commands (change config,
         # deactivate file logging etc.)
-        # self.broEp.listen(9999, "127.0.0.1") #needs also a queue
 
     def send(self, msg):
         """Send the Broker message to the peer.
@@ -56,6 +61,23 @@ class Sender(object):
         """
         # TODO recheck connection?! retry until connection re-established and
         #      then resend message
-        msg.append(pb.data(self.connectorID))
-        self.log("Going to send '{}'.".format(msg))
-        self.dioEp.send(self.brokerTopic, msg)
+        msg.append(data(self.connector_id))
+        self.log.info("Looked up...")
+
+        current_slave = self.balanced_slaves.lookup(data(self.broker_endpoint), 1)
+        self.log.info("Looked up slave {}".format(self.current_slave))
+        try:
+            if current_slave != self.current_slave and current_slave != None:
+                # update the receiver, so repeer
+                self.current_slave = current_slave
+                self.connector_to_slave.peer(self.current_slave)
+                self.log.info("repeered with {}".format(self.current_slave))
+
+            if self.current_slave:
+                self.log.info("Sending to slave {}.".format(self.current_slave))
+                self.connector_to_slave.send(self.broker_topic, msg)
+            else:
+                self.log.warn("Not peered with any slave, falling back to send to master")
+                self.connector_to_master.send(self.broker_topic, msg)
+        except Exception, e:
+            self.log.error('fail'+ str(e))
