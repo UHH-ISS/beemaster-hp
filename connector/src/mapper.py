@@ -150,8 +150,8 @@ class Mapper(object):
                     self.log("Invalid message. Format unknown.")
                     break
                 broker_item = brokerMsg[item]
-                self.log("Add converted brokerObject '{}' to message."
-                         .format(broker_item))
+                self.log("Add converted brokerObject ('{}') '{}' to message."
+                         .format(item, broker_item))
                 # TODO would be nice to set the message in one step only
                 message.append(pb.data(broker_item))
             else:

@@ -31,6 +31,7 @@ message:
     - remote_ip
     - remote_port
     - transport
+    - protocol
     - transfersyntax
     - uuid
     - origin
