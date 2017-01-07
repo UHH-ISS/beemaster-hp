@@ -31,20 +31,22 @@ RUN git submodule update
 RUN ./configure
 RUN make -j4 install
 
-COPY src /opt/connector
+# Remove sources
+RUN rm -rf /scratch
+
+RUN mkdir /opt/connector
 COPY requirements.txt /opt/connector/.
 
 WORKDIR /opt/connector
-
-# Remove sources
-RUN rm -rf /scratch
 
 RUN pip install --upgrade pip setuptools wheel 
 RUN pip install -r requirements.txt
 
 EXPOSE 8080
 
-# copy stuff from within conf to src (note the trailing slash after conf)
+# copy stuff from _within_ src & conf to /opt/connector (note the trailing slash after conf)
+COPY src/ /opt/connector
+
 COPY conf/ /opt/connector
 
 ENTRYPOINT ["/usr/bin/python","connector.py"]
