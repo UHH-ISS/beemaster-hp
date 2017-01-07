@@ -13,7 +13,7 @@ exposed, damit man da angreifen kann.
 
 Mit
 `use windows/smb/ms10_061_spoolss` kann dann der Exploit geladen
-werden. Danach die Optionen in der Konsole setzen:
+werden. Danach die Optionen[^1] in der Konsole setzen:
 ````
 set PNAME XPSPrinter
 set RHOST 127.0.0.1
@@ -29,7 +29,7 @@ Hinweis: Der Exploit selbst schlägt fehl, liefert aber bereits Daten und Dateie
 ### MySQL
 Ein weiterer Angriff, um MySQL zu testen, geht so: Man muss hier den Port `3306`
 exposen, in der `msfconsole` folgende Befehle eingeben:
-`use windows/mysql/mysql_payload`, `set RHOST 127.0.0.1`
+`use windows/mysql/mysql_payload`, `set RHOST 127.0.0.1`[^1]
 und dann wieder `exploit`.
 
 Da kann man auch überprüfen, ob unsere Fehlermeldung
@@ -37,3 +37,6 @@ mittlerweile angepasst wurde (im Moment kommt immer noch die Dionaea-typische
 `ServerError LearnSQL!`-Meldung). Der Angriff wird auch hier von Dionaea an das
 CIM gemeldet. Allerdings wird er durch genannte Fehlermeldung vorzeitig
 abgebrochen, ohne, dass ein Payload eingespeist werden kann.
+
+[^1]: Die IP ggf. anpassen (z.B. `0.0.0.0`). Im Zweifelsfall gibt `docker ps` Auskunft über die 
+      korrekte IP / Portwahl.
