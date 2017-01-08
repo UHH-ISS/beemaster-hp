@@ -54,8 +54,8 @@ class Sender(object):
 
         :param msg:        The message to be sent. (Broker message)
         """
-        # TODO #86 recheck connection?! retry until connection re-established and
-        #      then resend message
+        # TODO #86 recheck connection?! retry until connection re-established
+        #      and then resend message
         msg.append(pb.data(self.connectorID))
         self.log("Going to send '{}'.".format(msg))
         self.dioEp.send(self.brokerTopic, msg)
