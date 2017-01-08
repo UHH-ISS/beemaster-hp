@@ -420,9 +420,7 @@ class TestConnConfig(unittest.TestCase):
         Test exception being thrown when a key for
         updating the config is invalid (should not exist)
         """
-        # TODO maybe specify to something like ArgumentException or
-        #      KeyLookupError or something similar...
-        self.assertRaises(Exception, self.config.update,
+        self.assertRaises(KeyError, self.config.update,
                           {'mappings': 'dionaea', 'address': 5000,
                            'listennnnn': {'port': 8080}})
 
