@@ -94,6 +94,28 @@ class Mapper(object):
         string = re.sub(r"\s+", ' ', string)
         return str(string)
 
+    def _map_array_dict(self, array):
+        """Map an array of dictionaries to a vector of data (=> records)
+
+        Note: The dict may contain only strings or further arrays ("list")
+        """
+        result = pb.vector_of_data()
+        for itmdict in array:
+            vof = pb.vector_of_field()
+            for k, v in itmdict.iteritems():
+                # TODO: Make usage of k by naming the record properties
+                # Was possible with broccoli: https://www.bro.org/sphinx/
+                # components/broccoli-python/README.html#data-types
+                # Have not yet found a way using broker bindings
+                if isinstance(v, list):
+                    v = self._map_array(v)
+                    # TODO: "_map_array" should return a vector
+                    # instead of a concatenated string
+                vof.append(pb.field(pb.data(str(v))))
+            result.append(pb.data(pb.record(vof)))
+
+        return result
+
     def _traverse_to_end(self, key, child, currMap, acc=None):
         """Traverse the structure to the end."""
         if acc is None:
@@ -136,11 +158,11 @@ class Mapper(object):
                 brokerMsg = {k2: v2 for k, v in data.iteritems() for k2, v2
                              in self._traverse_to_end(k, v, local_mapping)
                              .iteritems()}
-            except Exception:
+            except Exception as e:
                 # TODO specify possible exception! maybe even custom ones in
                 #      _map_*.
                 self.log("Failed to convert message properly. "
-                         "Ignoring format.")
+                         "Ignoring format. Error: {}".format(e))
                 break
 
             # setting up the final message in desired order
