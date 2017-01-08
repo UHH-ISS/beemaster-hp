@@ -8,25 +8,30 @@
 #          will be put into the broker message
 name: dionaea_ftp
 mapping:
-    ftp:
-        commands: array_dict
     timestamp: time_point
-    src_hostname: string
-    src_ip: address
-    src_port: port_count
-    dst_ip: address
-    dst_port: port_count
-    connection:
-        type: string
-        protocol: string
-        transport: string
+    data:
+        command: string
+        arguments: array
+        connection:
+            id: string
+            local_ip: address
+            local_port: port_count
+            remote_ip: address
+            remote_port: port_count
+            remote_hostname: string
+            protocol: string
+            transport: string
+    origin: string
+    name: string
 message:
     - timestamp
-    - dst_ip
-    - dst_port
-    - src_hostname
-    - src_ip
-    - src_port
+    - id
+    - local_ip
+    - local_port
+    - remote_ip
+    - remote_port
     - transport
     - protocol
-    - commands
+    - command
+    - arguments
+    - origin
