@@ -434,7 +434,7 @@ class TestSender(unittest.TestCase):
     ip = "127.0.0.1"
     port = 9765
 
-    def testPeering(self):
+    def testSuccessPeering(self):
         """Test successful peer"""
         i = 0
         epl = pb.endpoint("listener")
@@ -458,38 +458,7 @@ class TestSender(unittest.TestCase):
         # Be sure to have exactly one status message
         self.assertEqual(i, 1)
 
-    def testCannotPeer(self):
-        """
-        Try peering with not existing endpoint:
-
-        - Listen to not existing endpoint (tests Broker actually)
-        - Send message to not existing endpoint (test Sender)
-          Should not raise an Exception or anything.
-        """
-        iip = "999.999.999.999"
-        epl = pb.endpoint("listener")
-        self.assertFalse(epl.listen(self.port, iip))
-
-        sender = Sender(self.ip, self.port, "connector", self.topic,
-                        "unittestSender")
-        sender.send(pb.message([pb.data("hi")]))
-        # TODO: #86 - implement in Sender check, if peer was successful
-        # - if message was received by endpoint cannot be checked at this point
-
-    def testInvalidPort(self):
-        """Create a Sender with an invalid connection (ip)."""
-        with self.assertRaises(NotImplementedError):
-            Sender(self.ip, "9999", "brokerEndpointName",
-                   self.topic, "connectorID15")
-
-    def testInvalidIp(self):
-        """Create a Sender with an invalid connection (port)."""
-        with self.assertRaises(NotImplementedError):
-            Sender(self.port, self.port, "brokerEndpointName",
-                   self.topic, "connectorID15")
-            # Broker bindings do not check for valid IPs. Strings are accepted.
-
-    def testSend(self):
+    def testSuccessSend(self):
         """
         Test sending a message.
 
@@ -497,13 +466,17 @@ class TestSender(unittest.TestCase):
         """
         i = 0
         port = self.port + 1
-        epname = "unittestSender"
+        epname = "unittestSenderSuccess"
         msgcontent = "hi"
-        epl = pb.endpoint("listener")
+        epl = pb.endpoint("listenerSuccess")
         mql = pb.message_queue(self.topic, epl)
 
         sender = Sender(self.ip, port, "connector", self.topic, epname)
         self.assertTrue(epl.listen(port, self.ip))
+
+        # for some reason the test fails without these two lines of code
+        icsl = epl.incoming_connection_status()
+        select([icsl.fd()], [], [])
 
         sender.send(pb.message([pb.data(msgcontent)]))
 
@@ -522,13 +495,44 @@ class TestSender(unittest.TestCase):
 
         self.assertEqual(i, 2)
 
-    def testSendInvalidMessage(self):
+    def testFailureSendInvalidMessage(self):
         """Test sending a message that is a simple string."""
         sender = Sender(self.ip, self.port, "brokerEndpointName",
                         self.topic, "unittestSender")
 
         with self.assertRaises(AttributeError):
             sender.send("")
+
+    def testFailurePeer(self):
+        """
+        Try peering with not existing endpoint:
+
+        - Listen to not existing endpoint (tests Broker actually)
+        - Send message to not existing endpoint (test Sender)
+          Should not raise an Exception or anything.
+        """
+        iip = "999.999.999.999"
+        epl = pb.endpoint("listener")
+        self.assertFalse(epl.listen(self.port, iip))
+
+        sender = Sender(self.ip, self.port, "connector", self.topic,
+                        "unittestSender")
+        sender.send(pb.message([pb.data("hi")]))
+        # TODO: #86 - implement in Sender check, if peer was successful
+        # - if message was received by endpoint cannot be checked at this point
+
+    def testFailureInvalidPort(self):
+        """Create a Sender with an invalid connection (ip)."""
+        with self.assertRaises(NotImplementedError):
+            Sender(self.ip, "9999", "brokerEndpointName",
+                   self.topic, "connectorID15")
+
+    def testFailureInvalidIp(self):
+        """Create a Sender with an invalid connection (port)."""
+        with self.assertRaises(NotImplementedError):
+            Sender(self.port, self.port, "brokerEndpointName",
+                   self.topic, "connectorID15")
+            # Broker bindings do not check for valid IPs. Strings are accepted.
 
 
 if __name__ == '__main__':
