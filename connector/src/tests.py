@@ -456,7 +456,8 @@ class TestSender(unittest.TestCase):
         icsl = epl.incoming_connection_status()
 
         # To maintain the peering, the Sender needs to exist -> variable
-        Sender(self.ip, self.port, "connector", self.topic, "unittestSender")
+        sender = Sender(self.ip, self.port, "connector", self.topic,    # noqa
+                        "unittestSender")
         # true: endpoint is listening
         self.assertTrue(epl.listen(self.port, self.ip))
 
