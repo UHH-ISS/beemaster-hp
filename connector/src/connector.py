@@ -24,15 +24,6 @@ from os import walk
 import logging
 import yaml
 
-logging.basicConfig(
-    # TODO add/set log file
-    # TODO adjust time format
-    # TODO add log settings to config
-    # TODO vary use of log-levels!
-    level=logging.DEBUG,
-    format="[ %(asctime)s | %(name)10s | %(levelname)8s ] %(message)s"
-)
-
 DEFAULT_CONFIG_FILE = 'config.yaml'
 
 
@@ -60,16 +51,21 @@ class ConnConfig(dict):
         "connectorId": platform.uname()[1]
     }
 
-    def __init__(self, data=None, is_root=True):
+    def __init__(self, data=None, default=None):
         """Create the ConnConfig with the read data.
 
         :param data:    The data to fill in.
         """
         super(ConnConfig, self).__init__()
-        if is_root:
-            self.update(self.DEFAULT_CONFIG)
 
-        # TODO build config checks in here?
+        # set default values (currently this causes way to much calls into
+        # .update, but as we do not do this more than once per run, it should
+        # be ok).
+        self.default = default
+        if default is None:
+            self.default = self.DEFAULT_CONFIG
+        self.update(self.default)
+
         if data is not None:
             self.update(data)
 
@@ -77,7 +73,7 @@ class ConnConfig(dict):
         """Update the current dict with the new one."""
         for k, v in ndict.iteritems():
             if isinstance(v, dict):
-                v = ConnConfig(v, False)
+                v = ConnConfig(v, self.default[k])
             self[k] = v
 
     def __getattr__(self, item):
@@ -85,7 +81,8 @@ class ConnConfig(dict):
         # http://stackoverflow.com/a/2405617/2395605
         if item in self:
             return self[item]
-        return AttributeError   # TODO check, whether this really works!
+        # TODO check, whether this really works as intended!
+        return AttributeError
 
 
 class Connector(object):
@@ -233,4 +230,12 @@ def main():
 
 
 if __name__ == '__main__':
+    logging.basicConfig(
+        # TODO add/set log file
+        # TODO adjust time format
+        # TODO add log settings to config
+        # TODO vary use of log-levels!
+        level=logging.DEBUG,
+        format="[ %(asctime)s | %(name)10s | %(levelname)8s ] %(message)s"
+    )
     main()

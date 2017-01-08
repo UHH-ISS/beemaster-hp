@@ -1,4 +1,4 @@
-# on file per connection type
+# one file per connection type
 #
 # name: name of the event (for bro)
 # mapping: the structure of the arriving json
@@ -6,9 +6,12 @@
 #          (implemented in mapper)
 # message: the structure of the message, as it
 #          will be put into the broker message
-name: dionaea_connection
+name: dionaea_download_complete
 mapping:
     data:
+        url: string
+        md5hash: string
+        file: string
         connection:
             id: string
             local_ip: address
@@ -20,6 +23,7 @@ mapping:
             transport: string
     timestamp: time_point
     origin: string
+    name: string
 message:
     - timestamp
     - id
@@ -28,10 +32,8 @@ message:
     - remote_ip
     - remote_port
     - transport
-# - still missing time format string and similar
-# - still unfortunate regarding the flattened names
-#
-# in Bro:
-# event connection(time_point, string, address,
-#                  count, address, count, string)
-# port wird auf bro seite zusammengesetzt
+    - protocol
+    - url
+    - md5hash
+    - file
+    - origin

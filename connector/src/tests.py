@@ -128,7 +128,29 @@ class TestMapper(unittest.TestCase):
                            "origin": "dionaea.modules.python.mysql.command",
                            "timestamp": "2016-12-21T18:23:27.488956"}
 
-    VALID_MAPPING = 'mappings/dionaea/connection.yaml'
+    VALID_MAPPING = yaml.load("""
+        name: dionaea_connection
+        mapping:
+            data:
+                connection:
+                    id: string
+                    local_ip: address
+                    local_port: port_count
+                    remote_ip: address
+                    remote_port: port_count
+                    remote_hostname: string
+                    protocol: string
+                    transport: string
+            timestamp: time_point
+            origin: string
+        message:
+            - timestamp
+            - id
+            - local_ip
+            - local_port
+            - remote_ip
+            - remote_port
+            - transport""")
     VALID_MAPPING2_DICT = {"name": "dionaea_connection2", "mapping":
                            {"timestamp": "time_point", "origin": "string"},
                            "message": ["timestamp"]}
@@ -168,8 +190,7 @@ class TestMapper(unittest.TestCase):
 
     def setUp(self):
         """Set up the default mapper."""
-        with open(self.VALID_MAPPING, 'r') as f:
-            mapping = yaml.load(f)
+        mapping = self.VALID_MAPPING
         self.mapper = Mapper([mapping])     # [..] necessary as of format
 
     def testDefaultSuccess(self):
@@ -197,8 +218,7 @@ class TestMapper(unittest.TestCase):
 
     def testSuccessMultipleMappings(self):
         """Test a scenario with more than one mapping."""
-        with open(self.VALID_MAPPING, 'r') as f:
-            mapping = yaml.load(f)
+        mapping = self.VALID_MAPPING
         mapping2 = self.VALID_MAPPING2_DICT
         mapper = Mapper([mapping, mapping2])
 
@@ -211,8 +231,7 @@ class TestMapper(unittest.TestCase):
 
     def testSuccessMultipleMappingsInverseOrder(self):
         """Test a scenario with more than one mapping in a different order."""
-        with open(self.VALID_MAPPING, 'r') as f:
-            mapping = yaml.load(f)
+        mapping = self.VALID_MAPPING
         mapping2 = self.VALID_MAPPING2_DICT
         mapper = Mapper([mapping2, mapping])
 
@@ -242,8 +261,7 @@ class TestMapper(unittest.TestCase):
         """Test correct mappings with the MySQL and default maps."""
         with open(self.VALID_MAPPING_MYSQL, 'r') as f:
             mapping = yaml.load(f)
-        with open(self.VALID_MAPPING, 'r') as f:
-            mapping2 = yaml.load(f)
+        mapping2 = self.VALID_MAPPING
         mapper = Mapper([mapping, mapping2])
 
         # works, as mapping2 is way more relaxed than the default mapping
@@ -298,8 +316,7 @@ class TestMapper(unittest.TestCase):
         Test empty output when a field in the mapping is wrong
         and the message therefore unexpected.
         """
-        with open(self.VALID_MAPPING, 'r') as f:
-            mapping = yaml.load(f)
+        mapping = self.VALID_MAPPING
         mapping['mapping']['data'] = 'count'
         mapper = Mapper([mapping])     # [..] necessary as of format
 
@@ -307,8 +324,7 @@ class TestMapper(unittest.TestCase):
 
     def testFailureInvalidConversionFunc(self):
         """Test empty output when a conversion function is invalid."""
-        with open(self.VALID_MAPPING, 'r') as f:
-            mapping = yaml.load(f)
+        mapping = self.VALID_MAPPING
         mapping['mapping']['data']['connection']['id'] = 'list'
         mapper = Mapper([mapping])     # [..] necessary as of format
 
@@ -324,8 +340,7 @@ class TestMapper(unittest.TestCase):
         """Test a MySQL mapping where the args have the wrong type."""
         with open(self.VALID_MAPPING_MYSQL, 'r') as f:
             mapping = yaml.load(f)
-        with open(self.VALID_MAPPING, 'r') as f:
-            mapping2 = yaml.load(f)
+        mapping2 = self.VALID_MAPPING
         mapper = Mapper([mapping, mapping2])
 
         self.assertIsNone(mapper.transform(self.INVALID_INPUT_MYSQL))
@@ -420,9 +435,7 @@ class TestConnConfig(unittest.TestCase):
         Test exception being thrown when a key for
         updating the config is invalid (should not exist)
         """
-        # TODO maybe specify to something like ArgumentException or
-        #      KeyLookupError or something similar...
-        self.assertRaises(Exception, self.config.update,
+        self.assertRaises(KeyError, self.config.update,
                           {'mappings': 'dionaea', 'address': 5000,
                            'listennnnn': {'port': 8080}})
 
