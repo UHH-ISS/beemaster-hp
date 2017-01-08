@@ -45,10 +45,15 @@ class Sender(object):
         self.connector_to_slave = endpoint(connector_id)
         # note: "connectors" is the name of the distributed datastore of the bro master
         self.balanced_slaves = clone_create(self.connector_to_master, "connectors", 1)
-        self.current_slave = self.balanced_slaves.lookup(data(self.broker_endpoint), 10)
+
+        self.log.debug("Connectors datastore keys {}".format(self.balanced_slaves.keys().keys()))
+
+        self.current_slave = self.balanced_slaves.lookup(data(self.broker_endpoint)).data().as_string()
+        self.log.info("Lookup {} returns {}".format(self.broker_endpoint, self.current_slave))
+
         if self.current_slave != None:
-            self.log.info("Peered with slave {}".format(self.current_slave))
-            self.connector_to_slave.peer(self.current_slave, 1)
+            peered = self.connector_to_slave.peer(self.current_slave[len("bro-slave-"):], port, 1)
+            self.log.info("Peered with slave {}, success {}, remote {}".format(self.current_slave, bool(peered), peered.remote()))
 
         # TODO: in the future:
         # provide a channel to accept commands (change config,
@@ -59,25 +64,24 @@ class Sender(object):
 
         :param msg:        The message to be sent. (Broker message)
         """
-        # TODO recheck connection?! retry until connection re-established and
-        #      then resend message
         msg.append(data(self.connector_id))
-        self.log.info("Looked up...")
 
-        current_slave = self.balanced_slaves.lookup(data(self.broker_endpoint), 1)
-        self.log.info("Looked up slave {}".format(self.current_slave))
-        try:
-            if current_slave != self.current_slave and current_slave != None:
-                # update the receiver, so repeer
-                self.current_slave = current_slave
-                self.connector_to_slave.peer(self.current_slave)
-                self.log.info("repeered with {}".format(self.current_slave))
+        current_slave = self.balanced_slaves.lookup(data(self.broker_endpoint)).data().as_string()
 
-            if self.current_slave:
-                self.log.info("Sending to slave {}.".format(self.current_slave))
-                self.connector_to_slave.send(self.broker_topic, msg)
+        self.log.info("Looked up slave {}".format(current_slave))
+        if current_slave != self.current_slave:
+            # update the receiver, so repeer
+            self.current_slave = current_slave
+            if self.current_slave != None:
+                self.log.info("Repeering with {}".format(self.current_slave))
+                self.connector_to_slave.peer(self.current_slave[len("bro-slave-"):], port, 1)
             else:
-                self.log.warn("Not peered with any slave, falling back to send to master")
-                self.connector_to_master.send(self.broker_topic, msg)
-        except Exception, e:
-            self.log.error('fail'+ str(e))
+                self.log.warn("No slave peered anymore.")
+                self.connector_to_slave.unpeer() # no slaves ready
+
+        if self.current_slave:
+            self.log.info("Sending to slave {}".format(self.current_slave))
+            self.connector_to_slave.send(self.broker_topic, msg)
+        else:
+            self.log.warn("Not peered with any slave, falling back to send to master")
+            self.connector_to_master.send(self.broker_topic, msg)
