@@ -447,6 +447,8 @@ class TestSender(unittest.TestCase):
     ip = "127.0.0.1"
     port = 9765
 
+    TIMEOUT = 5
+
     def testSuccessPeering(self):
         """Test successful peer"""
         i = 0
@@ -458,7 +460,8 @@ class TestSender(unittest.TestCase):
         # true: endpoint is listening
         self.assertTrue(epl.listen(self.port, self.ip))
 
-        select([icsl.fd()], [], [])
+        s, _, __ = select([icsl.fd()], [], [], self.TIMEOUT)
+        self.assertFalse(s is None or s == [], "Timout of 'select'")
         msgs = icsl.want_pop()
 
         for m in msgs:
@@ -487,11 +490,13 @@ class TestSender(unittest.TestCase):
 
         # for some reason the test fails without these two lines of code
         icsl = epl.incoming_connection_status()
-        select([icsl.fd()], [], [])
+        s, _, __ = select([icsl.fd()], [], [], self.TIMEOUT)
+        self.assertFalse(s is None or s == [], "Timout of 'select'")
 
         sender.send(pb.message([pb.data(msgcontent)]))
 
-        select([mql.fd()], [], [])
+        s, _, __ = select([mql.fd()], [], [], self.TIMEOUT)
+        self.assertFalse(s is None or s == [], "Timout of 'select'")
         msgs = mql.want_pop()
 
         for m in msgs:
