@@ -69,6 +69,7 @@ RUN make
 RUN make install
 
 
+RUN mkdir -p /var/dionaea/logs/
 RUN mkdir -p /etc/dionaea/services-enabled /etc/dionaea/ihandlers-enabled
 RUN mkdir -p /var/dionaea/roots/ftp /var/dionaea/roots/www /var/dionaea/binaries
 

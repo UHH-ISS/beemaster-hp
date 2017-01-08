@@ -24,16 +24,6 @@ from os import walk
 import logging
 import yaml
 
-logging.basicConfig(
-    # TODO add/set log file
-    # TODO adjust time format
-    # TODO add log settings to config
-    # TODO vary use of log-levels!
-    #level=logging.DEBUG,
-    level=logging.INFO,
-    format="[ %(asctime)s | %(name)10s | %(levelname)8s ] %(message)s"
-)
-
 DEFAULT_CONFIG_FILE = 'config.yaml'
 
 
@@ -81,7 +71,6 @@ class ConnConfig(dict):
 
     def update(self, ndict):
         """Update the current dict with the new one."""
-        print("update called")
         for k, v in ndict.iteritems():
             if isinstance(v, dict):
                 v = ConnConfig(v, self.default[k])
@@ -241,4 +230,12 @@ def main():
 
 
 if __name__ == '__main__':
+    logging.basicConfig(
+        # TODO add/set log file
+        # TODO adjust time format
+        # TODO add log settings to config
+        # TODO vary use of log-levels!
+        level=logging.INFO,
+        format="[ %(asctime)s | %(name)10s | %(levelname)8s ] %(message)s"
+    )
     main()
