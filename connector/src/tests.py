@@ -7,9 +7,11 @@ from __future__ import with_statement
 
 from mapper import Mapper
 from connector import ConnConfig
+from sender import Sender
 
 import unittest
 import pybroker as pb
+from select import select
 from datetime import datetime
 import yaml
 import re
@@ -126,7 +128,29 @@ class TestMapper(unittest.TestCase):
                            "origin": "dionaea.modules.python.mysql.command",
                            "timestamp": "2016-12-21T18:23:27.488956"}
 
-    VALID_MAPPING = 'mappings/dionaea/connection.yaml'
+    VALID_MAPPING = yaml.load("""
+        name: dionaea_connection
+        mapping:
+            data:
+                connection:
+                    id: string
+                    local_ip: address
+                    local_port: port_count
+                    remote_ip: address
+                    remote_port: port_count
+                    remote_hostname: string
+                    protocol: string
+                    transport: string
+            timestamp: time_point
+            origin: string
+        message:
+            - timestamp
+            - id
+            - local_ip
+            - local_port
+            - remote_ip
+            - remote_port
+            - transport""")
     VALID_MAPPING2_DICT = {"name": "dionaea_connection2", "mapping":
                            {"timestamp": "time_point", "origin": "string"},
                            "message": ["timestamp"]}
@@ -166,8 +190,7 @@ class TestMapper(unittest.TestCase):
 
     def setUp(self):
         """Set up the default mapper."""
-        with open(self.VALID_MAPPING, 'r') as f:
-            mapping = yaml.load(f)
+        mapping = self.VALID_MAPPING
         self.mapper = Mapper([mapping])     # [..] necessary as of format
 
     def testDefaultSuccess(self):
@@ -195,8 +218,7 @@ class TestMapper(unittest.TestCase):
 
     def testSuccessMultipleMappings(self):
         """Test a scenario with more than one mapping."""
-        with open(self.VALID_MAPPING, 'r') as f:
-            mapping = yaml.load(f)
+        mapping = self.VALID_MAPPING
         mapping2 = self.VALID_MAPPING2_DICT
         mapper = Mapper([mapping, mapping2])
 
@@ -209,8 +231,7 @@ class TestMapper(unittest.TestCase):
 
     def testSuccessMultipleMappingsInverseOrder(self):
         """Test a scenario with more than one mapping in a different order."""
-        with open(self.VALID_MAPPING, 'r') as f:
-            mapping = yaml.load(f)
+        mapping = self.VALID_MAPPING
         mapping2 = self.VALID_MAPPING2_DICT
         mapper = Mapper([mapping2, mapping])
 
@@ -240,8 +261,7 @@ class TestMapper(unittest.TestCase):
         """Test correct mappings with the MySQL and default maps."""
         with open(self.VALID_MAPPING_MYSQL, 'r') as f:
             mapping = yaml.load(f)
-        with open(self.VALID_MAPPING, 'r') as f:
-            mapping2 = yaml.load(f)
+        mapping2 = self.VALID_MAPPING
         mapper = Mapper([mapping, mapping2])
 
         # works, as mapping2 is way more relaxed than the default mapping
@@ -296,8 +316,7 @@ class TestMapper(unittest.TestCase):
         Test empty output when a field in the mapping is wrong
         and the message therefore unexpected.
         """
-        with open(self.VALID_MAPPING, 'r') as f:
-            mapping = yaml.load(f)
+        mapping = self.VALID_MAPPING
         mapping['mapping']['data'] = 'count'
         mapper = Mapper([mapping])     # [..] necessary as of format
 
@@ -305,8 +324,7 @@ class TestMapper(unittest.TestCase):
 
     def testFailureInvalidConversionFunc(self):
         """Test empty output when a conversion function is invalid."""
-        with open(self.VALID_MAPPING, 'r') as f:
-            mapping = yaml.load(f)
+        mapping = self.VALID_MAPPING
         mapping['mapping']['data']['connection']['id'] = 'list'
         mapper = Mapper([mapping])     # [..] necessary as of format
 
@@ -322,8 +340,7 @@ class TestMapper(unittest.TestCase):
         """Test a MySQL mapping where the args have the wrong type."""
         with open(self.VALID_MAPPING_MYSQL, 'r') as f:
             mapping = yaml.load(f)
-        with open(self.VALID_MAPPING, 'r') as f:
-            mapping2 = yaml.load(f)
+        mapping2 = self.VALID_MAPPING
         mapper = Mapper([mapping, mapping2])
 
         self.assertIsNone(mapper.transform(self.INVALID_INPUT_MYSQL))
@@ -421,6 +438,116 @@ class TestConnConfig(unittest.TestCase):
         self.assertRaises(KeyError, self.config.update,
                           {'mappings': 'dionaea', 'address': 5000,
                            'listennnnn': {'port': 8080}})
+
+
+class TestSender(unittest.TestCase):
+    """TestCases for sender.Sender"""
+
+    topic = "honeypotconnector/unittest"
+    ip = "127.0.0.1"
+    port = 9765
+
+    TIMEOUT = 5
+
+    def testSuccessPeering(self):
+        """Test successful peer"""
+        i = 0
+        epl = pb.endpoint("listener")
+        icsl = epl.incoming_connection_status()
+
+        # To maintain the peering, the Sender needs to exist -> variable
+        Sender(self.ip, self.port, "connector", self.topic, "unittestSender")
+        # true: endpoint is listening
+        self.assertTrue(epl.listen(self.port, self.ip))
+
+        s, _, __ = select([icsl.fd()], [], [], self.TIMEOUT)
+        self.assertFalse(s is None or s == [], "Timout of 'select'")
+        msgs = icsl.want_pop()
+
+        for m in msgs:
+            self.assertEqual(m.peer_name, "connector")
+            self.assertEqual(m.status,
+                             pb.incoming_connection_status.tag_established)
+            i += 1
+
+        # Be sure to have exactly one status message
+        self.assertEqual(i, 1)
+
+    def testSuccessSend(self):
+        """Test sending a message.
+
+        Should not raise an Exception or anything.
+        """
+        i = 0
+        port = self.port + 1
+        epname = "unittestSenderSuccess"
+        msgcontent = "hi"
+        epl = pb.endpoint("listenerSuccess")
+        mql = pb.message_queue(self.topic, epl)
+
+        sender = Sender(self.ip, port, "connector", self.topic, epname)
+        self.assertTrue(epl.listen(port, self.ip))
+
+        # for some reason the test fails without these two lines of code
+        icsl = epl.incoming_connection_status()
+        s, _, __ = select([icsl.fd()], [], [], self.TIMEOUT)
+        self.assertFalse(s is None or s == [], "Timout of 'select'")
+
+        sender.send(pb.message([pb.data(msgcontent)]))
+
+        s, _, __ = select([mql.fd()], [], [], self.TIMEOUT)
+        self.assertFalse(s is None or s == [], "Timout of 'select'")
+        msgs = mql.want_pop()
+
+        for m in msgs:
+            for d in m:
+                i += 1
+                if i == 1:
+                    self.assertEqual(d.which(), pb.data.tag_string)
+                    self.assertEqual(d.as_string(), msgcontent)
+                if i == 2:
+                    self.assertEqual(d.which(), pb.data.tag_string)
+                    self.assertEqual(d.as_string(), epname)
+
+        self.assertEqual(i, 2)
+
+    def testFailureSendInvalidMessage(self):
+        """Test sending a message that is a simple string."""
+        sender = Sender(self.ip, self.port, "brokerEndpointName",
+                        self.topic, "unittestSender")
+
+        with self.assertRaises(AttributeError):
+            sender.send("")
+
+    def testFailurePeer(self):
+        """Try peering with not existing endpoint:
+
+        - Listen to not existing endpoint (tests Broker actually)
+        - Send message to not existing endpoint (test Sender)
+          Should not raise an Exception or anything.
+        """
+        iip = "999.999.999.999"
+        epl = pb.endpoint("listener")
+        self.assertFalse(epl.listen(self.port, iip))
+
+        sender = Sender(self.ip, self.port, "connector", self.topic,
+                        "unittestSender")
+        sender.send(pb.message([pb.data("hi")]))
+        # TODO: #86 - implement in Sender check, if peer was successful
+        # - if message was received by endpoint cannot be checked at this point
+
+    def testFailureInvalidPort(self):
+        """Create a Sender with an invalid connection (ip)."""
+        with self.assertRaises(NotImplementedError):
+            Sender(self.ip, "9999", "brokerEndpointName",
+                   self.topic, "connectorID15")
+
+    def testFailureInvalidIp(self):
+        """Create a Sender with an invalid connection (port)."""
+        with self.assertRaises(NotImplementedError):
+            Sender(self.port, self.port, "brokerEndpointName",
+                   self.topic, "connectorID15")
+            # Broker bindings do not check for valid IPs. Strings are accepted.
 
 
 if __name__ == '__main__':
