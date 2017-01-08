@@ -7,7 +7,7 @@ communication partner.
 # The following import _must_ not be made, otherwise some python binding calls for broker distributed datastores do not work anymore. The import is left commented-out to avoid someone trapping in this issue.
 #from __future__ import unicode_literals
 
-from pybroker import *
+import pybroker as broker
 import logging
 from time import sleep
 
@@ -38,26 +38,26 @@ class Sender(object):
         self.broker_endpoint = broker_endpoint
         self.connector_id = connector_id
 
-        self.connector_to_master = endpoint(broker_endpoint)
+        self.connector_to_master = broker.endpoint(broker_endpoint)
         # Peer with broker endpoint of bro master instance (has to listen to us to receive messages)
         self.connector_to_master.peer(master_address, port, 1)
 
         # dedicated endpoint for sending to slaves
-        self.connector_to_slave = endpoint(connector_id)
+        self.connector_to_slave = broker.endpoint(connector_id)
         # note: "connectors" is the name of the distributed datastore of the bro master
-        self.balanced_slaves = clone_create(self.connector_to_master, "connectors", 1)
+        self.balanced_slaves = broker.clone_create(self.connector_to_master, "connectors", 1)
 
         self.log.debug("Connectors datastore keys {}".format(self.balanced_slaves.keys().keys()))
-        self.current_slave = ""
+        self.current_slave = None
 
         try:
-            self.current_slave = self.balanced_slaves.lookup(data(self.broker_endpoint)).data().as_string()
+            self.current_slave = self.balanced_slaves.lookup(broker.data(self.broker_endpoint)).data().as_string()
             self.log.debug("Lookup {} returns {}".format(self.broker_endpoint, self.current_slave))
 
         except Exception, e:
             self.log.error("Error looking up slave for connector {}".format(self.broker_endpoint))
 
-        if self.current_slave != None:
+        if self.current_slave:
             self.connector_to_slave_peering = self.connector_to_slave.peer(self.current_slave[len("bro-slave-"):], port, 1)
 
         # TODO: in the future:
@@ -69,15 +69,15 @@ class Sender(object):
 
         :param msg:        The message to be sent. (Broker message)
         """
-        msg.append(data(self.connector_id))
+        msg.append(broker.data(self.connector_id))
 
-        current_slave = self.balanced_slaves.lookup(data(self.broker_endpoint)).data().as_string()
+        current_slave = self.balanced_slaves.lookup(broker.data(self.broker_endpoint)).data().as_string()
         try:
-            self.log.info("Looked up slave {}".format(current_slave))
+            self.log.debug("Looked up slave {}".format(current_slave))
             if current_slave != self.current_slave:
                 # update the receiver, so repeer
                 self.current_slave = current_slave
-                if self.current_slave != None:
+                if self.current_slave:
                     self.log.info("Repeering with {} {}".format(self.current_slave, 9999))
                     self.connector_to_slave.unpeer(self.connector_to_slave_peering)
                     self.connector_to_slave_peering = self.connector_to_slave.peer(self.current_slave[len("bro-slave-"):], 9999, 1)
