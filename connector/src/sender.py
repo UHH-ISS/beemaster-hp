@@ -9,6 +9,7 @@ communication partner.
 
 from pybroker import *
 import logging
+from time import sleep
 
 
 class Sender(object):
@@ -47,13 +48,17 @@ class Sender(object):
         self.balanced_slaves = clone_create(self.connector_to_master, "connectors", 1)
 
         self.log.debug("Connectors datastore keys {}".format(self.balanced_slaves.keys().keys()))
+        self.current_slave = ""
 
-        self.current_slave = self.balanced_slaves.lookup(data(self.broker_endpoint)).data().as_string()
-        self.log.info("Lookup {} returns {}".format(self.broker_endpoint, self.current_slave))
+        try:
+            self.current_slave = self.balanced_slaves.lookup(data(self.broker_endpoint)).data().as_string()
+            self.log.debug("Lookup {} returns {}".format(self.broker_endpoint, self.current_slave))
+
+        except Exception, e:
+            self.log.error("Error looking up slave for connector {}".format(self.broker_endpoint))
 
         if self.current_slave != None:
-            peered = self.connector_to_slave.peer(self.current_slave[len("bro-slave-"):], port, 1)
-            self.log.info("Peered with slave {}, success {}, remote {}".format(self.current_slave, bool(peered), peered.remote()))
+            self.connector_to_slave_peering = self.connector_to_slave.peer(self.current_slave[len("bro-slave-"):], port, 1)
 
         # TODO: in the future:
         # provide a channel to accept commands (change config,
@@ -67,21 +72,25 @@ class Sender(object):
         msg.append(data(self.connector_id))
 
         current_slave = self.balanced_slaves.lookup(data(self.broker_endpoint)).data().as_string()
+        try:
+            self.log.info("Looked up slave {}".format(current_slave))
+            if current_slave != self.current_slave:
+                # update the receiver, so repeer
+                self.current_slave = current_slave
+                if self.current_slave != None:
+                    self.log.info("Repeering with {} {}".format(self.current_slave, 9999))
+                    self.connector_to_slave.unpeer(self.connector_to_slave_peering)
+                    self.connector_to_slave_peering = self.connector_to_slave.peer(self.current_slave[len("bro-slave-"):], 9999, 1)
+                    sleep(0.1) # repeering may take a moment, make sure..
+                else:
+                    self.log.warn("No slave peered anymore.")
+                    self.connector_to_slave.unpeer(self.connector_to_slave_peering) # no slaves ready
 
-        self.log.info("Looked up slave {}".format(current_slave))
-        if current_slave != self.current_slave:
-            # update the receiver, so repeer
-            self.current_slave = current_slave
-            if self.current_slave != None:
-                self.log.info("Repeering with {}".format(self.current_slave))
-                self.connector_to_slave.peer(self.current_slave[len("bro-slave-"):], port, 1)
+            if self.current_slave:
+                self.log.info("Sending to {}".format(self.current_slave))
+                self.connector_to_slave.send(self.broker_topic, msg)
             else:
-                self.log.warn("No slave peered anymore.")
-                self.connector_to_slave.unpeer() # no slaves ready
-
-        if self.current_slave:
-            self.log.info("Sending to slave {}".format(self.current_slave))
-            self.connector_to_slave.send(self.broker_topic, msg)
-        else:
-            self.log.warn("Not peered with any slave, falling back to send to master")
-            self.connector_to_master.send(self.broker_topic, msg)
+                self.log.warn("Not peered with any slave, falling back to send to master")
+                self.connector_to_master.send(self.broker_topic, msg)
+        except Exception, e:
+            self.log.error("Error sending data from {} to {}. Exception: {}".format(self.broker_endpoint, self.current_slave, str(e)))
