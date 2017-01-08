@@ -454,8 +454,7 @@ class TestSender(unittest.TestCase):
         icsl = epl.incoming_connection_status()
 
         # To maintain the peering, the Sender needs to exist -> variable
-        sender = Sender(self.ip, self.port, "connector", self.topic,
-                        "unittestSender")
+        Sender(self.ip, self.port, "connector", self.topic, "unittestSender")
         # true: endpoint is listening
         self.assertTrue(epl.listen(self.port, self.ip))
 
@@ -472,8 +471,7 @@ class TestSender(unittest.TestCase):
         self.assertEqual(i, 1)
 
     def testSuccessSend(self):
-        """
-        Test sending a message.
+        """Test sending a message.
 
         Should not raise an Exception or anything.
         """
@@ -517,8 +515,7 @@ class TestSender(unittest.TestCase):
             sender.send("")
 
     def testFailurePeer(self):
-        """
-        Try peering with not existing endpoint:
+        """Try peering with not existing endpoint:
 
         - Listen to not existing endpoint (tests Broker actually)
         - Send message to not existing endpoint (test Sender)
