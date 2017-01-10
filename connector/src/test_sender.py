@@ -1,3 +1,5 @@
+from __future__ import with_statement
+
 from sender import Sender
 
 import unittest
@@ -118,11 +120,7 @@ class TestSender(unittest.TestCase):
 
 if __name__ == '__main__':
     logging.basicConfig(
-        # TODO add/set log file
-        # TODO adjust time format
-        # TODO add log settings to config
-        # TODO vary use of log-levels!
-        level=logging.DEBUG,
+        level=logging.FATAL, # shut up
         format="[ %(asctime)s | %(name)10s | %(levelname)8s ] %(message)s"
     )
     unittest.main()
