@@ -154,7 +154,7 @@ class TestMapper(unittest.TestCase):
     VALID_MAPPING2_DICT = {"name": "dionaea_connection2", "mapping":
                            {"timestamp": "time_point", "origin": "string"},
                            "message": ["timestamp"]}
-    VALID_MAPPING_MYSQL = 'mappings/dionaea/mysql.yaml'
+    VALID_MAPPING_MYSQL = 'mappings/dionaea/mysqlCommand.yaml'
 
     @staticmethod
     def _map_time(inp):
