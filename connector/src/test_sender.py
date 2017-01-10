@@ -87,6 +87,35 @@ class TestSender(unittest.TestCase):
         # do test slave lookup during send
         self.assertEqual(sender.current_slave, balance_to)
 
+    def testFailureSendInvalidMessage(self):
+        """Test failure when sending anything that is not a pybroker::message object """
+
+        # do not interfere with the 
+        other_master_mock = pb.endpoint("other_master_ep")
+        other_master_port = 9766
+        pb.master_create(other_master_mock, self.datastore) # avoid block 
+
+        self.assertTrue(other_master_mock.listen(other_master_port, self.master_ip))
+
+        sender = Sender(self.master_ip, other_master_port, self.connector_ep, self.topic,
+                        self.connector_id)
+
+        with self.assertRaises(AttributeError):
+            sender.send("")
+        with self.assertRaises(AttributeError):
+            sender.send(1)
+        with self.assertRaises(AttributeError):
+            sender.send(self)
+
+#    def testFailureMasterPeer(self):
+        #"""Try peering with not existing endpoint"""
+        #
+        #invalid_ip = "999.999.999.999"
+        #ep = pb.endpoint("listener")
+        #self.assertFalse(ep.listen(self.master_port, invalid_ip))
+
+        #sender = Sender(invalid_ip, 9999, self.connector_ep, self.topic, self.connector_id)
+
 if __name__ == '__main__':
     logging.basicConfig(
         # TODO add/set log file
