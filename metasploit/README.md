@@ -24,7 +24,13 @@ Hilfe zu den Optionen gibt der Befehlt `show options`.
 Dann sollte alles bereit sein und man kann mit `exploit` den Angriff starten,
 der nach ein paar Sekunden auch im CIM angezeigt werden sollte.
 
-Hinweis: Der Exploit selbst schlägt fehl, liefert aber bereits Daten und Dateien.
+Hinweis: Der Exploit selbst schlägt fehl (soll er auch!), liefert aber bereits
+Daten und Dateien. Im CIM sollten folgende Events ankommen:
+````
+dionaea_access (Als Notiz, dass ein Zugriff erfolgt ist)
+3x dionaea_download_offer (mit Dateipfad)
+2x dionaea_download_complete (mit md5-Hashwert, Source-URL und Dateipfad)
+```
 
 ### MySQL
 Ein weiterer Angriff, um MySQL zu testen, geht so: Man muss hier den Port `3306`
@@ -37,6 +43,15 @@ mittlerweile angepasst wurde (im Moment kommt immer noch die Dionaea-typische
 `ServerError LearnSQL!`-Meldung). Der Angriff wird auch hier von Dionaea an das
 CIM gemeldet. Allerdings wird er durch genannte Fehlermeldung vorzeitig
 abgebrochen, ohne, dass ein Payload eingespeist werden kann.
+
+Im CIM sollte ein `dionaea_mysql_login`-Event ankommen, das den Username `root`
+enthält und ein leeres Passwort (das liegt leider am Dionaea-Modul, dass es
+nicht verlangt wird). Dann zwei `dionaea_mysql_command` Events:
+````
+SELECT @@version_compile_os
+select * from mysql.func where name = 'sys_exec'
+```
+
 
 [^1]: Die IP ggf. anpassen (z.B. `0.0.0.0`). Im Zweifelsfall gibt `docker ps` Auskunft über die 
       korrekte IP / Portwahl.
