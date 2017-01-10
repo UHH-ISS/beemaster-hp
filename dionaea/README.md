@@ -35,3 +35,8 @@ Dionaea will pick this up, log a JSON string and send that to the dummy connecto
 ### Add Custom Service / Ihandler
 
 Add whatever service or ihandler you want to ```services/``` or ```ihandlers/``` directory, respectively. Then you have to re-run ```docker build . -t dio-local```. (That step will not take as long as the first time). It will pick up the new files and copy them accordingly, to be used from within the container.
+
+### Make Dionaea stop logging
+
+Go to the `dionaea` folder and open the `dionaea.conf` file with an editor. Change the value for `default.filename` to `/dev/null`.
+Also, in the same folder, open the `Dockerfile` and remove the `#` in front of the line with the content `rm /etc/dionaea/ihandlers-enabled/log_sqlite.yaml` to activate that instruction.
