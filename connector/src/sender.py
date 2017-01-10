@@ -46,16 +46,17 @@ class Sender(object):
         self.connector_to_slave = broker.endpoint(connector_id)
         # note: "connectors" is the name of the distributed datastore of the bro master
         self.balanced_slaves = broker.clone_create(self.connector_to_master, "connectors", 1)
-
-        self.log.debug("Connectors datastore keys {}".format(self.balanced_slaves.keys().keys()))
         self.current_slave = None
+        self.connector_to_slave_peering = None
+
 
         try:
-            self.current_slave = self.balanced_slaves.lookup(broker.data(self.broker_endpoint)).data().as_string()
-            self.log.debug("Lookup {} returns {}".format(self.broker_endpoint, self.current_slave))
+            if self.balanced_slaves:
+                self.current_slave = self.balanced_slaves.lookup(broker.data(self.broker_endpoint)).data().as_string()
+                self.log.debug("Lookup {} returns {}".format(self.broker_endpoint, self.current_slave))
 
         except Exception, e:
-            self.log.error("Error looking up slave for connector {}".format(self.broker_endpoint))
+            self.log.error("Error looking up slave during connector '{}' init. Error: '{}'".format(self.broker_endpoint, str(e)))
 
         if self.current_slave:
             self.connector_to_slave_peering = self.connector_to_slave.peer(self.current_slave[len("bro-slave-"):], port, 1)
@@ -70,16 +71,20 @@ class Sender(object):
         :param msg:        The message to be sent. (Broker message)
         """
         msg.append(broker.data(self.connector_id))
-
-        current_slave = self.balanced_slaves.lookup(broker.data(self.broker_endpoint)).data().as_string()
+        current_slave = None
         try:
+            current_slave = self.balanced_slaves.lookup(broker.data(self.broker_endpoint)).data().as_string()
             self.log.debug("Looked up slave {}".format(current_slave))
+        except Exception, e:
+            self.log.error("Error looking up slave during connector '{}' send. Error: '{}'".format(self.broker_endpoint, str(e)))
+        try:
             if current_slave != self.current_slave:
                 # update the receiver, so repeer
                 self.current_slave = current_slave
                 if self.current_slave:
                     self.log.info("Repeering with {} {}".format(self.current_slave, 9999))
-                    self.connector_to_slave.unpeer(self.connector_to_slave_peering)
+                    if self.connector_to_slave_peering:
+                        self.connector_to_slave.unpeer(self.connector_to_slave_peering)
                     self.connector_to_slave_peering = self.connector_to_slave.peer(self.current_slave[len("bro-slave-"):], 9999, 1)
                     sleep(0.1) # repeering may take a moment, make sure..
                 else:
