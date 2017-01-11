@@ -5,6 +5,10 @@ Bezogen auf die Issues iss/mp-ids#132 und iss/mp-ids#121
   Bei Arch Linux gibt's die im AuR (`pacman -Syu metasploit`).
 * Im Terminal `msfconsole` starten. 
 
+
+Hinweis: Ein Exploit wurde ausgeführt und somit Angriffsdaten von Dionaea gesammelt,
+wenn in der Konsole `[*] Exploit completed` zu lesen ist.
+
 ### SMB
 
 Um die in iss/mp-ids#132 beschriebene Sicherheitslücke zu testen, muss zunächst 
