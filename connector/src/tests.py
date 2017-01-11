@@ -30,5 +30,7 @@ if __name__ == '__main__':
     with Cwd(dirname(abspath(__file__))):
         # INFO As we do not use unittest.main(), there is no argument-handling.
         #      As a result, verbosity is set hard to 2 (equals -v flag).
+        #      If you want to test singular tests, you can still run those
+        #      files independently.
         suite = unittest.defaultTestLoader.discover('.')
         unittest.TextTestRunner(verbosity=2).run(suite)
