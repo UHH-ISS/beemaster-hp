@@ -38,5 +38,37 @@ Add whatever service or ihandler you want to ```services/``` or ```ihandlers/```
 
 ### Make Dionaea stop logging
 
-Go to the `dionaea` folder and open the `dionaea.conf` file with an editor. Change the value for `default.filename` to `/dev/null`.
-Also, in the same folder, open the `Dockerfile` and remove the `#` in front of the line with the content `rm /etc/dionaea/ihandlers-enabled/log_sqlite.yaml` to activate that instruction.
+**1.** Go to the `dionaea` folder and open the `dionaea.conf` file with an editor.
+
+Change the logging levels to critical. As a result, there is almost nothing that
+should be logged (except for critical errors like trying to write to `/dev/null`):
+```
+[logging]
+default.levels=critical
+errors.levels=critical
+```
+
+Alternatively, or if in doubt, you could change the logging file to `/dev/null`:
+
+```
+[logging]
+default.levels=/dev/null
+errors.levels=/dev/null
+```
+
+**2.** Also, in the same folder, open the `Dockerfile` and remove the `#` in front of 
+the line with the content `rm /etc/dionaea/ihandlers-enabled/log_sqlite.yaml` 
+to activate that instruction.
+
+### Make Dionaea stop downloading files
+Go to the `dionaea` folder and open the `dionaea.conf` file with an editor.
+
+Change the value of `download.dir` to `/dev/null`:
+
+```
+[dionaea]
+download.dir=/dev/null
+```
+
+**Attention:** This results in critical errors of Dionaea. If you do not have 
+these in log files, you would need to write them to `/dev/null` too (see above).
