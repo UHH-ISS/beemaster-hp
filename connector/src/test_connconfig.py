@@ -1,6 +1,13 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""test_connconfig
+
+Test the ConnConfig.
+"""
 from connector import ConnConfig
 
 import unittest
+
 
 class TestConnConfig(unittest.TestCase):
     """TestCases for connector.ConnConfig"""
@@ -94,6 +101,7 @@ class TestConnConfig(unittest.TestCase):
         self.assertRaises(KeyError, self.config.update,
                           {'mappings': 'dionaea', 'address': 5000,
                            'listennnnn': {'port': 8080}})
+
 
 if __name__ == '__main__':
     unittest.main()

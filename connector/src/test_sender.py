@@ -1,11 +1,17 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""test_sender
+
+Test the Sender.
+"""
+
 from sender import Sender
 
 import unittest
 import pybroker as pb
 
-import logging
-from time import sleep
 from select import select
+
 
 class TestSender(unittest.TestCase):
     """TestCases for sender.Sender"""
@@ -116,6 +122,7 @@ class TestSender(unittest.TestCase):
             Sender(self.port, self.port, "brokerEndpointName",
                    self.topic, "connectorID15")
             # Broker bindings do not check for valid IPs. Strings are accepted.
+
 
 if __name__ == '__main__':
     unittest.main()
