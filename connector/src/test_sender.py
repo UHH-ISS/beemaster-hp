@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""test_sender
+
+Test the Sender.
+"""
+
 from __future__ import with_statement
 
 from sender import Sender
@@ -5,9 +12,9 @@ from sender import Sender
 import unittest
 import pybroker as pb
 
-import logging
 from time import sleep
 from select import select
+
 
 class TestSender(unittest.TestCase):
     """TestCases for sender.Sender"""
@@ -24,7 +31,7 @@ class TestSender(unittest.TestCase):
     master_mock = pb.endpoint("master_ep")
     master_listening = master_mock.listen(master_port, master_ip)
     master_store = pb.master_create(master_mock, datastore)
-    
+
     SELECT_TIMEOUT = 5
 
     def testSuccessMasterPeering(self):
@@ -34,10 +41,12 @@ class TestSender(unittest.TestCase):
         sender = Sender(self.master_ip, self.master_port, self.connector_ep, self.topic,
                         self.connector_id)
 
+        assert sender is not None
+
         status_queue = self.master_mock.incoming_connection_status()
         readable, _, _ = select([status_queue.fd()], [], [], self.SELECT_TIMEOUT)
         self.assertTrue(readable is not None and readable is not [], "Timout of 'select'")
-        
+
         conn_stati = status_queue.want_pop()
         status_count = 0
         for status in conn_stati:
@@ -48,30 +57,29 @@ class TestSender(unittest.TestCase):
         self.assertEqual(status_count, 1)
 
     def testSuccessSlaveLookupOnInit(self):
-        """ Test successful lookup of Bro-Slave instance during sender init """
+        """Test successful lookup of Bro-Slave instance during sender init"""
         self.assertTrue(self.master_listening)
         self.master_store.clear()
 
         balance_to = "bro-slave"
         self.master_store.insert(pb.data(self.connector_id), pb.data(balance_to))
 
-        sender = Sender(self.master_ip, self.master_port, self.connector_ep, self.topic,
-                        self.connector_id)
-        
+        sender = Sender(self.master_ip, self.master_port, self.connector_ep, 
+                        self.topic, self.connector_id)
+
         # force wait for this test
         self.master_mock.incoming_connection_status().need_pop()
-        
+
         # do test slave lookup on init
         self.assertEqual(sender.current_slave, balance_to)
 
-
     def testSuccessSlaveLookupOnSend(self):
-        """ Test successful (re-)lookup of Bro-Slave instance during sender send """
+        """Test successful (re-)lookup of Bro-Slave instance during sender send"""
         self.assertTrue(self.master_listening)
         self.master_store.clear()
 
-        sender = Sender(self.master_ip, self.master_port, self.connector_ep, self.topic,
-                        self.connector_id)
+        sender = Sender(self.master_ip, self.master_port, self.connector_ep, 
+                        self.topic, self.connector_id)
 
         # verify no initial peering took place
         self.assertEqual(sender.current_slave, None)
@@ -90,12 +98,10 @@ class TestSender(unittest.TestCase):
         self.assertEqual(sender.current_slave, balance_to)
 
     def testFailureSendInvalidMessage(self):
-        """Test failure when sending anything that is not a pybroker::message object """
-
-        # do not interfere with the 
+        """Test failure when sending anything that is not a pybroker::message object"""
         other_master_mock = pb.endpoint("other_master_ep")
         other_master_port = 9766
-        pb.master_create(other_master_mock, self.datastore) # avoid block 
+        pb.master_create(other_master_mock, self.datastore) # avoid block
 
         self.assertTrue(other_master_mock.listen(other_master_port, self.master_ip))
 
@@ -119,8 +125,4 @@ class TestSender(unittest.TestCase):
         #sender = Sender(invalid_ip, 9999, self.connector_ep, self.topic, self.connector_id)
 
 if __name__ == '__main__':
-    logging.basicConfig(
-        level=logging.FATAL, # shut up
-        format="[ %(asctime)s | %(name)10s | %(levelname)8s ] %(message)s"
-    )
     unittest.main()

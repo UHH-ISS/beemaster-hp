@@ -72,7 +72,9 @@ class Mapper(object):
     def _map_string(self, string):
         """Map a string."""
         # need nul terminated string for C++
-        return str(string)
+        string = str(string)
+        string = re.sub(r"\s+", ' ', string)
+        return string
 
     def _map_time_point(self, time_str):
         """Map a time_point."""

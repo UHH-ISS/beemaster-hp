@@ -13,7 +13,7 @@ Searches in the provided directory (here ```.```) for a ```Dockerfile```. Builds
 
 ```docker run -p 80:80 -p 443:443 --name dio --rm dio-local```
 
-Instanciate a container by reading the image called ```dio-local```. Flag ```-p``` maps container ports to ports on localhost. Flag ```--name dio``` is the container name (not image!). Container names are unique. ```--rm``` means, the container is thrown away on shutdown. 
+Instanciate a container by reading the image called ```dio-local```. Flag ```-p``` maps container ports to ports on localhost. Flag ```--name dio``` is the container name (not image!). Container names are unique. ```--rm``` means, the container is thrown away on shutdown.
 
 ### Start Python Dummy Logger
 
@@ -35,3 +35,41 @@ Dionaea will pick this up, log a JSON string and send that to the dummy connecto
 ### Add Custom Service / Ihandler
 
 Add whatever service or ihandler you want to ```services/``` or ```ihandlers/``` directory, respectively. Then you have to re-run ```docker build . -t dio-local```. (That step will not take as long as the first time). It will pick up the new files and copy them accordingly, to be used from within the container.
+
+### Make Dionaea stop (writing files)
+
+##### Logging
+**1.** Go to the `dionaea` folder and open the `dionaea.conf` file with an editor.
+
+Change the logging levels to critical. As a result, there is almost nothing that
+should be logged (except for critical errors like trying to write to `/dev/null`):
+```
+[logging]
+default.levels=critical
+errors.levels=critical
+```
+
+Alternatively, or if in doubt, you could change the logging file to `/dev/null`:
+
+```
+[logging]
+default.levels=/dev/null
+errors.levels=/dev/null
+```
+
+**2.** Also, in the same folder, open the `Dockerfile` and remove the `#` in front of
+the line with the content `rm /etc/dionaea/ihandlers-enabled/log_sqlite.yaml`
+to activate that instruction.
+
+##### Downloading files
+Go to the `dionaea` folder and open the `dionaea.conf` file with an editor.
+
+Change the value of `download.dir` to `/dev/null`:
+
+```
+[dionaea]
+download.dir=/dev/null
+```
+
+**Attention:** This results in critical errors of Dionaea. If you do not have
+these in log files, you would need to write them to `/dev/null` too (see above).

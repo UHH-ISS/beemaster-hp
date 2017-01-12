@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""test_mapper
+
+Test the Mapper.
+"""
+
 from mapper import Mapper
 
 import unittest
@@ -6,6 +13,7 @@ import pybroker as pb
 from datetime import datetime
 import yaml
 import re
+
 
 class TestMapper(unittest.TestCase):
     """TestCases for mapper.Mapper."""
@@ -144,7 +152,7 @@ class TestMapper(unittest.TestCase):
     VALID_MAPPING2_DICT = {"name": "dionaea_connection2", "mapping":
                            {"timestamp": "time_point", "origin": "string"},
                            "message": ["timestamp"]}
-    VALID_MAPPING_MYSQL = 'mappings/dionaea/mysql.yaml'
+    VALID_MAPPING_MYSQL = 'mappings/dionaea/mysqlCommand.yaml'
 
     @staticmethod
     def _map_time(inp):
@@ -334,6 +342,7 @@ class TestMapper(unittest.TestCase):
         mapper = Mapper([mapping, mapping2])
 
         self.assertIsNone(mapper.transform(self.INVALID_INPUT_MYSQL))
+
 
 if __name__ == '__main__':
     unittest.main()
