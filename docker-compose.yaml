@@ -1,0 +1,7 @@
+version: '2'
+services:
+  connector:
+    build: ./connector
+    command: ["config-docker.yaml"] 
+  dionaea:
+    build: ./dionaea
