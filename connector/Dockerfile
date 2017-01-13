@@ -1,5 +1,6 @@
 FROM debian:stretch
-#FROM resin/rpi-raspbian:jessie # <-- Use this for raspberry
+# Use this for raspberry
+#FROM resin/rpi-raspbian:jessie
 
 RUN apt-get update && apt-get install -y \
     build-essential \
