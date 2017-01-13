@@ -1,0 +1,1924 @@
+nohup: ignoring input
+Building connector
+Step 1 : FROM resin/rpi-raspbian:jessie
+ ---> e49ffb0714c7
+Step 2 : RUN apt-get update && apt-get install -y     build-essential     cmake     curl     git     python     python-dev     python-pip     swig     --no-install-recommends &&     rm -rf /var/lib/apt/lists/*
+ ---> Using cache
+ ---> 6a5dbc36bf49
+Step 3 : RUN echo 'deb http://mirrordirector.raspbian.org/raspbian/ testing main contrib non-free rpi' > /etc/apt/sources.list.d/stretch.list
+ ---> Using cache
+ ---> 0dee5f3c31b8
+Step 4 : RUN apt-get update && apt-get install -y     gcc-6 g++-6     --no-install-recommends
+ ---> Using cache
+ ---> cd17960ab08a
+Step 5 : WORKDIR /scratch
+ ---> Running in bbd079a22467
+ ---> b892790ccc12
+Removing intermediate container bbd079a22467
+Step 6 : RUN curl -LO https://github.com/actor-framework/actor-framework/archive/0.14.5.tar.gz
+ ---> Running in 0e6733d0462b
+[91m  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0    [0m[91m  0 --:--:-- --:--:-- --:--:--     0[0m[91m  0     0    0     0    0     0      0      0 --:--:-- --:--[0m[91m:-- --:--:--     0[0m[91m100   139    0   139    0     0    210      0 --:--:-- --:--:-- --:--:--   211
+[0m[91m100 40742    0 40742    0     0  26500      0 --:--:--  0:00:01 --:--[0m[91m:-- 26500[0m[91m100 1208k    0 1208k    0     0   469k      0 --:--:--  0:00:02 --:--:-- 1125k[0m[91m100 1210k    0 1210k    0     0   450k      0 --:--:--  0:00:[0m[91m02 --:--:-- 1019k
+[0m ---> 53c9b3a24fad
+Removing intermediate container 0e6733d0462b
+Step 7 : RUN tar xzf 0.14.5.tar.gz
+ ---> Running in e8bf74ee9ab9
+ ---> 4b9840d41f5b
+Removing intermediate container e8bf74ee9ab9
+Step 8 : WORKDIR actor-framework-0.14.5
+ ---> Running in 7ae6c8e34ac5
+ ---> 4b2a5e8d36bf
+Removing intermediate container 7ae6c8e34ac5
+Step 9 : RUN ./configure 	--no-examples 	--no-opencl 	--with-gcc=/usr/bin/g++-6
+ ---> Running in 344a496df2a3
+-- The C compiler identification is GNU 4.9.2
+-- The CXX compiler identification is GNU 6.2.1
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /usr/bin/g++-6
+-- Check for working CXX compiler: /usr/bin/g++-6 -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found g++ version 6.2
+-- Found 45 test suites
+-- Could NOT find Doxygen (missing:  DOXYGEN_EXECUTABLE) 
+-- 
+====================|  Build Summary  |====================
+
+Libcaf version:    0.14.5
+
+Build type:        RelWithDebInfo
+Build static:      no
+Build static only: no
+Runtime checks:    no
+Log level:         none
+With mem. mgmt.:   yes
+
+Build examples:    no
+Build unit tests:  yes
+Build riac:        yes
+Build nexus:       no
+Build cash:        no
+Build benchmarks:  no
+Build opencl:      no
+
+CXX:               /usr/bin/g++-6
+CXXFLAGS:          -std=c++11 -Wextra -Wall -pedantic -ftemplate-depth=512 -pthread -fPIC -O2 -g
+LIBRARIES:         
+
+Source directory:  /scratch/actor-framework-0.14.5
+Build directory:   /scratch/actor-framework-0.14.5/build
+Executable path:   /scratch/actor-framework-0.14.5/build/bin
+Library path:      /scratch/actor-framework-0.14.5/build/lib
+Install prefix:    /usr/local
+Generator:         Unix Makefiles
+
+===========================================================
+
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /scratch/actor-framework-0.14.5/build
+ ---> 4fe3a1e5c94b
+Removing intermediate container 344a496df2a3
+Step 10 : RUN make -j4 install
+ ---> Running in 22511be108bf
+make[1]: Entering directory '/scratch/actor-framework-0.14.5/build'
+make[2]: Entering directory '/scratch/actor-framework-0.14.5/build'
+make[3]: Entering directory '/scratch/actor-framework-0.14.5/build'
+make[3]: Entering directory '/scratch/actor-framework-0.14.5/build'
+make[3]: Entering directory '/scratch/actor-framework-0.14.5/build'
+Scanning dependencies of target all_unit_tests
+Scanning dependencies of target libcaf_io
+Scanning dependencies of target libcaf_core
+make[3]: Leaving directory '/scratch/actor-framework-0.14.5/build'
+make[3]: Leaving directory '/scratch/actor-framework-0.14.5/build'
+make[3]: Leaving directory '/scratch/actor-framework-0.14.5/build'
+[  0%] Built target libcaf_core
+[  0%] Built target all_unit_tests
+[  0%] Built target libcaf_io
+make[3]: Entering directory '/scratch/actor-framework-0.14.5/build'
+Scanning dependencies of target libcaf_core_shared
+make[3]: Leaving directory '/scratch/actor-framework-0.14.5/build'
+make[3]: Entering directory '/scratch/actor-framework-0.14.5/build'
+[  0%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/abstract_channel.cpp.o
+[  1%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/abstract_actor.cpp.o
+[  3%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/abstract_group.cpp.o
+[  3%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/abstract_coordinator.cpp.o
+[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/abstract_group.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/abstract_coordinator.cpp:32:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/typed_event_based_actor.hpp:24:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:30,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/abstract_group.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/abstract_group.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/abstract_group.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:202:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<typed_behavior<Sigs...>, FirstArg, false> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:207:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<Result, T*, true> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:222:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/abstract_group.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/abstract_group.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: In function ‘typename caf::infer_typed_actor_handle<typename caf::detail::get_callable_trait<F>::result_type, typename caf::detail::tl_head<typename caf::detail::get_callable_trait<F>::arg_types>::type>::type caf::spawn_typed_functor(caf::execution_unit*, BeforeLaunch, F, Ts&& ...)’:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:230:14: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+     typename infer_typed_actor_base<
+              ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: At global scope:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:245:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/abstract_group.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/typed_event_based_actor.hpp:24:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:30,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/abstract_coordinator.cpp:32:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/abstract_coordinator.cpp:32:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/src/abstract_coordinator.cpp:32:0:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:202:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<typed_behavior<Sigs...>, FirstArg, false> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:207:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<Result, T*, true> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:222:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/abstract_coordinator.cpp:32:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/src/abstract_coordinator.cpp:32:0:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: In function ‘typename caf::infer_typed_actor_handle<typename caf::detail::get_callable_trait<F>::result_type, typename caf::detail::tl_head<typename caf::detail::get_callable_trait<F>::arg_types>::type>::type caf::spawn_typed_functor(caf::execution_unit*, BeforeLaunch, F, Ts&& ...)’:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:230:14: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+     typename infer_typed_actor_base<
+              ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: At global scope:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:245:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/abstract_coordinator.cpp:32:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[  3%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/actor.cpp.o
+[  4%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/actor_addr.cpp.o
+[  5%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/actor_companion.cpp.o
+[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor.cpp:26:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/src/actor.cpp:26:0:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor.cpp:26:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_addr.cpp:22:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_addr.cpp:22:0:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_addr.cpp:22:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/actor_companion.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_companion.cpp:21:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/actor_companion.hpp:26:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_companion.cpp:21:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/actor_companion.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_companion.cpp:21:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[  6%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/actor_namespace.cpp.o
+[  6%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/actor_ostream.cpp.o
+[  7%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/actor_pool.cpp.o
+[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_ostream.cpp:22:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/typed_event_based_actor.hpp:24:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:30,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_ostream.cpp:22:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_ostream.cpp:22:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/detail/split_join.hpp:27,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/actor_pool.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_pool.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_ostream.cpp:22:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:202:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<typed_behavior<Sigs...>, FirstArg, false> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:207:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<Result, T*, true> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:222:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_ostream.cpp:22:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_ostream.cpp:22:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: In function ‘typename caf::infer_typed_actor_handle<typename caf::detail::get_callable_trait<F>::result_type, typename caf::detail::tl_head<typename caf::detail::get_callable_trait<F>::arg_types>::type>::type caf::spawn_typed_functor(caf::execution_unit*, BeforeLaunch, F, Ts&& ...)’:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:230:14: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+     typename infer_typed_actor_base<
+              ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: At global scope:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:245:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_ostream.cpp:22:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/typed_event_based_actor.hpp:24:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:30,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/detail/split_join.hpp:27,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/actor_pool.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_pool.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/detail/split_join.hpp:27,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/actor_pool.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_pool.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/detail/split_join.hpp:27:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/actor_pool.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_pool.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:202:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<typed_behavior<Sigs...>, FirstArg, false> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:207:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<Result, T*, true> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:222:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/detail/split_join.hpp:27,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/actor_pool.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_pool.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/detail/split_join.hpp:27:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/actor_pool.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_pool.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: In function ‘typename caf::infer_typed_actor_handle<typename caf::detail::get_callable_trait<F>::result_type, typename caf::detail::tl_head<typename caf::detail::get_callable_trait<F>::arg_types>::type>::type caf::spawn_typed_functor(caf::execution_unit*, BeforeLaunch, F, Ts&& ...)’:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:230:14: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+     typename infer_typed_actor_base<
+              ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: At global scope:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:245:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/detail/split_join.hpp:27,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/actor_pool.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_pool.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[  8%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/actor_proxy.cpp.o
+[  8%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/actor_registry.cpp.o
+[ 10%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/announce_actor_type.cpp.o
+[ 10%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/attachable.cpp.o
+[ 10%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/behavior.cpp.o
+[ 11%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/behavior_stack.cpp.o
+[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_registry.cpp:28:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/announce_actor_type.cpp:24:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/typed_event_based_actor.hpp:24:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:30,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_registry.cpp:28:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_registry.cpp:28:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[ 12%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/behavior_impl.cpp.o
+[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/typed_event_based_actor.hpp:24:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:30,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/announce_actor_type.cpp:24:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/announce_actor_type.cpp:24:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_registry.cpp:28:0:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:202:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<typed_behavior<Sigs...>, FirstArg, false> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:207:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<Result, T*, true> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:222:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_registry.cpp:28:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_registry.cpp:28:0:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: In function ‘typename caf::infer_typed_actor_handle<typename caf::detail::get_callable_trait<F>::result_type, typename caf::detail::tl_head<typename caf::detail::get_callable_trait<F>::arg_types>::type>::type caf::spawn_typed_functor(caf::execution_unit*, BeforeLaunch, F, Ts&& ...)’:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:230:14: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+     typename infer_typed_actor_base<
+              ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: At global scope:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:245:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/actor_registry.cpp:28:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/src/announce_actor_type.cpp:24:0:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:202:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<typed_behavior<Sigs...>, FirstArg, false> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:207:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<Result, T*, true> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:222:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/announce_actor_type.cpp:24:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/src/announce_actor_type.cpp:24:0:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: In function ‘typename caf::infer_typed_actor_handle<typename caf::detail::get_callable_trait<F>::result_type, typename caf::detail::tl_head<typename caf::detail::get_callable_trait<F>::arg_types>::type>::type caf::spawn_typed_functor(caf::execution_unit*, BeforeLaunch, F, Ts&& ...)’:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:230:14: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+     typename infer_typed_actor_base<
+              ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: At global scope:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:245:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/announce_actor_type.cpp:24:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/behavior_stack.cpp:23:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/src/behavior_stack.cpp:23:0:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/behavior_stack.cpp:23:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[ 13%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/binary_deserializer.cpp.o
+[ 13%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/binary_serializer.cpp.o
+[ 14%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/blocking_actor.cpp.o
+[ 15%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/channel.cpp.o
+[ 15%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/concatenated_tuple.cpp.o
+[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/blocking_actor.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/blocking_actor.cpp:21:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/blocking_actor.hpp:31:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/blocking_actor.cpp:21:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/blocking_actor.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/blocking_actor.cpp:21:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[ 16%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/continue_helper.cpp.o
+[ 17%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/decorated_tuple.cpp.o
+[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/event_based_actor.hpp:27,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/continue_helper.cpp:21:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/event_based_actor.hpp:27:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/continue_helper.cpp:21:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/event_based_actor.hpp:27,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/continue_helper.cpp:21:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[ 18%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/default_attachable.cpp.o
+[ 19%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/detached_threads.cpp.o
+[ 19%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/deserializer.cpp.o
+[ 20%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/duration.cpp.o
+[ 20%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/either.cpp.o
+[ 21%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/exception.cpp.o
+[ 22%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/execution_unit.cpp.o
+[ 23%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/event_based_actor.cpp.o
+[ 23%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/exit_reason.cpp.o
+[ 24%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/forwarding_actor_proxy.cpp.o
+[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/event_based_actor.hpp:27,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/event_based_actor.cpp:21:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/event_based_actor.hpp:27:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/event_based_actor.cpp:21:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/event_based_actor.hpp:27,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/event_based_actor.cpp:21:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[ 25%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/get_mac_addresses.cpp.o
+[ 25%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/get_process_id.cpp.o
+[ 26%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/get_root_uuid.cpp.o
+[ 27%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/group.cpp.o
+[ 27%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/group_manager.cpp.o
+[ 28%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/match_case.cpp.o
+[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/group_manager.cpp:28:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/typed_event_based_actor.hpp:24:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:30,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/group_manager.cpp:28:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/group_manager.cpp:28:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/group_manager.cpp:28:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:202:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<typed_behavior<Sigs...>, FirstArg, false> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:207:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<Result, T*, true> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:222:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/group_manager.cpp:28:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/group_manager.cpp:28:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: In function ‘typename caf::infer_typed_actor_handle<typename caf::detail::get_callable_trait<F>::result_type, typename caf::detail::tl_head<typename caf::detail::get_callable_trait<F>::arg_types>::type>::type caf::spawn_typed_functor(caf::execution_unit*, BeforeLaunch, F, Ts&& ...)’:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:230:14: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+     typename infer_typed_actor_base<
+              ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: At global scope:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:245:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/group_manager.cpp:28:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[ 29%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/local_actor.cpp.o
+[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/local_actor.cpp:22:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/typed_event_based_actor.hpp:24:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:30,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/local_actor.cpp:22:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/local_actor.cpp:22:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/local_actor.cpp:22:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:202:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<typed_behavior<Sigs...>, FirstArg, false> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:207:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<Result, T*, true> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:222:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/local_actor.cpp:22:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/local_actor.cpp:22:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: In function ‘typename caf::infer_typed_actor_handle<typename caf::detail::get_callable_trait<F>::result_type, typename caf::detail::tl_head<typename caf::detail::get_callable_trait<F>::arg_types>::type>::type caf::spawn_typed_functor(caf::execution_unit*, BeforeLaunch, F, Ts&& ...)’:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:230:14: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+     typename infer_typed_actor_base<
+              ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: At global scope:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:245:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/local_actor.cpp:22:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[ 29%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/mailbox_element.cpp.o
+[ 30%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/logging.cpp.o
+[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/logging.cpp:37:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/typed_event_based_actor.hpp:24:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:30,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/logging.cpp:37:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/logging.cpp:37:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/logging.cpp:37:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:202:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<typed_behavior<Sigs...>, FirstArg, false> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:207:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<Result, T*, true> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:222:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/logging.cpp:37:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/logging.cpp:37:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: In function ‘typename caf::infer_typed_actor_handle<typename caf::detail::get_callable_trait<F>::result_type, typename caf::detail::tl_head<typename caf::detail::get_callable_trait<F>::arg_types>::type>::type caf::spawn_typed_functor(caf::execution_unit*, BeforeLaunch, F, Ts&& ...)’:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:230:14: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+     typename infer_typed_actor_base<
+              ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: At global scope:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:245:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/logging.cpp:37:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[ 31%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/memory.cpp.o
+[ 32%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/message.cpp.o
+[ 32%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/memory_managed.cpp.o
+[ 33%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/message_builder.cpp.o
+[ 34%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/message_data.cpp.o
+[ 35%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/message_handler.cpp.o
+[ 35%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/node_id.cpp.o
+[ 36%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/parse_config.cpp.o
+[ 37%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/parse_ini.cpp.o
+[ 37%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/ref_counted.cpp.o
+[ 38%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/response_promise.cpp.o
+[ 39%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/replies_to.cpp.o
+[ 40%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/resumable.cpp.o
+[ 40%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/ripemd_160.cpp.o
+[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/response_promise.cpp:22:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/src/response_promise.cpp:22:0:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/response_promise.cpp:22:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[ 41%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/run_sub_unit_test.cpp.o
+[ 42%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/scoped_actor.cpp.o
+[ 42%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/set_scheduler.cpp.o
+[ 43%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/serializer.cpp.o
+[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/blocking_actor.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/scoped_actor.hpp:24,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/scoped_actor.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[ 44%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/shared_spinlock.cpp.o
+[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/blocking_actor.hpp:31:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/scoped_actor.hpp:24,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/scoped_actor.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/blocking_actor.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/scoped_actor.hpp:24,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/scoped_actor.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[ 45%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/shutdown.cpp.o
+[ 46%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/string_serialization.cpp.o
+[ 46%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/singletons.cpp.o
+[ 47%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/sync_request_bouncer.cpp.o
+[ 47%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/try_match.cpp.o
+[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/singletons.cpp:25:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/src/singletons.cpp:25:0:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/singletons.cpp:25:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[ 48%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/uniform_type_info.cpp.o
+[ 49%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/uniform_type_info_map.cpp.o
+[ 49%] Building CXX object libcaf_core/CMakeFiles/libcaf_core_shared.dir/src/whereis.cpp.o
+[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/blocking_actor.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/scoped_actor.hpp:24,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/whereis.cpp:23:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/blocking_actor.hpp:31:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/scoped_actor.hpp:24,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/whereis.cpp:23:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/blocking_actor.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/scoped_actor.hpp:24,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/src/whereis.cpp:23:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[ 50%] Linking CXX shared library ../lib/libcaf_core.so
+make[3]: Leaving directory '/scratch/actor-framework-0.14.5/build'
+[ 50%] Built target libcaf_core_shared
+make[3]: Entering directory '/scratch/actor-framework-0.14.5/build'
+Scanning dependencies of target libcaf_io_shared
+make[3]: Leaving directory '/scratch/actor-framework-0.14.5/build'
+make[3]: Entering directory '/scratch/actor-framework-0.14.5/build'
+[ 53%] Building CXX object libcaf_io/CMakeFiles/libcaf_io_shared.dir/src/broker.cpp.o
+[ 53%] Building CXX object libcaf_io/CMakeFiles/libcaf_io_shared.dir/src/abstract_broker.cpp.o
+[ 53%] Building CXX object libcaf_io/CMakeFiles/libcaf_io_shared.dir/src/basp_broker.cpp.o
+[ 53%] Building CXX object libcaf_io/CMakeFiles/libcaf_io_shared.dir/src/basp.cpp.o
+[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/abstract_broker.cpp:24:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/broker.cpp:28:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/typed_event_based_actor.hpp:24:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:30,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/abstract_broker.cpp:24:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/abstract_broker.cpp:24:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/typed_event_based_actor.hpp:24:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:30,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/broker.cpp:28:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/broker.cpp:28:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/middleman.hpp:34,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp.hpp:39,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/basp.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/abstract_broker.cpp:24:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:202:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<typed_behavior<Sigs...>, FirstArg, false> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:207:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<Result, T*, true> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:222:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/abstract_broker.cpp:24:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/abstract_broker.cpp:24:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: In function ‘typename caf::infer_typed_actor_handle<typename caf::detail::get_callable_trait<F>::result_type, typename caf::detail::tl_head<typename caf::detail::get_callable_trait<F>::arg_types>::type>::type caf::spawn_typed_functor(caf::execution_unit*, BeforeLaunch, F, Ts&& ...)’:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:230:14: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+     typename infer_typed_actor_base<
+              ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: At global scope:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:245:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/abstract_broker.cpp:24:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/broker.cpp:28:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:202:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<typed_behavior<Sigs...>, FirstArg, false> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:207:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<Result, T*, true> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:222:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/broker.cpp:28:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/broker.cpp:28:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: In function ‘typename caf::infer_typed_actor_handle<typename caf::detail::get_callable_trait<F>::result_type, typename caf::detail::tl_head<typename caf::detail::get_callable_trait<F>::arg_types>::type>::type caf::spawn_typed_functor(caf::execution_unit*, BeforeLaunch, F, Ts&& ...)’:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:230:14: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+     typename infer_typed_actor_base<
+              ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: At global scope:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:245:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/broker.cpp:28:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/typed_event_based_actor.hpp:24:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:30,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/middleman.hpp:34,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp.hpp:39,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/basp.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/middleman.hpp:34,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp.hpp:39,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/basp.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/middleman.hpp:34,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp.hpp:39,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/basp.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:202:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<typed_behavior<Sigs...>, FirstArg, false> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:207:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<Result, T*, true> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:222:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/middleman.hpp:34,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp.hpp:39,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/basp.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/middleman.hpp:34,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp.hpp:39,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/basp.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: In function ‘typename caf::infer_typed_actor_handle<typename caf::detail::get_callable_trait<F>::result_type, typename caf::detail::tl_head<typename caf::detail::get_callable_trait<F>::arg_types>::type>::type caf::spawn_typed_functor(caf::execution_unit*, BeforeLaunch, F, Ts&& ...)’:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:230:14: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+     typename infer_typed_actor_base<
+              ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: At global scope:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:245:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/middleman.hpp:34,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp.hpp:39,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/basp.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/middleman.hpp:34,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp.hpp:39,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp_broker.hpp:37,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/basp_broker.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/typed_event_based_actor.hpp:24:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:30,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/middleman.hpp:34,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp.hpp:39,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp_broker.hpp:37,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/basp_broker.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/middleman.hpp:34,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp.hpp:39,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp_broker.hpp:37,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/basp_broker.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/middleman.hpp:34,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp.hpp:39,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp_broker.hpp:37,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/basp_broker.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:202:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<typed_behavior<Sigs...>, FirstArg, false> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:207:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<Result, T*, true> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:222:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/middleman.hpp:34,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp.hpp:39,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp_broker.hpp:37,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/basp_broker.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/middleman.hpp:34,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp.hpp:39,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp_broker.hpp:37,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/basp_broker.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: In function ‘typename caf::infer_typed_actor_handle<typename caf::detail::get_callable_trait<F>::result_type, typename caf::detail::tl_head<typename caf::detail::get_callable_trait<F>::arg_types>::type>::type caf::spawn_typed_functor(caf::execution_unit*, BeforeLaunch, F, Ts&& ...)’:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:230:14: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+     typename infer_typed_actor_base<
+              ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: At global scope:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:245:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/middleman.hpp:34,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp.hpp:39,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp_broker.hpp:37,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/basp_broker.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[ 54%] Building CXX object libcaf_io/CMakeFiles/libcaf_io_shared.dir/src/default_multiplexer.cpp.o
+[ 54%] Building CXX object libcaf_io/CMakeFiles/libcaf_io_shared.dir/src/doorman.cpp.o
+[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/default_multiplexer.cpp:27:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/typed_event_based_actor.hpp:24:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:30,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/default_multiplexer.cpp:27:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/default_multiplexer.cpp:27:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/default_multiplexer.cpp:27:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:202:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<typed_behavior<Sigs...>, FirstArg, false> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:207:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<Result, T*, true> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:222:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/default_multiplexer.cpp:27:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/default_multiplexer.cpp:27:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: In function ‘typename caf::infer_typed_actor_handle<typename caf::detail::get_callable_trait<F>::result_type, typename caf::detail::tl_head<typename caf::detail::get_callable_trait<F>::arg_types>::type>::type caf::spawn_typed_functor(caf::execution_unit*, BeforeLaunch, F, Ts&& ...)’:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:230:14: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+     typename infer_typed_actor_base<
+              ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: At global scope:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:245:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/default_multiplexer.cpp:27:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/abstract_broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker_servant.hpp:25,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/doorman.hpp:29,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/doorman.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/abstract_broker.hpp:26:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker_servant.hpp:25,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/doorman.hpp:29,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/doorman.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/abstract_broker.hpp:26,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker_servant.hpp:25,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/doorman.hpp:29,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/doorman.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[ 55%] Building CXX object libcaf_io/CMakeFiles/libcaf_io_shared.dir/src/max_msg_size.cpp.o
+[ 56%] Building CXX object libcaf_io/CMakeFiles/libcaf_io_shared.dir/src/middleman.cpp.o
+[ 57%] Building CXX object libcaf_io/CMakeFiles/libcaf_io_shared.dir/src/hook.cpp.o
+[ 57%] Building CXX object libcaf_io/CMakeFiles/libcaf_io_shared.dir/src/interfaces.cpp.o
+[ 58%] Building CXX object libcaf_io/CMakeFiles/libcaf_io_shared.dir/src/publish.cpp.o
+[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/blocking_actor.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/scoped_actor.hpp:24,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/middleman.cpp:36:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/blocking_actor.hpp:31:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/scoped_actor.hpp:24,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/middleman.cpp:36:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/blocking_actor.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/scoped_actor.hpp:24,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/middleman.cpp:36:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/middleman.hpp:34,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/middleman.cpp:39:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:202:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<typed_behavior<Sigs...>, FirstArg, false> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:207:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<Result, T*, true> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:222:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/blocking_actor.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/scoped_actor.hpp:24,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/middleman.cpp:36:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/middleman.hpp:34,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/middleman.cpp:39:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: In function ‘typename caf::infer_typed_actor_handle<typename caf::detail::get_callable_trait<F>::result_type, typename caf::detail::tl_head<typename caf::detail::get_callable_trait<F>::arg_types>::type>::type caf::spawn_typed_functor(caf::execution_unit*, BeforeLaunch, F, Ts&& ...)’:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:230:14: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+     typename infer_typed_actor_base<
+              ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: At global scope:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:245:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/blocking_actor.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/scoped_actor.hpp:24,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/middleman.cpp:36:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/blocking_actor.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/scoped_actor.hpp:24,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/publish.cpp:25:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/blocking_actor.hpp:31:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/scoped_actor.hpp:24,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/publish.cpp:25:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/blocking_actor.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/scoped_actor.hpp:24,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/publish.cpp:25:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[ 59%] Building CXX object libcaf_io/CMakeFiles/libcaf_io_shared.dir/src/publish_local_groups.cpp.o
+[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/middleman.hpp:34,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp.hpp:39,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp_broker.hpp:37,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/publish.cpp:32:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:202:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<typed_behavior<Sigs...>, FirstArg, false> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:207:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<Result, T*, true> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:222:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/blocking_actor.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/scoped_actor.hpp:24,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/publish.cpp:25:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/broker.hpp:26:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/middleman.hpp:34,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp.hpp:39,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/caf/io/basp_broker.hpp:37,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/publish.cpp:32:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: In function ‘typename caf::infer_typed_actor_handle<typename caf::detail::get_callable_trait<F>::result_type, typename caf::detail::tl_head<typename caf::detail::get_callable_trait<F>::arg_types>::type>::type caf::spawn_typed_functor(caf::execution_unit*, BeforeLaunch, F, Ts&& ...)’:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:230:14: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+     typename infer_typed_actor_base<
+              ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: At global scope:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:245:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:38:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/blocking_actor.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/scoped_actor.hpp:24,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/publish.cpp:25:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/publish_local_groups.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:90:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<typed_behavior<Sigs...>, FirstArg> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:96:8: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_handle<void, typed_event_based_actor<Sigs...>*> {
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:109:10: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ typename infer_typed_actor_handle<
+          ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/typed_event_based_actor.hpp:24:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:30,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/publish_local_groups.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/local_actor.hpp:159:27: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+   CAF_DEPRECATED typename infer_typed_actor_handle<
+                           ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mIn file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/publish_local_groups.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/publish_local_groups.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:202:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<typed_behavior<Sigs...>, FirstArg, false> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+[0m[91m/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:207:8: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+ struct infer_typed_actor_base<Result, T*, true> {
+        ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:222:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/publish_local_groups.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/publish_local_groups.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: In function ‘typename caf::infer_typed_actor_handle<typename caf::detail::get_callable_trait<F>::result_type, typename caf::detail::tl_head<typename caf::detail::get_callable_trait<F>::arg_types>::type>::type caf::spawn_typed_functor(caf::execution_unit*, BeforeLaunch, F, Ts&& ...)’:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:230:14: warning: ‘template<class Result, class FirstArg, bool FirstArgPtr> struct caf::infer_typed_actor_base’ is deprecated [-Wdeprecated-declarations]
+     typename infer_typed_actor_base<
+              ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:199:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_base;
+                       ^~~~~~~~~~~~~~~~~~~~~~
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp: At global scope:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:245:25: warning: ‘template<class TypedBehavior, class FirstArg> struct caf::infer_typed_actor_handle’ is deprecated [-Wdeprecated-declarations]
+ CAF_DEPRECATED typename infer_typed_actor_handle<
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /scratch/actor-framework-0.14.5/libcaf_core/caf/spawn.hpp:25:0,
+                 from /scratch/actor-framework-0.14.5/libcaf_core/caf/all.hpp:31,
+                 from /scratch/actor-framework-0.14.5/libcaf_io/src/publish_local_groups.cpp:20:
+/scratch/actor-framework-0.14.5/libcaf_core/caf/spawn_fwd.hpp:86:23: note: declared here
+ struct CAF_DEPRECATED infer_typed_actor_handle;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~
+[0m[91mg++-6: internal compiler error: Killed (program cc1plus)
+Please submit a full bug report,
+with preprocessed source if appropriate.
+See <file:///usr/share/doc/gcc-6/README.Bugs> for instructions.
+[0m[91mmake[3]: *** [libcaf_io/CMakeFiles/libcaf_io_shared.dir/src/basp_broker.cpp.o] Error 4
+make[3]: *** Waiting for unfinished jobs....
+[0mlibcaf_io/CMakeFiles/libcaf_io_shared.dir/build.make:86: recipe for target 'libcaf_io/CMakeFiles/libcaf_io_shared.dir/src/basp_broker.cpp.o' failed
+make[3]: Leaving directory '/scratch/actor-framework-0.14.5/build'
+CMakeFiles/Makefile2:310: recipe for target 'libcaf_io/CMakeFiles/libcaf_io_shared.dir/all' failed
+make[2]: Leaving directory '/scratch/actor-framework-0.14.5/build'
+[91mmake[2]: *** [libcaf_io/CMakeFiles/libcaf_io_shared.dir/all] Error 2
+[0m[91mmake[1]: *** [all] Error 2
+[0mMakefile:138: recipe for target 'all' failed
+make[1]: Leaving directory '/scratch/actor-framework-0.14.5/build'
+Makefile:10: recipe for target 'install' failed
+[91mmake: *** [install] Error 2
+[0mService 'connector' failed to build: The command '/bin/sh -c make -j4 install' returned a non-zero code: 2
