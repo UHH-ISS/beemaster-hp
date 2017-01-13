@@ -83,9 +83,6 @@ EXPOSE 21
 # mysql
 EXPOSE 3306
 # smb
-EXPOSE 137
-EXPOSE 138
-EXPOSE 139
 EXPOSE 445
 
 COPY dionaea.conf /etc/dionaea/dionaea.conf
