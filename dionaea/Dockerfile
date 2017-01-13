@@ -1,4 +1,5 @@
 from alpine:3.3
+#from hypriot/rpi-alpine-scratch:latest <-- Use this for raspberry
 
 RUN apk upgrade
 
