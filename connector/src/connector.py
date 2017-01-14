@@ -112,7 +112,9 @@ class Connector(object):
         self.log.debug("Mappings read.")
 
         self.sender = Sender(config.send.address, config.send.port,
-                             config.broker.endpoint_prefix + config.connectorId, config.broker.topic,
+                             config.broker.endpoint_prefix +
+                             config.connectorId,
+                             config.broker.topic,
                              config.connectorId)
         self.log.info("Sender created.")
 
@@ -139,12 +141,14 @@ class Connector(object):
                                 raise LookupError(i)
                         mappings.append(mp)
                     except LookupError as e:
-                        self.log.error("Missing key '{}' in file '{}'. Ignoring."
-                                 .format(e.args[0], filepath))
+                        self.log.error(
+                            "Missing key '{}' in file '{}'. Ignoring."
+                            .format(e.args[0], filepath))
                     except Exception:
                         # TODO find correct exception types.
-                        self.log.error("Failed to read mapping in '{}'. Ignoring."
-                                 .format(filepath))
+                        self.log.error(
+                            "Failed to read mapping in '{}'. Ignoring."
+                            .format(filepath))
         return mappings
 
     def handle_receive(self, message):
