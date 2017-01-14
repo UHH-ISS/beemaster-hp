@@ -1,6 +1,6 @@
-#FROM alpine:3.3
+FROM alpine:3.3
 # Use this for raspberry
-FROM hypriot/rpi-alpine-scratch:latest
+#FROM hypriot/rpi-alpine-scratch:latest
 
 RUN apk upgrade
 
