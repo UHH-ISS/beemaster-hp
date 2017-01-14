@@ -126,7 +126,7 @@ class Mapper(object):
 
         for mapping in self.mappings:
             event_name = mapping['name']
-            self.log.debug("Using mapping for '{}'.".format(event_name))
+            self.log.info("Trying mapping for '{}'.".format(event_name))
 
             message = pb.message()
             # prepending with event-name for broker
