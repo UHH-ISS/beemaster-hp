@@ -91,6 +91,6 @@ EXPOSE 445
 COPY dionaea.conf /etc/dionaea/dionaea.conf
 COPY services/ /etc/dionaea/services-enabled/
 COPY ihandlers/ /etc/dionaea/ihandlers-enabled/
-#RUN rm /etc/dionaea/ihandlers-enabled/log_sqlite.yaml #remove sqlite logger
+#RUN rm /etc/dionaea/ihandlers-enabled/log_sqlite.yaml #remove sqlite logger (e.g. for the RaspberryPI)
 
 CMD dionaea -l all,-debug -L '*' -c /etc/dionaea/dionaea.conf
