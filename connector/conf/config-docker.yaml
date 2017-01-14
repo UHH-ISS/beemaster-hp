@@ -2,10 +2,9 @@ listen:
     address: 0.0.0.0
     port: 8080
 send:
-    address: 127.0.0.1
+    address: bro
     port: 9999
 mappings: mappings/dionaea/
 broker:
     topic: honeypot/dionaea/
-    endpoint: dioEp
-#connectorId: It_is_important_to_set_a_unique_ID_here_without_spaces
+    endpoint_prefix: beemaster-connector-

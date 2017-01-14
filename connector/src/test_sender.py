@@ -1,121 +1,128 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""test_sender
+
+Test the Sender.
+"""
+
+from __future__ import with_statement
+
 from sender import Sender
 
 import unittest
 import pybroker as pb
 
-import logging
 from time import sleep
 from select import select
+
 
 class TestSender(unittest.TestCase):
     """TestCases for sender.Sender"""
 
     topic = "honeypotconnector/unittest"
-    ip = "127.0.0.1"
-    port = 9765
+    master_ip = "127.0.0.1"
+    master_port = 9765
+    connector_id = "test"
+    connector_ep = connector_id
 
-    TIMEOUT = 5
+    datastore = "connectors"
 
-    def testSuccessPeering(self):
-        """Test successful peer"""
-        i = 0
-        epl = pb.endpoint("listener")
-        icsl = epl.incoming_connection_status()
+    # setup for all tests shared
+    master_mock = pb.endpoint("master_ep")
+    master_listening = master_mock.listen(master_port, master_ip)
+    master_store = pb.master_create(master_mock, datastore)
 
-        # To maintain the peering, the Sender needs to exist -> variable
-        sender = Sender(self.ip, self.port, "connector", self.topic,    # noqa
-                        "unittestSender")
-        # true: endpoint is listening
-        self.assertTrue(epl.listen(self.port, self.ip))
+    SELECT_TIMEOUT = 5
 
-        s, _, __ = select([icsl.fd()], [], [], self.TIMEOUT)
-        self.assertFalse(s is None or s == [], "Timout of 'select'")
-        msgs = icsl.want_pop()
+    def testSuccessMasterPeering(self):
+        """Test successful peer with the Bro-Master instance"""
+        self.assertTrue(self.master_listening)
 
-        for m in msgs:
-            self.assertEqual(m.peer_name, "connector")
-            self.assertEqual(m.status,
-                             pb.incoming_connection_status.tag_established)
-            i += 1
+        sender = Sender(self.master_ip, self.master_port, self.connector_ep, self.topic,
+                        self.connector_id)
 
-        # Be sure to have exactly one status message
-        self.assertEqual(i, 1)
+        assert sender is not None
 
-    def testSuccessSend(self):
-        """Test sending a message.
+        status_queue = self.master_mock.incoming_connection_status()
+        readable, _, _ = select([status_queue.fd()], [], [], self.SELECT_TIMEOUT)
+        self.assertTrue(readable is not None and readable is not [], "Timout of 'select'")
 
-        Should not raise an Exception or anything.
-        """
-        i = 0
-        port = self.port + 1
-        epname = "unittestSenderSuccess"
-        msgcontent = "hi"
-        epl = pb.endpoint("listenerSuccess")
-        mql = pb.message_queue(self.topic, epl)
+        conn_stati = status_queue.want_pop()
+        status_count = 0
+        for status in conn_stati:
+            self.assertEqual(status.peer_name, self.connector_ep)
+            self.assertEqual(status.status, pb.incoming_connection_status.tag_established)
+            status_count += 1
 
-        sender = Sender(self.ip, port, "connector", self.topic, epname)
-        self.assertTrue(epl.listen(port, self.ip))
+        self.assertEqual(status_count, 1)
 
-        # for some reason the test fails without these two lines of code
-        icsl = epl.incoming_connection_status()
-        s, _, __ = select([icsl.fd()], [], [], self.TIMEOUT)
-        self.assertFalse(s is None or s == [], "Timout of 'select'")
+    def testSuccessSlaveLookupOnInit(self):
+        """Test successful lookup of Bro-Slave instance during sender init"""
+        self.assertTrue(self.master_listening)
+        self.master_store.clear()
 
-        sender.send(pb.message([pb.data(msgcontent)]))
+        balance_to = "bro-slave"
+        self.master_store.insert(pb.data(self.connector_id), pb.data(balance_to))
 
-        s, _, __ = select([mql.fd()], [], [], self.TIMEOUT)
-        self.assertFalse(s is None or s == [], "Timout of 'select'")
-        msgs = mql.want_pop()
+        sender = Sender(self.master_ip, self.master_port, self.connector_ep, 
+                        self.topic, self.connector_id)
 
-        for m in msgs:
-            for d in m:
-                i += 1
-                if i == 1:
-                    self.assertEqual(d.which(), pb.data.tag_string)
-                    self.assertEqual(d.as_string(), msgcontent)
-                if i == 2:
-                    self.assertEqual(d.which(), pb.data.tag_string)
-                    self.assertEqual(d.as_string(), epname)
+        # force wait for this test
+        self.master_mock.incoming_connection_status().need_pop()
 
-        self.assertEqual(i, 2)
+        # do test slave lookup on init
+        self.assertEqual(sender.current_slave, balance_to)
+
+    def testSuccessSlaveLookupOnSend(self):
+        """Test successful (re-)lookup of Bro-Slave instance during sender send"""
+        self.assertTrue(self.master_listening)
+        self.master_store.clear()
+
+        sender = Sender(self.master_ip, self.master_port, self.connector_ep, 
+                        self.topic, self.connector_id)
+
+        # verify no initial peering took place
+        self.assertEqual(sender.current_slave, None)
+
+        balance_to = "bro-slave"
+        self.master_store.insert(pb.data(self.connector_id), pb.data(balance_to))
+
+        sleep(0.1) # time for the update of the shared data 
+        msg = pb.message()
+        msg.append(pb.data(self.topic))
+        msg.append(pb.data("MESSAGE"))
+
+        sender.send(msg)
+
+        # do test slave lookup during send
+        self.assertEqual(sender.current_slave, balance_to)
 
     def testFailureSendInvalidMessage(self):
-        """Test sending a message that is a simple string."""
-        sender = Sender(self.ip, self.port, "brokerEndpointName",
-                        self.topic, "unittestSender")
+        """Test failure when sending anything that is not a pybroker::message object"""
+        other_master_mock = pb.endpoint("other_master_ep")
+        other_master_port = 9766
+        pb.master_create(other_master_mock, self.datastore) # avoid block
+
+        self.assertTrue(other_master_mock.listen(other_master_port, self.master_ip))
+
+        sender = Sender(self.master_ip, other_master_port, self.connector_ep, self.topic,
+                        self.connector_id)
 
         with self.assertRaises(AttributeError):
             sender.send("")
+        with self.assertRaises(AttributeError):
+            sender.send(1)
+        with self.assertRaises(AttributeError):
+            sender.send(self)
 
-    def testFailurePeer(self):
-        """Try peering with not existing endpoint:
+#    def testFailureMasterPeer(self):
+        #"""Try peering with not existing endpoint"""
+        #
+        #invalid_ip = "999.999.999.999"
+        #ep = pb.endpoint("listener")
+        #self.assertFalse(ep.listen(self.master_port, invalid_ip))
 
-        - Listen to not existing endpoint (tests Broker actually)
-        - Send message to not existing endpoint (test Sender)
-          Should not raise an Exception or anything.
-        """
-        iip = "999.999.999.999"
-        epl = pb.endpoint("listener")
-        self.assertFalse(epl.listen(self.port, iip))
-
-        sender = Sender(self.ip, self.port, "connector", self.topic,
-                        "unittestSender")
-        sender.send(pb.message([pb.data("hi")]))
-        # TODO: #86 - implement in Sender check, if peer was successful
-        # - if message was received by endpoint cannot be checked at this point
-
-    def testFailureInvalidPort(self):
-        """Create a Sender with an invalid connection (ip)."""
-        with self.assertRaises(NotImplementedError):
-            Sender(self.ip, "9999", "brokerEndpointName",
-                   self.topic, "connectorID15")
-
-    def testFailureInvalidIp(self):
-        """Create a Sender with an invalid connection (port)."""
-        with self.assertRaises(NotImplementedError):
-            Sender(self.port, self.port, "brokerEndpointName",
-                   self.topic, "connectorID15")
-            # Broker bindings do not check for valid IPs. Strings are accepted.
+        #sender = Sender(invalid_ip, 9999, self.connector_ep, self.topic, self.connector_id)
 
 if __name__ == '__main__':
     unittest.main()

@@ -31,7 +31,7 @@ class Receiver(Flask):
         :param port:        Port to listen on. (int)
         """
         logger = logging.getLogger(self.__class__.__name__)
-        self.log = logger.info
+        self.log = logger
 
         super(Receiver, self).__init__(name)
 
@@ -61,7 +61,7 @@ class Receiver(Flask):
         self.onData = onData
 
         self.route(route, methods=['POST'])(self.__handle_post)
-        self.run(host=self.address, port=self.port, debug=True)
+        self.run(host=self.address, port=self.port, debug=False)
 
     def __handle_post(self):
         if 'application/json' in request.headers.get('Content-Type'):
@@ -70,7 +70,7 @@ class Receiver(Flask):
                 # TODO weak check:
                 data = json.loads(json.dumps(data))
 
-                self.log(data)
+                self.log.debug(data)
                 self.onData(data)
             except Exception:
                 return Response('Bad Request', 400)

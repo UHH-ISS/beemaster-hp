@@ -1,4 +1,7 @@
 FROM debian:stretch
+# Use this for raspberry
+#FROM resin/rpi-raspbian:jessie
+
 RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
@@ -11,6 +14,28 @@ RUN apt-get update && apt-get install -y \
     swig \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
+
+# RPi does not need/have rocksdb
+#RUN apt-get update && apt-get install -y \
+#    build-essential \
+#    cmake \
+#    curl \
+#    git \
+#    python \
+#    python-dev \
+#    python-pip \
+#    swig \
+#    --no-install-recommends && \
+#    rm -rf /var/lib/apt/lists/*
+#
+# Install gcc-5
+#RUN echo 'deb http://mirrordirector.raspbian.org/raspbian/ testing main contrib non-free rpi' > /etc/apt/sources.list.d/stretch.list
+#RUN apt-get update && apt-get install -y \
+#    gcc-5 g++-5 \
+#    --no-install-recommends
+#RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.9 &&
+#    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 40 --slave /usr/bin/g++ g++ /usr/bin/g++-5 &&
+#    update-alternatives --config gcc
 
 # Get actor framwork
 WORKDIR /scratch
@@ -31,17 +56,22 @@ RUN git submodule update
 RUN ./configure
 RUN make -j4 install
 
-COPY src /opt/connector
+# Remove sources
+RUN rm -rf /scratch
+
+RUN mkdir /opt/connector
 COPY requirements.txt /opt/connector/.
 
 WORKDIR /opt/connector
 
-# Remove sources
-RUN rm -rf /scratch
-
-RUN pip install --upgrade pip setuptools wheel 
+RUN pip install --upgrade pip setuptools wheel
 RUN pip install -r requirements.txt
 
 EXPOSE 8080
+
+# copy stuff from _within_ src & conf to /opt/connector (note the trailing slash after conf)
+COPY src/ /opt/connector
+
+COPY conf/ /opt/connector
 
 ENTRYPOINT ["/usr/bin/python","connector.py"]

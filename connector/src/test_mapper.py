@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""test_mapper
+
+Test the Mapper.
+"""
+
 from mapper import Mapper
 
 import unittest
@@ -8,6 +15,7 @@ from datetime import datetime
 import yaml
 import re
 from copy import deepcopy
+
 
 class TestMapper(unittest.TestCase):
     """TestCases for mapper.Mapper."""
@@ -220,6 +228,7 @@ class TestMapper(unittest.TestCase):
         mapping["mapping"]["timestamp"] = "FOOBAR"
         mapper = Mapper([mapping])
         self.assertIsNone(mapper.transform(self.VALID_INPUT_PLAIN))
+
 
 if __name__ == '__main__':
     logging.basicConfig(

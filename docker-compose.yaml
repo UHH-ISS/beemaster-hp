@@ -1,0 +1,13 @@
+version: '2'
+services:
+  connector:
+    build: ./connector
+    command: ["config-uhh.yaml"]
+  dionaea:
+    build: ./dionaea
+    ports:
+      - "21:21"
+      - "80:80"
+      - "443:443"
+      - "445:445"
+      - "3306:3306"

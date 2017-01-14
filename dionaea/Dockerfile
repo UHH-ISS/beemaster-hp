@@ -1,4 +1,6 @@
-from alpine:3.3
+FROM alpine:3.3
+# Use this for raspberry
+#FROM hypriot/rpi-alpine-scratch:latest
 
 RUN apk upgrade
 
@@ -81,9 +83,6 @@ EXPOSE 21
 # mysql
 EXPOSE 3306
 # smb
-EXPOSE 137
-EXPOSE 138
-EXPOSE 139
 EXPOSE 445
 
 COPY dionaea.conf /etc/dionaea/dionaea.conf
