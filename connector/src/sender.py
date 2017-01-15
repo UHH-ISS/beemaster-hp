@@ -100,8 +100,9 @@ class Sender(object):
                     if self.connector_to_slave_peering:
                         self.connector_to_slave.unpeer(
                             self.connector_to_slave_peering)
-                    self.connector_to_slave_peering = self.connector_to_slave.peer(
-                        self.current_slave[len("bro-slave-"):], 9999, 1)
+                    self.connector_to_slave_peering =\
+                        self.connector_to_slave.peer(
+                            self.current_slave[len("bro-slave-"):], 9999, 1)
                     sleep(0.1)  # repeering may take a moment, make sure..
                 else:
                     self.log.warn("No slave peered anymore.")
