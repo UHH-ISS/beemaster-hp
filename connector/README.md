@@ -41,7 +41,7 @@ The values shown in the example above are the default that the connector falls b
 The mappings used by the connector are configureable via YAML files. Below is an example of a mapping for a Dionaea connection event:
 
 ```yaml
-# on file per connection type
+# one file per connection type
 #
 # name: name of the event (for bro)
 # mapping: the structure of the arriving json
