@@ -65,7 +65,7 @@ class TestSender(unittest.TestCase):
         self.assertTrue(self.master_listening)
         self.master_store.clear()
 
-        balance_to = "bro-slave"
+        balance_to = "bro-slave-127.0.0.1:9999"
         self.master_store.insert(pb.data(self.connector_id),
                                  pb.data(balance_to))
 
@@ -89,7 +89,7 @@ class TestSender(unittest.TestCase):
         # verify no initial peering took place
         self.assertEqual(sender.current_slave, None)
 
-        balance_to = "bro-slave"
+        balance_to = "bro-slave-127.0.0.1:9999"
         self.master_store.insert(pb.data(self.connector_id),
                                  pb.data(balance_to))
 
