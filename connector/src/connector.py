@@ -157,8 +157,8 @@ class Connector(object):
         :param message:     The message to map and send. (json)
         """
         mapped = self.mapper.transform(message)
-        self.log.debug("Mapped message is '{}'.".format(mapped))
         if mapped:
+            self.log.info("Mapped message is '{}'.".format(mapped))
             self.sender.send(mapped)
 
 

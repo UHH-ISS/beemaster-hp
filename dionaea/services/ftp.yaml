@@ -2,4 +2,4 @@
   config:
     root: /var/dionaea/roots/ftp
     response_messages:
-      welcome_msg: UHH-Informatik-ISS FTP server ready. Please be patient.
+      welcome_msg: 220 UHH-Informatik-ISS FTP server ready. Please be patient.

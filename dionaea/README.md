@@ -11,7 +11,7 @@ Searches in the provided directory (here ```.```) for a ```Dockerfile```. Builds
 
 ### Run Docker Container
 
-```docker run -p 80:80 -p 443:443 --name dio --rm dio-local```
+```docker run -p 21:21 80:80 -p 443:443 -p 445:445 -p 3306:3306 --name dio --rm dio-local```
 
 Instanciate a container by reading the image called ```dio-local```. Flag ```-p``` maps container ports to ports on localhost. Flag ```--name dio``` is the container name (not image!). Container names are unique. ```--rm``` means, the container is thrown away on shutdown.
 
@@ -27,14 +27,28 @@ Use python3 here.
 
 Things are exposed to your local machine, so you can talk to your machine - which is then forwarded to the container.
 
-```curl localhost:80```
+```curl localhost```
 Calls localhost on port 80.
+
+```curl --insecure https://localhost```
+Calls localhost on port 443, ssl.
+
+```ftp localhost```
+FTP to localhost.
+
+```mysql --host=127.0.0.1```
+mysql login to localhost. Always use 127.0.0.1, else mysql will use the `lo` interface and cannot connect.
 
 Dionaea will pick this up, log a JSON string and send that to the dummy connector. The connector opens a file called ```log.txt``` and there you can find the dionaea output.
 
 ### Add Custom Service / Ihandler
 
 Add whatever service or ihandler you want to ```services/``` or ```ihandlers/``` directory, respectively. Then you have to re-run ```docker build . -t dio-local```. (That step will not take as long as the first time). It will pick up the new files and copy them accordingly, to be used from within the container.
+
+
+### Disable IHandlers:
+
+So far, all default enabled IHandlers of dionaea are used. Those that are existing in our `services` and `ihandlers` folders only overwrite the defaults. If you want to explicitly disable a default, make a new ticket and lets discuss it there. **DO NOT `rm` something within our docker build, that is nonsense.**
 
 ### Make Dionaea stop (writing files)
 
@@ -56,10 +70,6 @@ Alternatively, or if in doubt, you could change the logging file to `/dev/null`:
 default.levels=/dev/null
 errors.levels=/dev/null
 ```
-
-**2.** Also, in the same folder, open the `Dockerfile` and remove the `#` in front of
-the line with the content `rm /etc/dionaea/ihandlers-enabled/log_sqlite.yaml`
-to activate that instruction.
 
 ##### Downloading files
 Go to the `dionaea` folder and open the `dionaea.conf` file with an editor.
