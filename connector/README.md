@@ -23,7 +23,7 @@ optional arguments:
 
 The positional argument accepts configuration files written in YAML with the following format:
 
-```
+```yaml
 listen:
     address: 0.0.0.0            # Address to listen on.
     port: 8080                  # Port to listen on.
@@ -40,7 +40,7 @@ The values shown in the example above are the default that the connector falls b
 ## Mapping
 The mappings used by the connector are configureable via YAML files. Below is an example of a mapping for a Dionaea connection event:
 
-```
+```yaml
 # on file per connection type
 #
 # name: name of the event (for bro)
@@ -84,7 +84,7 @@ If you want to use the connector in conjunction with Dionaea and Bro containers,
 
 By default (inside the container), the contents of the `conf` directory are copied into the `src` directory. Thus the `connector.py` can be started by passing the config file name directly (see the docker-compose file example below):
 
-```
+```yaml
 version: '2'
 services:
   connector:
@@ -101,7 +101,7 @@ services:
 Then run `docker-compose up --build`
 
 Instead of passing `config-docker.yaml` as an argument (which is a config adjusted for this Compose file), you could also pass your own values, f.e.: 
-```
+```yaml
   connector:
     command: ["--sport","1337","--topic","leetevent/"]
 ```

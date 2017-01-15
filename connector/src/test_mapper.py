@@ -30,7 +30,7 @@ class TestMapper(unittest.TestCase):
 
     # all default datatypes
     VALID_INPUT_PLAIN = {
-        "timestamp":  TEST_DATE_STRING,
+        "timestamp": TEST_DATE_STRING,
         "ipv4": TEST_IPV4,
         "ipv6": TEST_IPV6,
         "port": TEST_PORT,
@@ -111,7 +111,6 @@ class TestMapper(unittest.TestCase):
         string = re.sub(r"\s+", ' ', string)
         return str(string)
 
-
     VALID_MAPPING_MYSQL = 'mappings/dionaea/mysql.yaml'
 
     def _compare_messages(self, mapper, expect, inp):
@@ -133,32 +132,28 @@ class TestMapper(unittest.TestCase):
     def testPlainMapSuccess(self, mapper=Mapper([VALID_MAPPING_PLAIN])):
         """Test the default successful scenario."""
         expect = map(pb.data, (
-                        self.VALID_MAPPING_PLAIN.get('name'),
-                        TestMapper._validate_map_time(self.TEST_DATE_STRING),
-                        TestMapper._validate_map_addr(self.TEST_IPV4),
-                        TestMapper._validate_map_addr(self.TEST_IPV6),
-                        self.TEST_PORT,
-                        self.TEST_STRING,
-                        self.TEST_NUMBER,
-                        TestMapper._validate_map_array(self.TEST_ARRAY)
-                    )
-                )
+                     self.VALID_MAPPING_PLAIN.get('name'),
+                     TestMapper._validate_map_time(self.TEST_DATE_STRING),
+                     TestMapper._validate_map_addr(self.TEST_IPV4),
+                     TestMapper._validate_map_addr(self.TEST_IPV6),
+                     self.TEST_PORT,
+                     self.TEST_STRING,
+                     self.TEST_NUMBER,
+                     TestMapper._validate_map_array(self.TEST_ARRAY)))
 
         self._compare_messages(mapper, expect, self.VALID_INPUT_PLAIN)
 
     def testNestedMapSuccess(self, mapper=Mapper([VALID_MAPPING_NESTED])):
         """Test the default successful scenario."""
         expect = map(pb.data, (
-                        self.VALID_MAPPING_NESTED.get('name'),
-                        TestMapper._validate_map_time(self.TEST_DATE_STRING),
-                        TestMapper._validate_map_addr(self.TEST_IPV4),
-                        TestMapper._validate_map_addr(self.TEST_IPV6),
-                        self.TEST_PORT,
-                        self.TEST_STRING,
-                        self.TEST_NUMBER,
-                        TestMapper._validate_map_array(self.TEST_ARRAY)
-                    )
-                )
+                     self.VALID_MAPPING_NESTED.get('name'),
+                     TestMapper._validate_map_time(self.TEST_DATE_STRING),
+                     TestMapper._validate_map_addr(self.TEST_IPV4),
+                     TestMapper._validate_map_addr(self.TEST_IPV6),
+                     self.TEST_PORT,
+                     self.TEST_STRING,
+                     self.TEST_NUMBER,
+                     TestMapper._validate_map_array(self.TEST_ARRAY)))
 
         self._compare_messages(mapper, expect, self.VALID_INPUT_NESTED)
 
@@ -176,7 +171,8 @@ class TestMapper(unittest.TestCase):
         self.assertIsNone(mapper.transform("no object"))
         self.assertIsNone(mapper.transform([]))
         self.assertIsNone(mapper.transform({}))
-        self.assertIsNone(mapper.transform({"some": "object", "no": "mapping"}))
+        self.assertIsNone(mapper.transform({"some": "object",
+                                            "no": "mapping"}))
 
         plain_broken = deepcopy(self.VALID_INPUT_PLAIN)
         del plain_broken["timestamp"]
@@ -187,8 +183,7 @@ class TestMapper(unittest.TestCase):
         self.assertIsNone(mapper.transform(nested_broken))
 
     def testFailureWithBrokerUnconformData(self):
-        """Test empty output when passed arguments are not convertable to broker conform types ."""
-
+        """Test failure when arguments are not convertable to broker types."""
         mapper = Mapper([self.VALID_MAPPING_PLAIN])
 
         broken = deepcopy(self.VALID_INPUT_PLAIN)
@@ -204,13 +199,13 @@ class TestMapper(unittest.TestCase):
         self.assertIsNone(mapper.transform(broken))
 
         broken = deepcopy(self.VALID_INPUT_PLAIN)
-        broken["port"] = 9999999 # out of range
+        broken["port"] = 9999999  # out of range
         self.assertIsNone(mapper.transform(broken))
         broken["port"] = "foo"
         self.assertIsNone(mapper.transform(broken))
 
         broken = deepcopy(self.VALID_INPUT_PLAIN)
-        broken["string"] = {} # cannot be cast to string
+        broken["string"] = {}  # cannot be cast to string
         self.assertIsNone(mapper.transform(broken))
 
         broken = deepcopy(self.VALID_INPUT_PLAIN)
@@ -220,7 +215,6 @@ class TestMapper(unittest.TestCase):
         broken = deepcopy(self.VALID_INPUT_PLAIN)
         broken["array"] = 123
         self.assertIsNone(mapper.transform(broken))
-
 
     def testFailureInvalidConversionFunc(self):
         """Test empty output when a conversion function is invalid."""

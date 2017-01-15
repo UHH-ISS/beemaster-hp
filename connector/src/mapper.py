@@ -47,13 +47,14 @@ class Mapper(object):
 
     def _logUnknown(self, unknownProp, val):
         """Log an unknown item."""
-        self.log.info("No Mapping configured for property '{}' with value '{}'."
-                 .format(unknownProp, val))
+        self.log.info(
+            "No Mapping configured for property '{}' with value '{}'."
+            .format(unknownProp, val))
 
     def _logUnimplemented(self, prop, val):
         """Log an unimplemented item."""
-        self.log.info("No handler implemented for '{}' with value '{}'".
-                 format(prop, val))
+        self.log.info("No handler implemented for '{}' with value '{}'"
+                      .format(prop, val))
 
     def _map_port_count(self, port):
         """Map a port."""
@@ -142,7 +143,7 @@ class Mapper(object):
                 # TODO specify possible exception! maybe even custom ones in
                 #      _map_*.
                 self.log.info("Failed to convert message properly. "
-                         "Ignoring format.")
+                              "Ignoring format.")
                 break
 
             # setting up the final message in desired order
@@ -153,7 +154,7 @@ class Mapper(object):
                     break
                 broker_item = brokerMsg[item]
                 self.log.debug("Add converted brokerObject '{}' to message."
-                         .format(broker_item))
+                               .format(broker_item))
                 # TODO would be nice to set the message in one step only
                 message.append(pb.data(broker_item))
             else:
