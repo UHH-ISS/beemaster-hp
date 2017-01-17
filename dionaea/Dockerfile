@@ -73,7 +73,8 @@ RUN make install
 
 RUN mkdir -p /var/dionaea/logs/
 RUN mkdir -p /etc/dionaea/services-enabled /etc/dionaea/ihandlers-enabled
-RUN mkdir -p /var/dionaea/roots/ftp /var/dionaea/roots/www /var/dionaea/binaries
+RUN mkdir -p /var/dionaea/roots/ftp /var/dionaea/roots/www
+RUN mkdir -p /var/dionaea/streams /var/dionaea/binaries
 
 # http, https
 EXPOSE 80
@@ -88,6 +89,5 @@ EXPOSE 445
 COPY dionaea.conf /etc/dionaea/dionaea.conf
 COPY services/ /etc/dionaea/services-enabled/
 COPY ihandlers/ /etc/dionaea/ihandlers-enabled/
-#RUN rm /etc/dionaea/ihandlers-enabled/log_sqlite.yaml #remove sqlite logger
 
 CMD dionaea -l all,-debug -L '*' -c /etc/dionaea/dionaea.conf
