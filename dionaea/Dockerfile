@@ -67,6 +67,7 @@ RUN ./configure \
     --with-emu-include=/usr/include \
     --with-nl-lib=/usr/lib \
     --with-nl-include=/usr/include/libnl3
+COPY blackhole.py /opt/dionaea/modules/python/dionaea/blackhole.py
 RUN make
 RUN make install
 
@@ -84,6 +85,10 @@ EXPOSE 21
 EXPOSE 3306
 # smb
 EXPOSE 445
+# black hole
+EXPOSE 23
+EXPOSE 53
+EXPOSE 123
 
 COPY dionaea.conf /etc/dionaea/dionaea.conf
 COPY services/ /etc/dionaea/services-enabled/
