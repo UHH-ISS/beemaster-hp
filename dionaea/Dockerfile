@@ -86,6 +86,8 @@ EXPOSE 3306
 # smb
 EXPOSE 445
 
+RUN rm /etc/dionaea/ihandlers-enabled/*
+RUN rm /etc/dionaea/services-enabled/*
 COPY dionaea.conf /etc/dionaea/dionaea.conf
 COPY services/ /etc/dionaea/services-enabled/
 COPY ihandlers/ /etc/dionaea/ihandlers-enabled/

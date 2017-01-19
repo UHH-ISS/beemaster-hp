@@ -24,8 +24,6 @@ from os import walk
 import logging
 import yaml
 
-DEFAULT_CONFIG_FILE = 'config.yaml'
-
 
 class ConnConfig(dict):
     """Connection configuration.
