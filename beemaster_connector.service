@@ -6,4 +6,4 @@ After=docker.service
 [Service]
 Restart=always
 ExecStart=/usr/bin/sh /home/beemaster/mp-ids/mp-ids-hp/run_connector_pi.sh
-ExecStop=/usr/bin/docker stop connector
+ExecStop=/usr/bin/kill -9 `/usr/bin/ps ax|grep -v grep|grep connector|awk -F ' ' '{print $1}'`
