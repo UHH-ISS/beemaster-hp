@@ -37,9 +37,8 @@ shell. Other shells/terminals/sessions need to source the environment again.
 
 ##### Disable Logging
 
-If you want to prevent Dionaea from writing logs, simply open the dionaea.conf
-file and remove all the lines in the `[logging]` section. Make sure though to
-leave the section header in place as Dionaea will crash otherwise.
+* [Dionaea](dionaea/README.md#make-dionaea-stop-writing-files)
+* Connector: Logs only if you save the console output to a file.
 
 ### Notes
 
