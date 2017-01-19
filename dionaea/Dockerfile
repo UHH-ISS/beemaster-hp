@@ -71,6 +71,8 @@ RUN make
 RUN make install
 
 
+RUN rm /etc/dionaea/ihandlers-enabled/*
+RUN rm /etc/dionaea/services-enabled/*
 RUN mkdir -p /var/dionaea/logs/
 RUN mkdir -p /etc/dionaea/services-enabled /etc/dionaea/ihandlers-enabled
 RUN mkdir -p /var/dionaea/roots/ftp /var/dionaea/roots/www
@@ -86,8 +88,6 @@ EXPOSE 3306
 # smb
 EXPOSE 445
 
-RUN rm /etc/dionaea/ihandlers-enabled/*
-RUN rm /etc/dionaea/services-enabled/*
 COPY dionaea.conf /etc/dionaea/dionaea.conf
 COPY services/ /etc/dionaea/services-enabled/
 COPY ihandlers/ /etc/dionaea/ihandlers-enabled/
