@@ -35,6 +35,12 @@ Source the environment with `. env/bin/activate` (or use the symlink, provided
 by `./setup.sh -s`). Be aware, that the activation only applies for the current
 shell. Other shells/terminals/sessions need to source the environment again.
 
+##### Disable Logging
+
+If you want to prevent Dionaea from writing logs, simply open the dionaea.conf
+file and remove all the lines in the `[logging]` section. Make sure though to
+leave the section header in place as Dionaea will crash otherwise.
+
 ### Notes
 
 > @1jost: Would [tox](https://tox.readthedocs.io/en/latest/) be overkill? It
