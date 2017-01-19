@@ -1,0 +1,9 @@
+[Unit]
+Description=Start Connector
+Author=Beemaster
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/sh /home/beemaster/mp-ids/mp-ids-hp/run_pi.sh
+ExecStop=/usr/bin/docker stop dio
