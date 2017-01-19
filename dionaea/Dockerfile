@@ -71,9 +71,12 @@ RUN make
 RUN make install
 
 
+RUN rm /etc/dionaea/ihandlers-enabled/*
+RUN rm /etc/dionaea/services-enabled/*
 RUN mkdir -p /var/dionaea/logs/
 RUN mkdir -p /etc/dionaea/services-enabled /etc/dionaea/ihandlers-enabled
-RUN mkdir -p /var/dionaea/roots/ftp /var/dionaea/roots/www /var/dionaea/binaries
+RUN mkdir -p /var/dionaea/roots/ftp /var/dionaea/roots/www
+RUN mkdir -p /var/dionaea/streams /var/dionaea/binaries
 
 # http, https
 EXPOSE 80

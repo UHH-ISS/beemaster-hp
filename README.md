@@ -35,6 +35,11 @@ Source the environment with `. env/bin/activate` (or use the symlink, provided
 by `./setup.sh -s`). Be aware, that the activation only applies for the current
 shell. Other shells/terminals/sessions need to source the environment again.
 
+##### Disable Logging
+
+* [Dionaea](dionaea/README.md#make-dionaea-stop-writing-files)
+* Connector: Logs only if you save the console output to a file.
+
 ### Notes
 
 > @1jost: Would [tox](https://tox.readthedocs.io/en/latest/) be overkill? It

@@ -11,7 +11,7 @@ Searches in the provided directory (here ```.```) for a ```Dockerfile```. Builds
 
 ### Run Docker Container
 
-```docker run -p 80:80 -p 443:443 --name dio --rm dio-local```
+```docker run -p 21:21 80:80 -p 443:443 -p 445:445 -p 3306:3306 --name dio --rm dio-local```
 
 Instanciate a container by reading the image called ```dio-local```. Flag ```-p``` maps container ports to ports on localhost. Flag ```--name dio``` is the container name (not image!). Container names are unique. ```--rm``` means, the container is thrown away on shutdown.
 
@@ -25,20 +25,55 @@ Use python3 here.
 
 ### Talk to Dionaea
 
-Things are exposed to your local machine, so you can talk to your machine - which is then forwarded to the container.
+Using the above `run` command, you can talk to your machine - which is then forwarded to the container.
 
-```curl localhost:80```
+```curl localhost```
 Calls localhost on port 80.
 
-Dionaea will pick this up, log a JSON string and send that to the dummy connector. The connector opens a file called ```log.txt``` and there you can find the dionaea output.
+```curl --insecure https://localhost```
+Calls localhost on port 443, ssl.
 
-### Add Custom Service / Ihandler
+```ftp localhost```
+FTP to localhost.
 
-Add whatever service or ihandler you want to ```services/``` or ```ihandlers/``` directory, respectively. Then you have to re-run ```docker build . -t dio-local```. (That step will not take as long as the first time). It will pick up the new files and copy them accordingly, to be used from within the container.
+```mysql --host=127.0.0.1```
+mysql login to localhost. Always use 127.0.0.1, else mysql will use the `lo` interface and cannot connect.
+
+Dionaea will pick this up, log a JSON string and send that to the address you entered in the iHandler configuration.
+In case of the [dummy logger](#start-python-dummy-logger), the you can find the Dionaea output in the  ```log.txt``` file.
+
+##### Try exploits on Dionaea
+
+You could try exploiting Dionaea using [Metasploit](/METASPLOIT.md)
+
+### Add Custom Service / iHandler
+
+Add whatever service or ihandler you want to ```services/``` or ```ihandlers/``` directory, respectively. 
+Then you have to re-run ```docker build . -t dio-local```. (That step will not take as long as the first time). 
+It will pick up the new files and copy them accordingly, to be used from within the container.
+
+
+### Disable iHandlers:
+
+So far, only those iHandlers and Services existing in our `services` and `ihandlers` folders are used.
+To enable an iHandler or Service, you have to put the right file in one of these folders and configure it properly.
+For example, the sqlite logging is disabled by default. You may want to [enable it](http://dionaea.readthedocs.io/en/latest/ihandler/log_sqlite.html).
 
 ### Make Dionaea stop (writing files)
 
 ##### Logging
+If you want to prevent Dionaea from writing logs (and downloading files), 
+open the `dionaea.conf` file and remove all the lines in the `[logging]` section.
+Make sure though to leave the section header in place as Dionaea will crash otherwise.
+
+
+**Warning:** For some reason, Dionaea may work unexpectingly with disabled logging.
+For example, the SMB service produces errors: It won't download files and crashes.
+If you want to use the SMB to it full extend and minimize logging, reduce logging
+to the critical level (see below).
+
+
+If you want Dionaea still log critical errors, you may change the settings accordingly:
 **1.** Go to the `dionaea` folder and open the `dionaea.conf` file with an editor.
 
 Change the logging levels to critical. As a result, there is almost nothing that
@@ -49,20 +84,12 @@ default.levels=critical
 errors.levels=critical
 ```
 
-Alternatively, or if in doubt, you could change the logging file to `/dev/null`:
-
-```
-[logging]
-default.levels=/dev/null
-errors.levels=/dev/null
-```
-
-**2.** Also, in the same folder, open the `Dockerfile` and remove the `#` in front of
-the line with the content `rm /etc/dionaea/ihandlers-enabled/log_sqlite.yaml`
-to activate that instruction.
-
 ##### Downloading files
 Go to the `dionaea` folder and open the `dionaea.conf` file with an editor.
+You may either disable logging completely (at the moment this "disables" also
+downloading files, because Dionaea crashes before this step, see above) or
+choose a location that does not exist to save files to. Note: This also leads
+to critical errors.
 
 Change the value of `download.dir` to `/dev/null`:
 
