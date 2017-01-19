@@ -68,8 +68,10 @@ class Sender(object):
                 .format(self.broker_endpoint, str(e)))
 
         if self.current_slave:
+            slave_ip = self.current_slave[len("bro-slave-"):].split(":")[0]
+            slave_port = self.current_slave[len("bro-slave-"):].split(":")[1]
             self.connector_to_slave_peering = self.connector_to_slave.peer(
-                self.current_slave[len("bro-slave-"):], port, 1)
+                slave_ip, int(slave_port), 1)
 
         # TODO: in the future:
         # provide a channel to accept commands (change config,
@@ -95,14 +97,18 @@ class Sender(object):
                 # update the receiver, so repeer
                 self.current_slave = current_slave
                 if self.current_slave:
-                    self.log.info("Repeering with {} {}"
-                                  .format(self.current_slave, 9999))
+                    self.log.info("Repeering with {}"
+                                  .format(self.current_slave))
                     if self.connector_to_slave_peering:
                         self.connector_to_slave.unpeer(
                             self.connector_to_slave_peering)
+                    slave_ip =\
+                        self.current_slave[len("bro-slave-"):].split(":")[0]
+                    slave_port =\
+                        self.current_slave[len("bro-slave-"):].split(":")[1]
                     self.connector_to_slave_peering =\
-                        self.connector_to_slave.peer(
-                            self.current_slave[len("bro-slave-"):], 9999, 1)
+                        self.connector_to_slave.peer(slave_ip, int(slave_port),
+                                                     1)
                     sleep(0.1)  # repeering may take a moment, make sure..
                 else:
                     self.log.warn("No slave peered anymore.")
