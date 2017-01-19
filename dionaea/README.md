@@ -62,9 +62,15 @@ For example, the sqlite logging is disabled by default. You may want to [enable 
 ### Make Dionaea stop (writing files)
 
 ##### Logging
-If you want to prevent Dionaea from writing logs, simply open the `dionaea.conf`
-file and remove all the lines in the `[logging]` section. Make sure though to
-leave the section header in place as Dionaea will crash otherwise.
+If you want to prevent Dionaea from writing logs (and downloading files), 
+open the `dionaea.conf` file and remove all the lines in the `[logging]` section.
+Make sure though to leave the section header in place as Dionaea will crash otherwise.
+
+
+**Warning:** For some reason, Dionaea may work unexpectingly with disabled logging.
+For example, the SMB service produces errors: It won't download files and crashes.
+If you want to use the SMB to it full extend and minimize logging, reduce logging
+to the critical level (see below).
 
 
 If you want Dionaea still log critical errors, you may change the settings accordingly:
@@ -80,6 +86,10 @@ errors.levels=critical
 
 ##### Downloading files
 Go to the `dionaea` folder and open the `dionaea.conf` file with an editor.
+You may either disable logging completely (at the moment this "disables" also
+downloading files, because Dionaea crashes before this step, see above) or
+choose a location that does not exist to save files to. Note: This also leads
+to critical errors.
 
 Change the value of `download.dir` to `/dev/null`:
 
