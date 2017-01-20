@@ -5,5 +5,6 @@ After=docker.service
 
 [Service]
 Restart=always
+WorkingDirectory=/home/beemaster/mp-ids/mp-ids-hp
 ExecStart=/usr/bin/sh /home/beemaster/mp-ids/mp-ids-hp/run_dio_pi.sh
 ExecStop=/usr/bin/sh /home/beemaster/mp-ids/mp-ids-hp/stop_dio_pi.sh
