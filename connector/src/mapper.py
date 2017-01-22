@@ -75,6 +75,7 @@ class Mapper(object):
         # need nul terminated string for C++
         string = str(string)
         string = re.sub(r"\s+", ' ', string)
+        string = string.encode('ascii')
         return string
 
     def _map_time_point(self, time_str):
@@ -139,7 +140,7 @@ class Mapper(object):
                 brokerMsg = {k2: v2 for k, v in data.iteritems() for k2, v2
                              in self._traverse_to_end(k, v, local_mapping)
                              .iteritems()}
-            except Exception:
+            except Exception as e:
                 # TODO specify possible exception! maybe even custom ones in
                 #      _map_*.
                 self.log.info("Failed to convert message properly. "

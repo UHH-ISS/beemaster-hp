@@ -72,7 +72,8 @@ class Receiver(Flask):
 
                 self.log.debug(data)
                 self.onData(data)
-            except Exception:
+            except Exception as e:
+                self.log.info("Error while handling POST data: '{}'.".format(e.message))
                 return Response('Bad Request', 400)
 
             return Response('OK', 200)
