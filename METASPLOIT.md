@@ -42,8 +42,10 @@ dionaea_access (Als Notiz, dass ein Zugriff erfolgt ist)
 
 Ein weiterer Angriff, um MySQL zu testen, geht so: Man muss hier den Port `3306`
 exposen, in der `msfconsole` folgende Befehle eingeben:
-`use windows/mysql/mysql_payload`, `set RHOST 127.0.0.1`[^1]
-und dann wieder `exploit`.
+
+* `use windows/mysql/mysql_payload`
+* `set RHOST 127.0.0.1`[^1]
+* und dann wieder `exploit`.
 
 Da kann man auch überprüfen, ob unsere Fehlermeldung
 mittlerweile angepasst wurde (im Moment kommt immer noch die Dionaea-typische
@@ -60,5 +62,22 @@ SELECT @@version_compile_os
 select * from mysql.func where name = 'sys_exec'
 ```
 
+### FTP / Fuzzing
+
+Metasploit liefert diverse Fuzzers[^2] aus, die dazu dienen Eingaben zu tätigen,
+um herauszufinden, ob es zu einem Buffer-Overflow führt (z.B. durch zu viele
+Daten oder ein unerwarteter Typ).
+
+Für FTP kann beispielsweise folgendes Modul verwendet werden:
+
+* `use auxiliary/fuzzers/ftp/ftp_pre_post`
+* `set RHOSTS 0.0.0.0`
+* `run`
+
+Achtung: Die Ausführung bei der Beibehaltung der Standardwerte dauert sehr lange!
+Via des `info`-Befehls gibt es weitere Informationen - insbesondere zu den Parametern und:
+ > This module will connect to a FTP server and perform pre- and post-authentication fuzzing
+
 [^1]: Die IP ggf. anpassen (z.B. `0.0.0.0`). Im Zweifelsfall gibt `docker ps` Auskunft über die
       korrekte IP / Portwahl.
+[^2]: Via `search type:auxiliary fuzzers` kann nach weiteren Fuzzers gesucht werden, z.B. auch für SMB usw.
