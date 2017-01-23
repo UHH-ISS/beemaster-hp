@@ -74,7 +74,10 @@ Für FTP kann beispielsweise folgendes Modul verwendet werden:
 * `set RHOSTS 0.0.0.0`
 * `run`
 
-Achtung: Die Ausführung bei der Beibehaltung der Standardwerte dauert sehr lange!
+**Achtung:** Bei Beibehaltung der Standardwerte läuft der fuzzer sehr lange 
+(in einer Test-VM (2 Kerne 3,4 GHz, 8 GB RAM, HDD) ca. 38h). 
+Im Bro-Log werden einige Hundert MB Logs angesammelt.
+
 Via des `info`-Befehls gibt es weitere Informationen - insbesondere zu den Parametern und:
  > This module will connect to a FTP server and perform pre- and post-authentication fuzzing
 
