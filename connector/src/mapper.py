@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
+#-*- coding: utf-8 -*-
 """mapper.py
 
 Provides the Mapper, which maps json input data to Broker messages.
 """
-from __future__ import unicode_literals
-
 import pybroker as pb
 from datetime import datetime
 
@@ -75,7 +73,6 @@ class Mapper(object):
         # need nul terminated string for C++
         string = str(string)
         string = re.sub(r"\s+", ' ', string)
-        string = string.encode('ascii')
         return string
 
     def _map_time_point(self, time_str):
