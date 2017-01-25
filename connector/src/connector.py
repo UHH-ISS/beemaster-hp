@@ -24,8 +24,6 @@ from os import walk
 import logging
 import yaml
 
-DEFAULT_CONFIG_FILE = 'config.yaml'
-
 
 class ConnConfig(dict):
     """Connection configuration.
@@ -157,8 +155,8 @@ class Connector(object):
         :param message:     The message to map and send. (json)
         """
         mapped = self.mapper.transform(message)
-        self.log.debug("Mapped message is '{}'.".format(mapped))
         if mapped:
+            self.log.info("Mapped message is '{}'.".format(mapped))
             self.sender.send(mapped)
 
 

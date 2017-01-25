@@ -1,6 +1,4 @@
 FROM debian:stretch
-# Use this for raspberry
-#FROM resin/rpi-raspbian:jessie
 
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -14,28 +12,6 @@ RUN apt-get update && apt-get install -y \
     swig \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
-
-# RPi does not need/have rocksdb
-#RUN apt-get update && apt-get install -y \
-#    build-essential \
-#    cmake \
-#    curl \
-#    git \
-#    python \
-#    python-dev \
-#    python-pip \
-#    swig \
-#    --no-install-recommends && \
-#    rm -rf /var/lib/apt/lists/*
-#
-# Install gcc-5
-#RUN echo 'deb http://mirrordirector.raspbian.org/raspbian/ testing main contrib non-free rpi' > /etc/apt/sources.list.d/stretch.list
-#RUN apt-get update && apt-get install -y \
-#    gcc-5 g++-5 \
-#    --no-install-recommends
-#RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.9 &&
-#    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 40 --slave /usr/bin/g++ g++ /usr/bin/g++-5 &&
-#    update-alternatives --config gcc
 
 # Get actor framwork
 WORKDIR /scratch

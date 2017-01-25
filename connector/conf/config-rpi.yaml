@@ -1,5 +1,5 @@
 listen:
-    address: 0.0.0.0
+    address: 172.17.0.1
     port: 8080
 send:
     address: 134.100.28.31
@@ -7,4 +7,4 @@ send:
 mappings: mappings/dionaea/
 broker:
     topic: honeypot/dionaea/
-    endpoint_prefix: beemaster-connector-
+    endpoint_prefix: beemaster-connector-rpi-
