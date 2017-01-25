@@ -6,7 +6,7 @@
 #          (implemented in mapper)
 # message: the structure of the message, as it
 #          will be put into the broker message
-name: dionaea_download_complete
+name: Beemaster::dionaea_download_complete
 mapping:
     data:
         url: string

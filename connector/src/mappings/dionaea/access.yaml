@@ -6,7 +6,7 @@
 #          (implemented in mapper)
 # message: the structure of the message, as it
 #          will be put into the broker message
-name: dionaea_access
+name: Beemaster::dionaea_access
 mapping:
     timestamp: time_point
     src_hostname: string
