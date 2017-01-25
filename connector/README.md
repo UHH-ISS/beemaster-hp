@@ -135,13 +135,15 @@ services:
     expose:
       - "8080"
   bro-master:
-    build: 
+    build:
       context: ./mp-ids-bro
       args:
         PURPOSE: master
-    command: ["/bro/scripts_master/"]
-    expose:
-      - "9999"
+    environment:
+      - MASTER_PUBLIC_PORT=9999
+      - MASTER_PUBLIC_IP=bro-master
+    ports:
+      - 9999:9999
     volumes:
       - /var/beemaster/log/bro-master:/usr/local/bro/logs
   dionaea:
