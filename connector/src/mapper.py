@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """mapper.py
 
 Provides the Mapper, which maps json input data to Broker messages.
@@ -137,7 +137,7 @@ class Mapper(object):
                 brokerMsg = {k2: v2 for k, v in data.iteritems() for k2, v2
                              in self._traverse_to_end(k, v, local_mapping)
                              .iteritems()}
-            except Exception as e:
+            except Exception:
                 # TODO specify possible exception! maybe even custom ones in
                 #      _map_*.
                 self.log.info("Failed to convert message properly. "
