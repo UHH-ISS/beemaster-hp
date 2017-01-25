@@ -110,4 +110,4 @@ If you want to use the SMB to it full extend, you will need to have
 ###### FTP
 The only way is to change the setting for the [FTP-service](dionaea/services/ftp.yaml)
 and disable the service at all. If you set the folder of the service to
-`/dev/null`, it will stop working.
+`/dev/null`, it will stop working, because it causes an error.
