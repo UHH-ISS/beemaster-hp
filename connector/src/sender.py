@@ -35,8 +35,7 @@ class Sender(object):
         :param broker_topic:       The broker topic to send to. (str)
         :param connector_id:       The connector ID. (str)
         """
-        logger = logging.getLogger(self.__class__.__name__)
-        self.log = logger
+        self.log = logging.getLogger(self.__class__.__name__)
 
         self.broker_topic = broker_topic
         self.broker_endpoint = broker_endpoint
@@ -53,6 +52,8 @@ class Sender(object):
                                                    "connectors", 1)
         self.current_slave = None
         self.connector_to_slave_peering = None
+        self.master_name = "{}:{}".format(master_address, port)
+        self.master_status = broker.incoming_connection_status.tag_established
 
         try:
             if self.balanced_slaves:
@@ -80,7 +81,7 @@ class Sender(object):
     def send(self, msg):
         """Send the Broker message to the peer.
 
-        :param msg:        The message to be sent. (Broker message)
+        :param msg: The message to be sent. (Broker message)
         """
         msg.append(broker.data(self.connector_id))
         current_slave = None
@@ -121,24 +122,21 @@ class Sender(object):
             else:
                 self.log.warn(
                     "Not peered with any slave, falling back to master")
-                if self.bro_connection_established(self.connector_to_master):
+                if self._master_connection_established():
                     self.connector_to_master.send(self.broker_topic, msg)
                 else:
-                    self.log.warn("Connection to master not established. "
-                                  "Sending failed!")
-                    # TODO: Queue of not sent messages.
+                    self.log.warn("Connection to master ({}) not established. "
+                                  "Sending failed!".format(self.master_name))
         except Exception, e:
+            local_endpoint = self.current_slave or self.master_name
             self.log.error("Error sending data from {} to {}. Exception: {}"
-                           .format(self.broker_endpoint,
-                                   self.current_slave or "bro-master", str(e)))
+                           .format(self.broker_endpoint, local_endpoint, str(e)
+                                   ))
 
-    def bro_connection_established(self, broker_endpoint):
-        """Return False if no connection to other endpoint is established."""
-        status = broker.incoming_connection_status.tag_established
-        ocs = broker_endpoint.outgoing_connection_status()
-        # We receive only a message if the connection is not established (1)
-        # and the first time (0).
-        for m in ocs.want_pop():
-            status = m.status
+    def _master_connection_established(self):
+        """Return True if connection to master is established."""
+        ocs = self.connector_to_master.outgoing_connection_status()
+        for m in ocs.want_pop():  # Returns message only on change
+            self.master_status = m.status
 
-        return status == broker.incoming_connection_status.tag_established
+        return self.status == broker.incoming_connection_status.tag_established
