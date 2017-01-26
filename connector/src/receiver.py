@@ -2,7 +2,7 @@
 """receiver.py
 
 Provides the Receiver, which listens to the given address and reacts on data.
-The method :meth:`Receiver.onData` is called upon a valid json message. Start
+The method :meth:`Receiver.on_data` is called upon a valid json message. Start
 it by calling :func:`~Receiver.listen`.
 
 This implementation uses Flask (http://flask.pocoo.org/)!
@@ -10,7 +10,6 @@ This implementation uses Flask (http://flask.pocoo.org/)!
 from flask import Flask, request, json, Response
 # ATTENTION: The imported json is a custom implementation of the internal json
 #            module. https://github.com/pallets/flask/blob/master/flask/json.py
-
 import logging
 
 
@@ -30,35 +29,22 @@ class Receiver(Flask):
         :param address:     Address to listen on. (str)
         :param port:        Port to listen on. (int)
         """
-        logger = logging.getLogger(self.__class__.__name__)
-        self.log = logger
+        self.log = logging.getLogger(self.__class__.__name__)
 
         super(Receiver, self).__init__(name)
 
         self.name = name
         self.address = address
         self.port = port
-        self.onData = self.logToFile    # fallback
+        self.on_data = None
 
-    def logToFile(self, text):
-        """OBSOLETE
-
-        Log to a file (log.txt).
-
-        :param text:    The data received.
-        """
-        # TODO adjust for logging only!
-        with open('./log.txt', 'a+') as log:
-            json.dump(text, log)
-            log.write('\n')
-
-    def listen(self, route, onData):
-        """Listen on *route* and call *onData*.
+    def listen(self, route, on_data):
+        """Listen on *route* and call *on_data*.
 
         :param route:       The path to listen on. (str)
-        :param onData:      The callback function. (func(json))
+        :param on_data:     The callback function. (func(json))
         """
-        self.onData = onData
+        self.on_data = on_data
 
         self.route(route, methods=['POST'])(self.__handle_post)
         self.run(host=self.address, port=self.port, debug=False)
@@ -67,11 +53,11 @@ class Receiver(Flask):
         if 'application/json' in request.headers.get('Content-Type'):
             try:
                 data = request.json
-                # TODO weak check:
+                # TODO: weak check:
                 data = json.loads(json.dumps(data))
 
                 self.log.debug(data)
-                self.onData(data)
+                self.on_data(data)
             except Exception:
                 return Response('Bad Request', 400)
 
