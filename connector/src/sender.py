@@ -38,7 +38,7 @@ class Sender(object):
         self.log = logging.getLogger(self.__class__.__name__)
 
         self.master_name = "{}:{}".format(master_address, port)
-        # this variables cannot be passed by reference -> "getter / setter"
+        # these variables cannot be passed by reference -> "getter / setter"
         self.master_status = broker.incoming_connection_status.tag_established
         self.slave_status = broker.incoming_connection_status.tag_established
 
