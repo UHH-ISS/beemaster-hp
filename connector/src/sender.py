@@ -134,15 +134,11 @@ class Sender(object):
 
     def bro_connection_established(self, broker_endpoint):
         """Return False if no connection to other endpoint is established."""
-        status = 0  # status == 0 -> connection established
+        status = broker.incoming_connection_status.tag_established
         ocs = broker_endpoint.outgoing_connection_status()
         # We receive only a message if the connection is not established (1)
         # and the first time (0).
         for m in ocs.want_pop():
             status = m.status
-            self.log.debug(
-                "peer_name: {}; status: {} (status should be: {})"
-                    .format(m.peer_name, m.status,
-                            broker.incoming_connection_status.tag_established))
 
         return status == broker.incoming_connection_status.tag_established
