@@ -134,7 +134,7 @@ class Mapper(object):
             except Exception:
                 self.log.info("Failed to convert message properly. "
                               "Ignoring format.")
-                break
+                continue
 
             self.log.info("Using mapping for '{}'.".format(event_name))
             message = pb.message()
