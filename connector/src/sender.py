@@ -12,6 +12,7 @@ communication partner.
 import pybroker as broker
 import logging
 from time import sleep
+from select import select
 
 
 class Sender(object):
@@ -126,19 +127,25 @@ class Sender(object):
                 else:
                     self.log.warn("Connection to master not established. "
                                   "Sending failed!")
-                    # TODO: Queue for re-sends.
+                    # TODO: Queue of not sent messages.
         except Exception, e:
             self.log.error("Error sending data from {} to {}. Exception: {}"
                            .format(self.broker_endpoint,
                                    self.current_slave or "bro-master", str(e)))
 
     def bro_connection_established(self, broker_endpoint):
-        """Return True if the connection to the other bro ep is established"""
-        status = 99
-        for m in broker_endpoint.outgoing_connection_status().want_pop():
-            status = m.status  # status == 0 -> connection established
-            self.log.debug(
-                "peer_name: {}; real status: {}; but status should be: {}"
+        """Return False if no connection to other endpoint is established"""
+        status = 0  # status == 0 -> connection established
+        ocs = broker_endpoint.outgoing_connection_status()
+        # TODO: select times out after the first time
+        # status is set to = 0, because if no connection is established it
+        # *always* gets an response immediately, and that is the one we need
+        s, _, __ = select([ocs.fd()], [], [], 0.001)
+        self.log.debug("Timout of 'select': {}".format(s))
+        for m in ocs.want_pop():
+            status = m.status
+            self.log.info(
+                "peer_name: {}; status: {} (status should be: {})"
                     .format(m.peer_name, m.status,
                             broker.incoming_connection_status.tag_established))
 
