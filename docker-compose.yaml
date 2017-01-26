@@ -5,6 +5,10 @@ services:
     command: ["config-uhh.yaml"]
   dionaea:
     build: ./dionaea
+    volumes:
+      - /var/beemaster/log/dionaea-logs:/var/dionaea/logs
+      - /var/beemaster/dionaea/binaries:/var/dionaea/binaries/
+      - /var/beemaster/dionaea/ftp:/var/dionaea/roots/ftp
     ports:
       - "21:21"
       - "80:80"
