@@ -96,7 +96,7 @@ class Sender(object):
         status = self._get_bro_endpoint_status(is_master)
         ocs = bro_endpoint.outgoing_connection_status()
         for m in ocs.want_pop():  # Returns message only on change
-            self._set_bro_endpoint_status(is_master, m.status)
+            status = self._set_bro_endpoint_status(is_master, m.status)
 
         return status == broker.incoming_connection_status.tag_established
 
@@ -109,11 +109,12 @@ class Sender(object):
         return status
 
     def _set_bro_endpoint_status(self, is_master, value):
-        """Set the bro endpoint connection status variable."""
+        """Set the bro endpoint connection status variable and return it"""
         if is_master:
             self.master_status = value
         else:
             self.slave_status = value
+        return value
 
     def _lookup_and_get_current_slave(self):
         """Return the slave bro (name) that should be peered with"""
