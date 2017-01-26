@@ -42,7 +42,7 @@ class Sender(object):
         self.broker_endpoint = broker_endpoint
         self.connector_id = connector_id
 
-        self.connector_to_master = broker.endpoint(broker_endpoint)
+        self.connector_to_master = broker.endpoint(self.broker_endpoint)
         # Peer with broker endpoint of bro master instance
         self.connector_to_master.peer(master_address, port, 1)
 
@@ -121,8 +121,25 @@ class Sender(object):
             else:
                 self.log.warn(
                     "Not peered with any slave, falling back to master")
-                self.connector_to_master.send(self.broker_topic, msg)
+                if self.bro_connection_established(self.connector_to_master):
+                    self.connector_to_master.send(self.broker_topic, msg)
+                else:
+                    self.log.warn("Connection to master not established. "
+                                  "Sending failed!")
+                    # TODO: Queue for re-sends.
         except Exception, e:
             self.log.error("Error sending data from {} to {}. Exception: {}"
-                           .format(self.broker_endpoint, self.current_slave,
-                                   str(e)))
+                           .format(self.broker_endpoint,
+                                   self.current_slave or "bro-master", str(e)))
+
+    def bro_connection_established(self, broker_endpoint):
+        """Return True if the connection to the other bro ep is established"""
+        status = 99
+        for m in broker_endpoint.outgoing_connection_status().want_pop():
+            status = m.status  # status == 0 -> connection established
+            self.log.debug(
+                "peer_name: {}; real status: {}; but status should be: {}"
+                    .format(m.peer_name, m.status,
+                            broker.incoming_connection_status.tag_established))
+
+        return status == broker.incoming_connection_status.tag_established
