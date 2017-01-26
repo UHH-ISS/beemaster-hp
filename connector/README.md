@@ -122,41 +122,8 @@ docker build -t connector .
 docker run connector --sport 1337 --topic leetevent/
 ```
 
-**For testing purposes** you might want to run Dionaea and the Connector together with a Bro-Master. To do so, use the following Compose file:
-```yaml
-version: '2'
-
-services:
-  connector:
-    build: ./mp-ids-hp/connector
-    command: ["config-docker.yaml"] 
-    links:
-      - bro-master:bro-master
-    expose:
-      - "8080"
-  bro-master:
-    build:
-      context: ./mp-ids-bro
-      args:
-        PURPOSE: master
-    environment:
-      - MASTER_PUBLIC_PORT=9999
-      - MASTER_PUBLIC_IP=bro-master
-    ports:
-      - 9999:9999
-    volumes:
-      - /var/beemaster/log/bro-master:/usr/local/bro/logs
-  dionaea:
-    build: ./mp-ids-hp/dionaea
-    links:
-      - connector:connector
-    ports:
-      - "80:80"
-      - "21:21"
-      - "443:443"
-      - "445:445"
-      - "3306:3306"
-```
+**For testing purposes** you might want to run Dionaea and the Connector 
+together with Bro. To do so, use [this compose file](https://git.informatik.uni-hamburg.de/iss/mp-ids-bro/blob/master/docker-compose.yml).
 
 ## Without Docker
 
