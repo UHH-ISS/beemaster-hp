@@ -79,7 +79,6 @@ class ConnConfig(dict):
         # http://stackoverflow.com/a/2405617/2395605
         if item in self:
             return self[item]
-        # TODO check, whether this really works as intended!
         return AttributeError
 
 
@@ -96,8 +95,7 @@ class Connector(object):
 
         :param config:      Configuration to use (default config if None).
         """
-        logger = logging.getLogger(self.__class__.__name__)
-        self.log = logger
+        self.log = logging.getLogger(self.__class__.__name__)
 
         if config is None:
             config = ConnConfig()
@@ -116,7 +114,6 @@ class Connector(object):
                              config.connectorId)
         self.log.info("Sender created.")
 
-        # TODO value should not be const here.
         self.receiver = Receiver("bm-connector",
                                  config.listen.address, config.listen.port)
         self.log.info("Receiver created.")
@@ -143,7 +140,6 @@ class Connector(object):
                             "Missing key '{}' in file '{}'. Ignoring."
                             .format(e.args[0], filepath))
                     except Exception:
-                        # TODO find correct exception types.
                         self.log.error(
                             "Failed to read mapping in '{}'. Ignoring."
                             .format(filepath))
@@ -216,7 +212,7 @@ def main():
               'mappings': ['mappings'],
               'topic': ['broker', 'topic'],
               'endpoint_prefix': ['broker', 'endpoint_prefix']}
-    # TODO could be done nicer...
+
     for argument, value in vars(args).iteritems():
         if argument not in argmap:
             continue
@@ -237,6 +233,7 @@ if __name__ == '__main__':
         # TODO adjust time format
         # TODO add log settings to config
         # TODO vary use of log-levels!
+        # TODO Closed #192 ? Then all these TODO comments should be removed!
         level=logging.INFO,
         format="[ %(asctime)s | %(name)10s | %(levelname)8s ] %(message)s"
     )
