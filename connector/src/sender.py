@@ -38,7 +38,9 @@ class Sender(object):
         self.log = logging.getLogger(self.__class__.__name__)
 
         self.master_name = "{}:{}".format(master_address, port)
+        # this variables cannot be passed by reference -> "getter / setter"
         self.master_status = broker.incoming_connection_status.tag_established
+        self.slave_status = broker.incoming_connection_status.tag_established
 
         self.broker_topic = broker_topic
         self.broker_endpoint = broker_endpoint
@@ -71,20 +73,47 @@ class Sender(object):
 
             if self.current_slave:
                 self.log.info("Sending to {}".format(self.current_slave))
-                self.connector_to_slave.send(self.broker_topic, msg)
+                self._send_to_bro(self.connector_to_slave, False, msg)
             else:
-                self.log.warn(
-                    "Not peered with any slave, falling back to master")
-                if self._master_connection_established():
-                    self.connector_to_master.send(self.broker_topic, msg)
-                else:
-                    self.log.warn("Connection to master ({}) not established. "
-                                  "Sending failed!".format(self.master_name))
+                self.log.warn("Not peered with any slave, falling back to "
+                              "master: {}".format(self.master_name))
+                self._send_to_bro(self.connector_to_master, True, msg)
         except Exception, e:
             local_endpoint = self.current_slave or self.master_name
             self.log.error("Error sending data from {} to {}. Exception: {}"
                            .format(self.broker_endpoint, local_endpoint, str(e)
                                    ))
+
+    def _send_to_bro(self, bro_endpoint, is_master, msg):
+        """Send message if connection is established, log warning otherwise"""
+        if self._bro_connection_established(bro_endpoint, is_master):
+            bro_endpoint.send(self.broker_topic, msg)
+        else:
+            self.log.warn("Sending failed - no connection established!")
+
+    def _bro_connection_established(self, bro_endpoint, is_master):
+        """Return True if connection to master is established."""
+        status = self._get_bro_endpoint_status(is_master)
+        ocs = bro_endpoint.outgoing_connection_status()
+        for m in ocs.want_pop():  # Returns message only on change
+            self._set_bro_endpoint_status(is_master, m.status)
+
+        return status == broker.incoming_connection_status.tag_established
+
+    def _get_bro_endpoint_status(self, is_master):
+        """Return the bro endpoint connection status variable value."""
+        if is_master:
+            status = self.master_status
+        else:
+            status = self.slave_status
+        return status
+
+    def _set_bro_endpoint_status(self, is_master, value):
+        """Set the bro endpoint connection status variable."""
+        if is_master:
+            self.master_status = value
+        else:
+            self.slave_status = value
 
     def _lookup_and_get_current_slave(self):
         """Return the slave bro (name) that should be peered with"""
@@ -124,12 +153,3 @@ class Sender(object):
             else:
                 self.log.warn("No slave peered anymore.")
                 self.connector_to_slave.unpeer(self.connector_to_slave_peering)
-
-    def _master_connection_established(self):
-        """Return True if connection to master is established."""
-        ocs = self.connector_to_master.outgoing_connection_status()
-        for m in ocs.want_pop():  # Returns message only on change
-            self.master_status = m.status
-
-        return self.master_status == \
-            broker.incoming_connection_status.tag_established
