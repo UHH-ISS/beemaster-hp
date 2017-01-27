@@ -46,7 +46,7 @@ class Sender(object):
         self.broker_endpoint = broker_endpoint
         self.connector_id = connector_id
 
-        self.connector_to_master = broker.endpoint(self.broker_endpoint)
+        self.connector_to_master = broker.endpoint(broker_endpoint)
         # Peer with broker endpoint of bro master instance
         self.connector_to_master.peer(master_address, port, 1)
 
@@ -93,28 +93,18 @@ class Sender(object):
 
     def _bro_connection_established(self, bro_endpoint, is_master):
         """Return True if connection to master is established."""
-        status = self._get_bro_endpoint_status(is_master)
+        # get bro endpoint connection status
+        status = self.master_status if is_master else self.slave_status
         ocs = bro_endpoint.outgoing_connection_status()
         for m in ocs.want_pop():  # Returns message only on change
-            status = self._set_bro_endpoint_status(is_master, m.status)
+            status = m.status
+            # set the bro endpoint connection status variable
+            if is_master:
+                self.master_status = status
+            else:
+                self.slave_status = status
 
         return status == broker.incoming_connection_status.tag_established
-
-    def _get_bro_endpoint_status(self, is_master):
-        """Return the bro endpoint connection status variable value."""
-        if is_master:
-            status = self.master_status
-        else:
-            status = self.slave_status
-        return status
-
-    def _set_bro_endpoint_status(self, is_master, value):
-        """Set the bro endpoint connection status variable and return it"""
-        if is_master:
-            self.master_status = value
-        else:
-            self.slave_status = value
-        return value
 
     def _lookup_and_get_current_slave(self):
         """Return the slave bro (name) that should be peered with"""
@@ -126,9 +116,9 @@ class Sender(object):
                 self.log.debug("Lookup {} returns {}"
                                .format(self.broker_endpoint, current_slave))
             except Exception, e:
-                self.log.error(
-                    "Error looking up slave on connector '{}'. Error: '{}'"
-                        .format(self.broker_endpoint, str(e)))
+                self.log.error("Error looking up slave on connector '{}'. "
+                               "Error: '{}'".format(
+                                   self.broker_endpoint, str(e)))
         return current_slave
 
     def _peer_connector_to_slave(self):
