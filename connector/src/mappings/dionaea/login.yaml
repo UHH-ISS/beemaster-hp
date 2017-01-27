@@ -1,0 +1,37 @@
+# on file per connection type
+#
+# name: name of the event (for bro)
+# mapping: the structure of the arriving json
+#          to map to the desired broker-type
+#          (implemented in mapper)
+# message: the structure of the message, as it
+#          will be put into the broker message
+name: Beemaster::dionaea_login
+mapping:
+    data:
+        username: string
+        password: string
+        connection:
+            id: string
+            local_ip: address
+            local_port: port_count
+            remote_ip: address
+            remote_port: port_count
+            remote_hostname: string
+            protocol: string
+            transport: string
+    timestamp: time_point
+    origin: string
+    name: string
+message:
+    - timestamp
+    - id
+    - local_ip
+    - local_port
+    - remote_ip
+    - remote_port
+    - transport
+    - protocol
+    - username
+    - password
+    - origin
