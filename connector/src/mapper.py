@@ -3,8 +3,6 @@
 
 Provides the Mapper, which maps json input data to Broker messages.
 """
-from __future__ import unicode_literals
-
 import pybroker as pb
 from datetime import datetime
 
