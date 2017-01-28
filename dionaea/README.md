@@ -59,22 +59,29 @@ So far, only those iHandlers and Services existing in our `services` and `ihandl
 To enable an iHandler or Service, you have to put the right file in one of these folders and configure it properly.
 For example, the sqlite logging is disabled by default. You may want to [enable it](http://dionaea.readthedocs.io/en/latest/ihandler/log_sqlite.html).
 
-### Make Dionaea stop (writing files)
+### Logging
 
-##### Logging
-If you want to prevent Dionaea from writing logs (and downloading files), 
+**Hint:** If you use Dionaea in a Docker environment with our dockerfile,
+dionaea gets started by the following command:
+`dionaea -l all,-debug -L '*' -c /etc/dionaea/dionaea.conf`
+The first two parameters are for logging (level, domain) to the terminal.
+You could [save the output to a file on your host machine](https://git.informatik.uni-hamburg.de/iss/mp-ids/blob/master/server/milestone-deployments/dio-connector-bro-up.sh). 
+As a result you do not need to enter the container to read the
+`dionaea.log` end `dionaea-errors.log`. The order and formatting may differ, if
+you use compose file to start up various Docker containers, as the terminal
+output contains the output from all these containers.
+
+Knowing this, you may decide to either remove `-l all,-debug -L '*'` from the 
+command if you write the output to a logfile or disable file logging, for not
+storing the same information twice.
+
+##### Stop Logging to Files
+If you want to prevent Dionaea from writing logs, 
 open the `dionaea.conf` file and remove all the lines in the `[logging]` section.
 Make sure though to leave the section header in place as Dionaea will crash otherwise.
 
-
-**Warning:** For some reason, Dionaea may work unexpectingly with disabled logging.
-For example, the SMB service produces errors: It won't download files and crashes.
-If you want to use the SMB to it full extend and minimize logging, reduce logging
-to the critical level (see below).
-
-
-If you want Dionaea still log critical errors, you may change the settings accordingly:
-**1.** Go to the `dionaea` folder and open the `dionaea.conf` file with an editor.
+If you still want Dionaea to log critical errors, you may change the settings accordingly:
+Go to the `dionaea` folder and open the `dionaea.conf` file with an editor.
 
 Change the logging levels to critical. As a result, there is almost nothing that
 should be logged (except for critical errors like trying to write to `/dev/null`):
@@ -84,13 +91,11 @@ default.levels=critical
 errors.levels=critical
 ```
 
-##### Downloading files
-Go to the `dionaea` folder and open the `dionaea.conf` file with an editor.
-You may either disable logging completely (at the moment this "disables" also
-downloading files, because Dionaea crashes before this step, see above) or
-choose a location that does not exist to save files to. Note: This also leads
-to critical errors.
+##### Stop Downloading files
+The best way is to disable services (e.g. SMB, FTP) that write files to the server.
 
+###### SMB
+Go to the `dionaea` folder and open the `dionaea.conf` file with an editor.
 Change the value of `download.dir` to `/dev/null`:
 
 ```
@@ -98,5 +103,11 @@ Change the value of `download.dir` to `/dev/null`:
 download.dir=/dev/null
 ```
 
-**Attention:** This results in critical errors of Dionaea. If you do not have
-these in log files, you would need to write them to `/dev/null` too (see above).
+**Warning:** This results in critical errors of Dionaea.
+For example, the SMB service produces errors: It won't download files and crashes.
+If you want to use the SMB to it full extend, you will need to have 
+
+###### FTP
+The only way is to change the setting for the [FTP-service](dionaea/services/ftp.yaml)
+and disable the service at all. If you set the folder of the service to
+`/dev/null`, it will stop working, because it causes an error.

@@ -6,7 +6,7 @@
 #          (implemented in mapper)
 # message: the structure of the message, as it
 #          will be put into the broker message
-name: dionaea_mysql_command
+name: Beemaster::dionaea_mysql_command
 mapping:
     data:
         args: array
