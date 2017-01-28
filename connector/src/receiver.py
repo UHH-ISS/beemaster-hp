@@ -53,12 +53,13 @@ class Receiver(Flask):
         if 'application/json' in request.headers.get('Content-Type'):
             try:
                 data = request.json
-                # TODO: weak check:
+                # TODO build more sensible checks
                 data = json.loads(json.dumps(data))
 
                 self.log.debug(data)
                 self.on_data(data)
             except Exception:
+                self.log.error("Failed to read POST-data.", exc_info=True)
                 return Response('Bad Request', 400)
 
             return Response('OK', 200)

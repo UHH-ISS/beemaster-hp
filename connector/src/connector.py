@@ -89,6 +89,7 @@ class Connector(object):
     """
 
     REQUIRED_KEYS = {"name", "mapping", "message"}
+    RECEIVER_NAME = "bm-connector"
 
     def __init__(self, config=None):
         """Initialise the Connector and starts to listen to incoming messages.
@@ -114,7 +115,7 @@ class Connector(object):
                              config.connectorId)
         self.log.info("Sender created.")
 
-        self.receiver = Receiver("bm-connector",
+        self.receiver = Receiver(self.RECEIVER_NAME,
                                  config.listen.address, config.listen.port)
         self.log.info("Receiver created.")
         self.receiver.listen("/", self.handle_receive)
@@ -140,6 +141,7 @@ class Connector(object):
                             "Missing key '{}' in file '{}'. Ignoring."
                             .format(e.args[0], filepath))
                     except Exception:
+                        # TODO find correct exception types.
                         self.log.error(
                             "Failed to read mapping in '{}'. Ignoring."
                             .format(filepath))
@@ -212,7 +214,7 @@ def main():
               'mappings': ['mappings'],
               'topic': ['broker', 'topic'],
               'endpoint_prefix': ['broker', 'endpoint_prefix']}
-
+    # TODO extract or 'optimise'
     for argument, value in vars(args).iteritems():
         if argument not in argmap:
             continue

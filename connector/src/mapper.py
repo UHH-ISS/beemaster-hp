@@ -43,9 +43,8 @@ class Mapper(object):
 
     def _log_unknown(self, prop, val):
         """Log an unknown item."""
-        self.log.info(
-            "No Mapping configured for property '{}' with value '{}'."
-            .format(prop, val))
+        self.log.info("No Mapping configured for property "
+                      "'{}' with value '{}'.".format(prop, val))
 
     def _log_unimplemented(self, prop, val):
         """Log an unimplemented item."""
