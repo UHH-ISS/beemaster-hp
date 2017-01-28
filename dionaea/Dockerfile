@@ -89,7 +89,8 @@ EXPOSE 445
 # black hole
 EXPOSE 23
 EXPOSE 53
-EXPOSE 123
+EXPOSE 53/udp
+EXPOSE 123/udp
 
 COPY dionaea.conf /etc/dionaea/dionaea.conf
 COPY services/ /etc/dionaea/services-enabled/
