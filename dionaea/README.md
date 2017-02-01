@@ -92,22 +92,8 @@ errors.levels=critical
 ```
 
 ##### Stop Downloading files
-The best way is to disable services (e.g. SMB, FTP) that write files to the server.
-
-###### SMB
-Go to the `dionaea` folder and open the `dionaea.conf` file with an editor.
-Change the value of `download.dir` to `/dev/null`:
-
-```
-[dionaea]
-download.dir=/dev/null
-```
-
-**Warning:** This results in critical errors of Dionaea.
-For example, the SMB service produces errors: It won't download files and crashes.
-If you want to use the SMB to it full extend, you will need to have 
-
-###### FTP
-The only way is to change the setting for the [FTP-service](dionaea/services/ftp.yaml)
-and disable the service at all. If you set the folder of the service to
-`/dev/null`, it will stop working, because it causes an error.
+A way to solve this is adding a command to the Dockerfile that removes the
+`store.yaml` ihandler from the `ihandlers-enabled` folder. This ihandler is
+responsible for actually storing files. Be aware though that you will no longer
+receive events with hash values or info of malware then as these hash values can
+obviously no longer be calculated.
