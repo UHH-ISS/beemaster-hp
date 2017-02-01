@@ -92,8 +92,13 @@ errors.levels=critical
 ```
 
 ##### Stop Downloading files
-A way to solve this is adding a command to the Dockerfile that removes the
-`store.yaml` ihandler from the `ihandlers-enabled` folder. This ihandler is
-responsible for actually storing files. Be aware though that you will no longer
-receive events with hash values or info of malware then as these hash values can
-obviously no longer be calculated.
+In general, you should remove the `store.yaml` ihandler from the
+`ihandlers-enabled` folder, if you do not wish files to be downloaded by
+Dionaea. This ihandler is responsible for actually storing files.
+Be aware that you will no longer receive `dionaea.download.complete`
+incidents with hash values and information of the downloaded files.
+
+###### FTP
+The FTP service let everyone write to the set FTP root folder. The only way to
+disable writing files, is to change the setting for the [FTP-service](dionaea/services/ftp.yaml)
+and disable the service at all.
