@@ -18,10 +18,11 @@ from mapper import Mapper
 from sender import Sender
 
 from argparse import ArgumentParser
-import platform
+import logging
 import os.path
 from os import walk
-import logging
+import platform
+import sys
 import yaml
 
 
@@ -46,7 +47,19 @@ class ConnConfig(dict):
             "topic": "honeypot/dionaea/",
             "endpoint_prefix": "beemaster-connector-"
         },
-        "connectorId": platform.uname()[1]
+        "connector_id": platform.uname()[1],
+        "logging": {
+            "file": "stderr",
+            "level": "ERROR",
+            # as in https://docs.python.org/2.7/library/time.html#time.strftime
+            # "datefmt": "%Y-%m-%d %H:%M:%S",  # %f is no py2 feature -.-'
+            # None results default format
+            "datefmt": None,
+            # as in https://docs.python.org/2.7/library/
+            #           logging.html#logrecord-attributes
+            "format":
+                "[ %(asctime)s | %(name)10s | %(levelname)8s ] %(message)s"
+        }
     }
 
     def __init__(self, data=None, default=None):
@@ -110,9 +123,9 @@ class Connector(object):
 
         self.sender = Sender(config.send.address, config.send.port,
                              config.broker.endpoint_prefix +
-                             config.connectorId,
+                             config.connector_id,
                              config.broker.topic,
-                             config.connectorId)
+                             config.connector_id)
         self.log.info("Sender created.")
 
         self.receiver = Receiver(self.RECEIVER_NAME,
@@ -164,12 +177,12 @@ def main():
     Execute the connector with command line arguments and/or a configuration
     file.
     """
-    ap = ArgumentParser(description="""The Connector takes messages via http
-                        (mainly from a Honeypot), maps them to a Broker Message
-                        and sends them off to the specified destination.
-                        Mapping definitions have to be custom written for each
-                        input (see mappings/dionaea for examples).
-                        """)
+    ap = ArgumentParser(description="""The Connector takes JSON messages via HTTP
+                        (mainly from a Honeypot), maps them to a Broker
+                        message, and sends them off to the specified
+                        destination. Mapping definitions have to be custom
+                        written for each input (see mappings/dionaea for
+                        examples).""")
 
     # listen
     ap.add_argument('--laddr', metavar="address",
@@ -191,6 +204,25 @@ def main():
                     help="Topic for sent messages.")
     ap.add_argument('--endpoint_prefix', metavar="name",
                     help="Name for the broker endpoint_prefix.")
+    # id
+    ap.add_argument('--id', metavar="connector_id",
+                    help="This connector's unique id.")
+    # logging
+    ap.add_argument('--log-file', metavar="file",
+                    help="The file to log to. 'stderr' and 'stdout' work as "
+                    "special names for standard-error and -out respectively.")
+    ap.add_argument('--log-level', metavar="level",
+                    # FATAL == CRITICAL; WARN == WARNING
+                    # Cannot misuse 'type', as file-read configs would not be
+                    # converted.
+                    choices={'INFO', 'DEBUG', 'WARNING', 'ERROR', 'CRITICAL'},
+                    help="Set the log-level.")
+    ap.add_argument('--log-format', metavar="format",
+                    help="Set the logging format. See the python docs for more"
+                    " information on this.")
+    ap.add_argument('--log-datefmt', metavar="format",
+                    help="Set the date/time format to use for the logging "
+                    "'asctime' placeholder. Python's strftime format is used.")
 
     # the config file
     ap.add_argument("config", nargs="?", metavar="file",
@@ -213,12 +245,14 @@ def main():
               'sport': ['send', 'port'],
               'mappings': ['mappings'],
               'topic': ['broker', 'topic'],
-              'endpoint_prefix': ['broker', 'endpoint_prefix']}
-    # TODO extract or 'optimise'
+              'endpoint_prefix': ['broker', 'endpoint_prefix'],
+              'id': ['connector_id'],
+              'log_file': ['logging', 'file'],
+              'log_level': ['logging', 'level'],
+              'log_format': ['logging', 'format'],
+              'log_datefmt': ['logging', 'datefmt']}
     for argument, value in vars(args).iteritems():
-        if argument not in argmap:
-            continue
-        if value is None:
+        if argument not in argmap or value is None:
             continue
         vals = argmap[argument]
         c = config
@@ -226,17 +260,22 @@ def main():
             c = c[v]
         c[vals[-1]] = value
 
+    # set up logging
+    logging_dict = {
+        'level': getattr(logging, config.logging.level),
+        'datefmt': config.logging.datefmt,
+        'format': config.logging.format
+    }
+    if config.logging.file in {'stderr', 'stdout'}:
+        logging_dict['stream'] = getattr(sys, config.logging.file)
+    else:
+        logging_dict['filename'] = config.logging.file
+    logging.basicConfig(**logging_dict)
+    logging.debug("Logging configured.")
+
+    # start!
     Connector(config)
 
 
 if __name__ == '__main__':
-    logging.basicConfig(
-        # TODO add/set log file
-        # TODO adjust time format
-        # TODO add log settings to config
-        # TODO vary use of log-levels!
-        # TODO Closed #192 ? Then all these TODO comments should be removed!
-        level=logging.INFO,
-        format="[ %(asctime)s | %(name)10s | %(levelname)8s ] %(message)s"
-    )
     main()
