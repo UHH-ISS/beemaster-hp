@@ -50,10 +50,10 @@ connector_id: my_unique_connector_name       # Remove this to use the hostname b
 Furthermore, the connector is able to write logs. Just let him know in what information you are interested in:
 ```yaml
 logging:
-	file: stderr
-	level: ERROR
-	datefmt: None
-	format: [ %(asctime)s | %(name)10s | %(levelname)8s ] %(message)s
+    file: stderr
+    level: ERROR
+    datefmt: None
+    format: "[ %(asctime)s | %(name)10s | %(levelname)8s ] %(message)s"
 ```
 Tip: Writing the `INFO` level to `stdout` or a file, mounted by the host to the docker container, makes it easier to
   see the traffic throughput of the connector.
