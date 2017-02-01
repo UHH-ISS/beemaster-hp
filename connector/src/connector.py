@@ -47,10 +47,10 @@ class ConnConfig(dict):
             "topic": "honeypot/dionaea/",
             "endpoint_prefix": "beemaster-connector-"
         },
-        "connectorId": platform.uname()[1],
+        "connector_id": platform.uname()[1],
         "logging": {
             "file": "stderr",
-            "level": "INFO",
+            "level": "ERROR",
             # as in https://docs.python.org/2.7/library/time.html#time.strftime
             # "datefmt": "%Y-%m-%d %H:%M:%S",  # %f is no py2 feature -.-'
             # None results default format
@@ -123,9 +123,9 @@ class Connector(object):
 
         self.sender = Sender(config.send.address, config.send.port,
                              config.broker.endpoint_prefix +
-                             config.connectorId,
+                             config.connector_id,
                              config.broker.topic,
-                             config.connectorId)
+                             config.connector_id)
         self.log.info("Sender created.")
 
         self.receiver = Receiver(self.RECEIVER_NAME,
@@ -177,12 +177,12 @@ def main():
     Execute the connector with command line arguments and/or a configuration
     file.
     """
-    ap = ArgumentParser(description="""The Connector takes messages via http
-                        (mainly from a Honeypot), maps them to a Broker Message
-                        and sends them off to the specified destination.
-                        Mapping definitions have to be custom written for each
-                        input (see mappings/dionaea for examples).
-                        """)
+    ap = ArgumentParser(description="""The Connector takes JSON messages via HTTP
+                        (mainly from a Honeypot), maps them to a Broker
+                        message, and sends them off to the specified
+                        destination. Mapping definitions have to be custom
+                        written for each input (see mappings/dionaea for
+                        examples).""")
 
     # listen
     ap.add_argument('--laddr', metavar="address",
@@ -205,7 +205,7 @@ def main():
     ap.add_argument('--endpoint_prefix', metavar="name",
                     help="Name for the broker endpoint_prefix.")
     # id
-    ap.add_argument('--id', metavar="connectorID",
+    ap.add_argument('--id', metavar="connector_id",
                     help="This connector's unique id.")
     # logging
     ap.add_argument('--log-file', metavar="file",
@@ -246,7 +246,7 @@ def main():
               'mappings': ['mappings'],
               'topic': ['broker', 'topic'],
               'endpoint_prefix': ['broker', 'endpoint_prefix'],
-              'id': ['connectorId'],
+              'id': ['connector_id'],
               'log_file': ['logging', 'file'],
               'log_level': ['logging', 'level'],
               'log_format': ['logging', 'format'],
