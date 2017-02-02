@@ -19,6 +19,11 @@ optional arguments:
   --mappings directory  Directory to look for mappings.
   --topic topic         Topic for sent messages.
   --endpoint_prefix name       Prefix name for the broker endpoint.
+  --id connector_id            This connector's unique id.
+  --log-file file       The file to log to. 'stderr' and 'stdout' work as special names for standard-error and -out respectively.
+  --log-level level     Set the log-level. {'INFO', 'DEBUG', 'WARNING', 'ERROR', 'CRITICAL'}
+  --log-datefmt format  Set the date/time format to use for logging ('asctime' placeholder in log-format). Python's strftime format is used.
+  --log-format format   Set the logging format. Use the 'asctime' placeholder to include the date. See the python docs for more information on this.
 ```
 
 The positional argument accepts configuration files written in YAML with the following format:
@@ -37,13 +42,24 @@ broker:
 ```
 The values shown in the example above are the default that the connector falls back to, in case no arguments are passed to it.
 
-By default, the connector uses the hostname to indentiy itself. You can change it to whatever name you like, but it should be a unique name in your network:
+By default, the connector uses the hostname to identify itself. You can change it to whatever name you like, but it should be a unique name in your network:
 ```yaml
-connectorId: my_unique_connector_name       # Remove this to use the hostname by default
+connector_id: my_unique_connector_name       # Remove this to use the hostname by default
 ```
 
+Furthermore, the connector is able to write logs. Just let him know in what information you are interested in:
+```yaml
+logging:
+    file: stderr
+    level: ERROR
+    datefmt: None
+    format: "[ %(asctime)s | %(name)10s | %(levelname)8s ] %(message)s"
+```
+Tip: Writing the `INFO` level to `stdout` or a file, mounted by the host to the docker container, makes it easier to
+  see the traffic throughput of the connector.
+
 ## Mapping
-The mappings used by the connector are configureable via YAML files. Below is an example of a mapping for a Dionaea access event:
+The mappings used by the connector are configurable via YAML files. Below is an example of a mapping for a Dionaea access event:
 
 ```yaml
 # one file per access type
@@ -122,41 +138,8 @@ docker build -t connector .
 docker run connector --sport 1337 --topic leetevent/
 ```
 
-**For testing purposes** you might want to run Dionaea and the Connector together with a Bro-Master. To do so, use the following Compose file:
-```yaml
-version: '2'
-
-services:
-  connector:
-    build: ./mp-ids-hp/connector
-    command: ["config-docker.yaml"] 
-    links:
-      - bro-master:bro-master
-    expose:
-      - "8080"
-  bro-master:
-    build:
-      context: ./mp-ids-bro
-      args:
-        PURPOSE: master
-    environment:
-      - MASTER_PUBLIC_PORT=9999
-      - MASTER_PUBLIC_IP=bro-master
-    ports:
-      - 9999:9999
-    volumes:
-      - /var/beemaster/log/bro-master:/usr/local/bro/logs
-  dionaea:
-    build: ./mp-ids-hp/dionaea
-    links:
-      - connector:connector
-    ports:
-      - "80:80"
-      - "21:21"
-      - "443:443"
-      - "445:445"
-      - "3306:3306"
-```
+**For testing purposes** you might want to run Dionaea and the Connector 
+together with Bro. To do so, use [this compose file](https://git.informatik.uni-hamburg.de/iss/mp-ids-bro/blob/master/docker-compose.yml).
 
 ## Without Docker
 

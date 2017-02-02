@@ -1,4 +1,7 @@
 version: '2'
+# Files downloaded by Dionaea (Binaries/FTP) are currently not written to mounted volumes. 
+# If persistency of those files is desired, enable the volume mounts below.
+
 services:
   connector:
     build: ./connector
@@ -7,11 +10,17 @@ services:
     build: ./dionaea
     volumes:
       - /var/beemaster/log/dionaea-logs:/var/dionaea/logs
-      - /var/beemaster/dionaea/binaries:/var/dionaea/binaries/
-      - /var/beemaster/dionaea/ftp:/var/dionaea/roots/ftp
+     # - /var/beemaster/dionaea/binaries:/var/dionaea/binaries/
+     # - /var/beemaster/dionaea/ftp:/var/dionaea/roots/ftp
+    depends_on:
+      - connector
     ports:
       - "21:21"
+      - "23:23"
+      - "53:53/udp"
+      - "53:53"
       - "80:80"
+      - "123:123/udp"
       - "443:443"
       - "445:445"
       - "3306:3306"

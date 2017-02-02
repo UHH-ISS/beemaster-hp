@@ -92,22 +92,13 @@ errors.levels=critical
 ```
 
 ##### Stop Downloading files
-The best way is to disable services (e.g. SMB, FTP) that write files to the server.
-
-###### SMB
-Go to the `dionaea` folder and open the `dionaea.conf` file with an editor.
-Change the value of `download.dir` to `/dev/null`:
-
-```
-[dionaea]
-download.dir=/dev/null
-```
-
-**Warning:** This results in critical errors of Dionaea.
-For example, the SMB service produces errors: It won't download files and crashes.
-If you want to use the SMB to it full extend, you will need to have 
+In general, you should remove the `store.yaml` ihandler from the
+`ihandlers-enabled` folder, if you do not wish files to be downloaded by
+Dionaea. This ihandler is responsible for actually storing files.
+Be aware that you will no longer receive `dionaea.download.complete`
+incidents with hash values and information of the downloaded files.
 
 ###### FTP
-The only way is to change the setting for the [FTP-service](dionaea/services/ftp.yaml)
-and disable the service at all. If you set the folder of the service to
-`/dev/null`, it will stop working, because it causes an error.
+The FTP service let everyone write to the set FTP root folder. The only way to
+disable writing files, is to change the setting for the [FTP-service](dionaea/services/ftp.yaml)
+and disable the service at all.
