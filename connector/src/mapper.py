@@ -136,9 +136,9 @@ class Mapper(object):
                 broker_msg = {k2: v2 for k, v in data.iteritems() for k2, v2
                               in self._traverse_to_end(k, v, local_mapping)
                               .iteritems()}
-            except Exception as e:
+            except Exception:
                 self.log.info("Failed to convert message properly. "
-                              "Ignoring format.{}".format(e.message))
+                              "Ignoring format.")
                 continue
 
             self.log.info("Using mapping for '{}'.".format(event_name))
