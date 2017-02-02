@@ -102,3 +102,21 @@ incidents with hash values and information of the downloaded files.
 The FTP service let everyone write to the set FTP root folder. The only way to
 disable writing files, is to change the setting for the [FTP-service](dionaea/services/ftp.yaml)
 and disable the service at all.
+
+##### Persisting downloaded files 
+Since we're using Docker, downloaded files (f.e. via FTP) will be lost when the container is stopped. 
+If you wish to keep downloaded files, uncomment the two lines in the dionaea volumes section in 
+docker-compose.yaml, so that it looks like this: 
+```
+...
+  dionaea:
+    build: ./dionaea
+    volumes:
+      - /var/beemaster/log/dionaea-logs:/var/dionaea/logs
+      - /var/beemaster/dionaea/binaries:/var/dionaea/binaries/
+      - /var/beemaster/dionaea/ftp:/var/dionaea/roots/ftp
+...
+```
+Please be aware that this might pose a security risk, as you're enabling anyone to upload files
+to your server, storing them persistently. Vulnerabilities in Dionaea, Docker or other software could
+very well lead to a compromise of the host system.
