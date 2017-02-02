@@ -68,8 +68,12 @@ class Mapper(object):
 
     @staticmethod
     def _map_string(string):
-        """Map a string."""
-        string = str(string)  # need nul terminated string for C++
+        """Map a string and replace tabs with normal spaces."""
+        # need nul terminated string for C++, also encoding for special chars
+        if type(string) is unicode:
+            string = str(string.encode('utf8'))
+        else:
+            string = str(string)
         string = re.sub(r"\s+", ' ', string)
         return string
 
@@ -87,8 +91,12 @@ class Mapper(object):
     def _map_array(array):
         """Map an array of strings and replace tabs with normal spaces"""
         string = ";".join(array)
+        if type(string) is unicode:
+            string = str(string.encode('utf8'))
+        else:
+            string = str(string)
         string = re.sub(r"\s+", ' ', string)
-        return str(string)
+        return string
 
     def _traverse_to_end(self, key, child, curr_map, acc=None):
         """Traverse the structure to the end."""
@@ -128,9 +136,9 @@ class Mapper(object):
                 broker_msg = {k2: v2 for k, v in data.iteritems() for k2, v2
                               in self._traverse_to_end(k, v, local_mapping)
                               .iteritems()}
-            except Exception:
+            except Exception as e:
                 self.log.info("Failed to convert message properly. "
-                              "Ignoring format.")
+                              "Ignoring format.{}".format(e.message))
                 continue
 
             self.log.info("Using mapping for '{}'.".format(event_name))
