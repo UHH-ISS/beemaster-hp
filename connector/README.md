@@ -1,9 +1,10 @@
-# Connector
+Connector
+=========
 
 This connector accepts JSON-formatted input via HTTP, maps it to broker-compatible data types and sends a broker-message to a configurable endpoint.
 
-# Configuration
-## Connection
+## Configuration
+### Connection
 Connection-related settings of the connector can be configured via passing arguments at start or specifying a config file. The following arguments are supported:
 
 ```
@@ -58,7 +59,7 @@ logging:
 Tip: Writing the `INFO` level to `stdout` or a file, mounted by the host to the docker container, makes it easier to
   see the traffic throughput of the connector.
 
-## Mapping
+### Mapping
 The mappings used by the connector are configurable via YAML files. Below is an example of a mapping for a Dionaea access event:
 
 ```yaml
@@ -95,11 +96,11 @@ message:
 
 Once you create a mapping, be sure to create the corresponding event handler on the other side of the connection.
 
-# Usage
+## Usage
 The Connector can be used as a Docker container, or locally for testing.
 We advise you to run the Connector always on the same host as the Dionaea honeypot.
 
-## With Docker
+### With Docker
 
 If you want to use the Connector in conjunction with Dionaea, you can use the following Compose file (and make sure all directories are present, or change them accordingly).
 
@@ -141,7 +142,7 @@ docker run connector --sport 1337 --topic leetevent/
 **For testing purposes** you might want to run Dionaea and the Connector 
 together with Bro. To do so, use [this compose file](https://git.informatik.uni-hamburg.de/iss/mp-ids-bro/blob/master/docker-compose.yml).
 
-## Without Docker
+### Without Docker
 
 Start the connector via `python connector.py` and use the correct arguments for your environment. This repository holds a configuration file that can be used for local testing, which is identical to the default configuration, apart from sending to port 9999.
 
