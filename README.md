@@ -40,12 +40,6 @@ shell. Other shells/terminals/sessions need to source the environment again.
 * [Dionaea](dionaea/README.md#make-dionaea-stop-writing-files)
 * Connector: Logs only if you save the console output to a file.
 
-### Notes
-
-> @1jost: Would [tox](https://tox.readthedocs.io/en/latest/) be overkill? It
-> seems to be an awesome tool for environment and test management (primarily
-> meant for CI).
-
 ### Code-Structure
 
 Source directory: `connector`
