@@ -11,7 +11,7 @@ Searches in the provided directory (here ```.```) for a ```Dockerfile```. Builds
 
 ### Run Docker Container
 
-```docker run -p 21:21 80:80 -p 443:443 -p 445:445 -p 3306:3306 --name dio --rm dio-local```
+```docker run -p 21:21 -p 80:80 -p 443:443 -p 445:445 -p 3306:3306 --name dio --rm dio-local```
 
 Instanciate a container by reading the image called ```dio-local```. Flag ```-p``` maps container ports to ports on localhost. Flag ```--name dio``` is the container name (not image!). Container names are unique. ```--rm``` means, the container is thrown away on shutdown.
 
