@@ -144,7 +144,7 @@ together with Bro. To do so, use [this compose file](https://git.informatik.uni-
 
 ### Without Docker
 
-Start the connector via `python connector.py` and use the correct arguments for your environment. This repository holds a configuration file that can be used for local testing, which is identical to the default configuration, apart from sending to port 9999. Don't forget to ensure that you still sourced your environment as described [here](https://git.informatik.uni-hamburg.de/iss/mp-ids-hp/blob/master/README.md).
+Start the connector via `python connector.py` and use the correct arguments for your environment. This repository holds a configuration file that can be used for local testing, which is identical to the default configuration, apart from sending to port 9999. Don't forget to ensure that you still sourced your environment as described [here](https://git.informatik.uni-hamburg.de/iss/mp-ids-hp/blob/master/README.md) because the connector still needs to run on python 2 and requires modules which aren't located in the `src` folder but included in the environment.
 
 `python connector.py ../conf/config-local.yaml`
 
