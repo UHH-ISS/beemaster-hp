@@ -20,7 +20,8 @@ class Sender(object):
     Sends Broker messages to an Broker endpoint.
     """
 
-    def __init__(self, master_address, port, broker_endpoint, broker_topic,
+    def __init__(self, master_address, master_port,
+                 broker_endpoint, broker_topic,
                  connector_id):
         """Sender(master_address, port)
 
@@ -29,7 +30,7 @@ class Sender(object):
 
         :param master_address:     The address/hostname of the master bro
                                    instance. (str)
-        :param port:               The port to send to. (int)
+        :param master_port:               The port to send to. (int)
         :param broker_endpoint:    The broker endpoint name to use for
                                    connecting to the master. (str)
         :param broker_topic:       The broker topic to send to. (str)
@@ -37,7 +38,7 @@ class Sender(object):
         """
         self.log = logging.getLogger(self.__class__.__name__)
 
-        self.master_name = "{}:{}".format(master_address, port)
+        self.master_name = "{}:{}".format(master_address, master_port)
         # these variables cannot be passed by reference -> "getter / setter"
         self.master_status = broker.incoming_connection_status.tag_established
         self.slave_status = broker.incoming_connection_status.tag_established
@@ -48,7 +49,7 @@ class Sender(object):
 
         self.connector_to_master = broker.endpoint(broker_endpoint)
         # Peer with broker endpoint of bro master instance
-        self.connector_to_master.peer(master_address, port, 1)
+        self.connector_to_master.peer(master_address, master_port, 1)
 
         # dedicated endpoint for sending to slaves
         self.connector_to_slave = broker.endpoint(connector_id)
