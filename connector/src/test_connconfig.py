@@ -32,7 +32,7 @@ class TestConnConfig(unittest.TestCase):
         self.assertEqual(dc['broker']['topic'], cc.broker.topic)
         self.assertEqual(dc['broker']['endpoint_prefix'],
                          cc.broker.endpoint_prefix)
-        self.assertEqual(dc['connectorId'], cc.connectorId)
+        self.assertEqual(dc['connector_id'], cc.connector_id)
 
     def testSuccessUpdate(self):
         """Update Success
@@ -53,7 +53,7 @@ class TestConnConfig(unittest.TestCase):
         self.assertEqual(dc['broker']['topic'], cc.broker.topic)
         self.assertEqual(dc['broker']['endpoint_prefix'],
                          cc.broker.endpoint_prefix)
-        self.assertEqual(dc['connectorId'], cc.connectorId)
+        self.assertEqual(dc['connector_id'], cc.connector_id)
 
     def testSuccessInitUpdate(self):
         """Initialization Update Success
@@ -73,7 +73,7 @@ class TestConnConfig(unittest.TestCase):
         self.assertEqual(dc['broker']['topic'], cc.broker.topic)
         self.assertEqual(dc['broker']['endpoint_prefix'],
                          cc.broker.endpoint_prefix)
-        self.assertEqual(dc['connectorId'], cc.connectorId)
+        self.assertEqual(dc['connector_id'], cc.connector_id)
 
     def testSuccessMissingValue(self):
         """Missing Value Success
