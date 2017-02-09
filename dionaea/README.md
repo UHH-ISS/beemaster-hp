@@ -10,17 +10,20 @@ The following topics will be discussed:
 
 ## Run Dionaea
 The following describes how to run *Dionaea* using Docker. Read the [official documentation](http://dionaea.readthedocs.io/en/latest/installation.html) if you are interested in running it locally
-### Build Dionaea Image
 
+### Build Dionaea Docker Image
 ```docker build . -t dio-local```
 
 Searches in the provided directory (here ```.```) for a ```Dockerfile```. Builds the image locally. The finished image is tagged (option ```-t```) with 'dio'. The tag can then be used for referencing the image.
 
 ### Run Docker Container
 
-```docker run -p 21:21 -p 80:80 -p 443:443 -p 445:445 -p 3306:3306 --name dio --rm dio-local```
+```docker run -p 21:21 -p 23:23 -p 53:53/udp -p 53:53 -p 80:80 -p 123:123/udp -p 443:443 -p 445:445 -p 3306:3306 --name dio --rm dio-local```
 
 Instanciate a container by reading the image called ```dio-local```. Flag ```-p``` maps container ports to ports on localhost. Flag ```--name dio``` is the container name (not image!). Container names are unique. ```--rm``` means, the container is thrown away on shutdown.
+
+You could also use a `docker-compose` file like [this](connector#with-docker) one.
+
 
 ## Test Dionaea
 
@@ -32,27 +35,28 @@ Using the above `run` command, you can talk to your machine - which is then forw
 Calls localhost on port 80.
 
 ```curl --insecure https://localhost```
-Calls localhost on port 443, ssl.
+Calls localhost on port 443 (SSL).
 
 ```ftp localhost```
-FTP to localhost.
+FTP login to localhost.
 
 ```mysql --host=127.0.0.1```
-mysql login to localhost. Always use 127.0.0.1, else mysql will use the `lo` interface and cannot connect.
+MySQL login to localhost. Always use `127.0.0.1`. (Else MySQL will use the `lo` interface and cannot connect.)
 
-Dionaea will pick this up, log a JSON string and send that to the address you entered in the iHandler configuration.
-In case of the [dummy logger](#start-python-dummy-logger), the you can find the Dionaea output in the  ```log.txt``` file.
+*Dionaea* will pick this up, log a JSON string and send that to the address you entered in the iHandler configuration.
 
 ##### Try Exploits on Dionaea
 
-You could try exploiting Dionaea using [Metasploit](/METASPLOIT.md)
+You could try exploiting *Dionaea* using [Metasploit](/METASPLOIT.md).
 
 ### Log ihandler Output (Start Python Dummy Logger)
-So far, the you have to adjust the ihandler configuration to make dionaea send its logs via HTTP to `172.17.0.1:8080` to make them at the host machine available for the connector at `0.0.0.0:8080`. The logging dummy offers a rest endpoint for that port and writes everything into a file.
+So far, the you have to adjust the ihandler configuration to make *Dionaea* send its logs via HTTP to `172.17.0.1:8080` to make them at the host machine available for the connector at `0.0.0.0:8080`. The logging dummy offers a rest endpoint for that port and writes everything into a file.
 The current setting is made to be working in a docker environment.
 
 ```python logging-dummy.py```
 Use python3 here.
+
+You can find the *Dionaea* output in the `log.txt` file.
 
 
 ## Configure Dionaea
@@ -69,7 +73,7 @@ For example, the sqlite logging is disabled by default. You may want to [enable 
 
 ### Logging
 
-**Hint:** If you use Dionaea in a Docker environment with our dockerfile,
+**Hint:** If you use *Dionaea* in a Docker environment with our dockerfile,
 dionaea gets started by the following command:
 `dionaea -l all,-debug -L '*' -c /etc/dionaea/dionaea.conf`
 The first two parameters are for logging (level, domain) to the terminal.
@@ -84,11 +88,11 @@ command if you write the output to a logfile or disable file logging, for not
 storing the same information twice.
 
 ##### Stop Logging to Files
-If you want to prevent Dionaea from writing logs, 
+If you want to prevent *Dionaea* from writing logs, 
 open the `dionaea.conf` file and remove all the lines in the `[logging]` section.
 Make sure though to leave the section header in place as Dionaea will crash otherwise.
 
-If you still want Dionaea to log critical errors, you may change the settings accordingly:
+If you still want *Dionaea* to log critical errors, you may change the settings accordingly:
 Go to the `dionaea` folder and open the `dionaea.conf` file with an editor.
 
 Change the logging levels to critical. As a result, there is almost nothing that
@@ -102,7 +106,7 @@ errors.levels=critical
 ##### Stop Downloading files
 In general, you should remove the `store.yaml` ihandler from the
 `ihandlers-enabled` folder, if you do not wish files to be downloaded by
-Dionaea. This ihandler is responsible for actually storing files.
+*Dionaea*. This ihandler is responsible for actually storing files.
 Be aware that you will no longer receive `dionaea.download.complete`
 incidents with hash values and information of the downloaded files.
 
@@ -126,5 +130,5 @@ docker-compose.yaml, so that it looks like this:
 ...
 ```
 Please be aware that this might pose a security risk, as you're enabling anyone to upload files
-to your server, storing them persistently. Vulnerabilities in Dionaea, Docker or other software could
+to your server, storing them persistently. Vulnerabilities in *Dionaea*, Docker or other software could
 very well lead to a compromise of the host system.
