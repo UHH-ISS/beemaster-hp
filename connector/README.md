@@ -1,7 +1,12 @@
-Connector
-=========
+Generic Connector
+=================
 
-This connector accepts JSON-formatted input via HTTP, maps it to broker-compatible data types and sends a broker-message to a configurable endpoint.
+This generic *Connector* accepts JSON-formatted input via HTTP, maps it to *Broker*-compatible data types and sends a *Broker*-message to a configurable endpoint.
+
+The following topics will be described here:
+* [Configuration of the *Connector*](#configuration)
+* [Usage with and without Docker](#usage)
+* [Setup development environment](#setup-development-environment)
 
 ## Configuration
 ### Connection
@@ -97,12 +102,12 @@ message:
 Once you create a mapping, be sure to create the corresponding event handler on the other side of the connection.
 
 ## Usage
-The Connector can be used as a Docker container, or locally for testing.
-We advise you to run the Connector always on the same host as the Dionaea honeypot.
+The *Connector* can be used as a Docker container, or locally for testing.
+We advise you to run the *Connector* always on the same host as the *Dionaea* honeypot.
 
 ### With Docker
 
-If you want to use the Connector in conjunction with Dionaea, you can use the following Compose file (and make sure all directories are present, or change them accordingly).
+If you want to use the *Connector* in conjunction with *Dionaea*, you can use the following compose file (and make sure all directories are present, or change them accordingly).
 
 By default (inside the container), the contents of the `conf` directory are copied into the `src` directory. Thus the `connector.py` can be started by passing the config file name directly (see the docker-compose file example below):
 
@@ -124,7 +129,7 @@ services:
 
 Then run `docker-compose up --build`
 
-Be sure to expose only the ports of Dionaea you want to be accessable to attackers.
+Be sure to expose only the ports of *Dionaea* you want to be accessable to attackers.
 
 Instead of passing `config-docker.yaml` as an argument (which is a config adjusted for this Compose file), you could also pass your own values, e.g.: 
 ```yaml
@@ -139,15 +144,49 @@ docker build -t connector .
 docker run connector --sport 1337 --topic leetevent/
 ```
 
-**For testing purposes** you might want to run Dionaea and the Connector 
+**For testing purposes** you might want to run *Dionaea* and the *Connector* 
 together with Bro. To do so, use [this compose file](https://git.informatik.uni-hamburg.de/iss/mp-ids-bro/blob/master/docker-compose.yml).
 
 ### Without Docker
 
-Start the connector via `python connector.py` and use the correct arguments for your environment. This repository holds a configuration file that can be used for local testing, which is identical to the default configuration, apart from sending to port 9999. Don't forget to ensure that you still sourced your environment as described [here](https://git.informatik.uni-hamburg.de/iss/mp-ids-hp/blob/master/README.md) because the connector still needs to run on python 2 and requires modules which aren't located in the `src` folder but included in the environment.
+Start the *Connector* via `python connector.py` and use the correct arguments for your environment. This repository holds a configuration file that can be used for local testing, which is identical to the default configuration, apart from sending to port `9999`. Don't forget to ensure that you still sourced your environment as described [here](https://git.informatik.uni-hamburg.de/iss/mp-ids-hp/blob/master/README.md) because the connector still needs to run on Python 2 and requires modules which aren't located in the `src` folder but included in the environment.
 
 `python connector.py ../conf/config-local.yaml`
 
-It will receive on port 8080 and dump a little text output to the console.
+It will receive on port `8080` and dump a little text output to the console.
 See [Dionaea Readme](dionaea/README.md#talk-to-dionaea) for information about how to communicate with it.
 
+
+## Setup Development Environment
+The following Linux script can be used to set up an development environment as well as an environment for testing purposes.
+You find the script in the root folder of the repository.
+  
+```sh
+./setup.sh -h
+# Usage: ./setup.sh -h
+#        ./setup.sh [-i|u] [-d] [-s]
+#        ./setup.sh -c
+#
+# Options:
+#     -h      Print this help message and exit.
+#     -i      Install virtualenv, if not installed.
+#     -u      Update environment(s) with new requirements.
+#     -d      Setup development environment (for linting etc.)
+#     -s      Adds symlinks for easier environment sourcing.
+#     -c      Removes everything, created by this setup and exits.
+```
+
+#### Development
+
+Execute `./setup.sh -d` to setup all required environments. `flake8` will be
+accessible in the main directory so you do not necessarily need to source the
+environment to use the linter (if sourced, `flake8` will be in your `PATH`).
+
+#### Execution only
+
+If you only need to run the code, use `./setup.sh` to install the minimal
+environment.
+
+Source the environment with `. env/bin/activate` (or use the symlink, provided
+by `./setup.sh -s`). Be aware, that the activation only applies for the current
+shell. Other shells/terminals/sessions need to source the environment again.

@@ -1,8 +1,15 @@
-## Dionaea
+# Dionaea
 
-This folder contains a working container setup for dionaea on alpine-linux basis.
-You may want to read [milestone_durchstich](https://git.informatik.uni-hamburg.de/iss/mp-ids/blob/master/server/milestone-deployments/doku_milestone_durchstich.md) to see an example for dionaea sending incidents to a bro using broker.
+We suggest using *Dionaea* in a dockerized environment. The following sections describe how to use *Dionaea* with the Docker files provided in this repository.
 
+The following topics will be discussed:
+* [Run Dionaea](#run-dionaea)
+* [Test Dionaea](#rest-dionaea) - trigger incidents and check the output of iHandlers without using the *generic Connector*.
+* [Configure Dionaea](#configure-dionaea) - configure *Dionaea* (adding services and enabling iHandlers to send incident to a *Connector*) and tips on [how to make *Dionaea* log less](#logging) (interesting for environments with little space like a *Raspberry Pi*).
+
+
+## Run Dionaea
+The following describes how to run *Dionaea* using Docker. Read the [official documentation](http://dionaea.readthedocs.io/en/latest/installation.html) if you are interested in running it locally
 ### Build Dionaea Image
 
 ```docker build . -t dio-local```
@@ -15,13 +22,7 @@ Searches in the provided directory (here ```.```) for a ```Dockerfile```. Builds
 
 Instanciate a container by reading the image called ```dio-local```. Flag ```-p``` maps container ports to ports on localhost. Flag ```--name dio``` is the container name (not image!). Container names are unique. ```--rm``` means, the container is thrown away on shutdown.
 
-### Start Python Dummy Logger
-
-So far, the you have to adjust the ihandler configuration to make dionaea send its logs via HTTP to "172.17.0.1:8080" to make them at the host machine available for the connector at "0.0.0.0:8080". The logging dummy offers a rest endpoint for that port and writes everything into a file.
-The current setting is made to be working in a docker environment. See: [milestone_durchstich](https://git.informatik.uni-hamburg.de/iss/mp-ids/blob/master/server/milestone-deployments/doku_milestone_durchstich.md)
-
-```python logging-dummy.py```
-Use python3 here.
+## Test Dionaea
 
 ### Talk to Dionaea
 
@@ -42,19 +43,26 @@ mysql login to localhost. Always use 127.0.0.1, else mysql will use the `lo` int
 Dionaea will pick this up, log a JSON string and send that to the address you entered in the iHandler configuration.
 In case of the [dummy logger](#start-python-dummy-logger), the you can find the Dionaea output in the  ```log.txt``` file.
 
-##### Try exploits on Dionaea
+##### Try Exploits on Dionaea
 
 You could try exploiting Dionaea using [Metasploit](/METASPLOIT.md)
 
+### Log ihandler Output (Start Python Dummy Logger)
+So far, the you have to adjust the ihandler configuration to make dionaea send its logs via HTTP to `172.17.0.1:8080` to make them at the host machine available for the connector at `0.0.0.0:8080`. The logging dummy offers a rest endpoint for that port and writes everything into a file.
+The current setting is made to be working in a docker environment.
+
+```python logging-dummy.py```
+Use python3 here.
+
+
+## Configure Dionaea
 ### Add Custom Service / iHandler
 
-Add whatever service or ihandler you want to ```services/``` or ```ihandlers/``` directory, respectively. 
+Add whatever service or iHandler you want to ```services/``` or ```ihandlers/``` directory, respectively. 
 Then you have to re-run ```docker build . -t dio-local```. (That step will not take as long as the first time). 
 It will pick up the new files and copy them accordingly, to be used from within the container.
 
-
 ### Disable iHandlers:
-
 So far, only those iHandlers and Services existing in our `services` and `ihandlers` folders are used.
 To enable an iHandler or Service, you have to put the right file in one of these folders and configure it properly.
 For example, the sqlite logging is disabled by default. You may want to [enable it](http://dionaea.readthedocs.io/en/latest/ihandler/log_sqlite.html).
@@ -103,7 +111,7 @@ The FTP service let everyone write to the set FTP root folder. The only way to
 disable writing files, is to change the setting for the [FTP-service](dionaea/services/ftp.yaml)
 and disable the service at all.
 
-##### Persisting downloaded files 
+##### Persisting Downloaded Files 
 Since we're using Docker, downloaded files (f.e. via FTP) will be lost when the container is stopped. 
 If you wish to keep downloaded files, uncomment the two lines in the dionaea volumes section in 
 docker-compose.yaml, so that it looks like this: 

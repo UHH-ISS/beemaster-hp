@@ -1,69 +1,24 @@
 MP-IDS Honeypot
 ===============
 
-### Setup
+This repository contains the generic **Connector** with configuration files in order to be used together with *Dionaea*.
+Furthermore it contains configuration files for *Dionaea* to be used together with the generic *Connector* within the *Beemaster* project.
 
-> Linux install only. For development on Windows please setup manually.
+If you are interested in how the *Connector* and *Dionaea* work together with the other *Beemaster* components, have a look at the [integration test](https://git.informatik.uni-hamburg.de/iss/mp-ids/blob/master/Tests).
 
-```sh
-./setup.sh -h
-# Usage: ./setup.sh -h
-#        ./setup.sh [-i|u] [-d] [-s]
-#        ./setup.sh -c
-#
-# Options:
-#     -h      Print this help message and exit.
-#     -i      Install virtualenv, if not installed.
-#     -u      Update environment(s) with new requirements.
-#     -d      Setup development environment (for linting etc.)
-#     -s      Adds symlinks for easier environment sourcing.
-#     -c      Removes everything, created by this setup and exits.
-```
 
-#### Development
+## Generic Connector
 
-Execute `./setup.sh -d` to setup all required environments. `flake8` will be
-accessible in the main directory so you do not necessarily need to source the
-environment to use the linter (if sourced, `flake8` will be in your `PATH`).
+You find all information about using the generic *Connector* together with *Dionaea* in the [**connector**](connector) folder.
+The following topics will be discussed:
+* [Configuration of the *Connector*](connector//README.md#configuration)
+* [Usage with and without Docker](connector//README.md#usage)
+* [Setup development environment](connector//README.md#setup-development-environment)
 
-#### Execution only
+## Dionaea Honeypot
 
-If you only need to run the code, use `./setup.sh` to install the minimal
-environment.
+You find all information about using *Dionaea* in a Docker environment and ready to use configurations in the [**dionaea**](dionaea) folder.
 
-Source the environment with `. env/bin/activate` (or use the symlink, provided
-by `./setup.sh -s`). Be aware, that the activation only applies for the current
-shell. Other shells/terminals/sessions need to source the environment again.
-
-##### Disable Logging
-
-* [Dionaea](dionaea/README.md#make-dionaea-stop-writing-files)
-* Connector: Logs only if you save the console output to a file.
-
-### Code-Structure
-
-Source directory: `connector`
-
-As `python2` is used, code for `python3` compatibility.
-
-```python
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""<module-name>
-<documentation>
-"""
-
-# :: Imports
-<imports>
-
-# :: Classes
-<classes>
-
-# :: Functions
-<functions>
-
-<if __name__ ... only if necessary>
-```
-
-- [STYLEGUIDE](https://git.informatik.uni-hamburg.de/iss/mp-ids/blob/master/STYLEGUIDE.md)
-- https://google.github.io/styleguide/pyguide.html
+## Tip: Logging
+* [Dionaea](dionaea/README.md#make-dionaea-stop-writing-files): Log a lot by default. It may be useful
+* [Connector](connector/README.md#connection): Does not log by default. Depends on your start-script and settings. Seec
