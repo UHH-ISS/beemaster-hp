@@ -1,0 +1,20 @@
+--- configure	2017-02-10 22:55:59.162497908 +0100
++++ configure	2017-02-10 22:57:57.169823747 +0100
+@@ -41,6 +41,7 @@
+     --enable-static        build static libraries (in addition to shared)
+     --enable-static-only   only build static libraries, not shared
+     --disable-pybroker     don't try to build python bindings
++    --with-python=PATH     path to python binary to generate bindings for
+     --with-rocksdb=PATH    path to RocksDB installation
+     --with-swig=PATH       path to SWIG executable (builds python bindings)
+
+@@ -123,6 +124,9 @@
+         --with-libcaf=*)
+             append_cache_entry LIBCAF_ROOT_DIR      PATH   $optarg
+             ;;
++        --with-python=*)
++            append_cache_entry PYTHON_EXECUTABLE    PATH   $optarg
++            ;;
+         --with-rocksdb=*)
+             append_cache_entry ROCKSDB_ROOT_DIR     PATH   $optarg
+             ;;
