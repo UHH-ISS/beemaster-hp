@@ -1,35 +1,31 @@
 # Dionaea
 
-We suggest using *Dionaea* in a dockerized environment. The following sections describe how to use *Dionaea* with the Docker files provided in this repository.
+We suggest using *Dionaea* in a dockerized environment. The following sections describe how to use *Dionaea* with the Dockerfiles provided in this repository.
 
 The following topics will be discussed:
 * [Run Dionaea](#run-dionaea)
-* [Test Dionaea](#rest-dionaea) - trigger incidents and check the output of iHandlers without using the *generic Connector*.
-* [Configure Dionaea](#configure-dionaea) - configure *Dionaea* (adding services and enabling iHandlers to send incident to a *Connector*) and tips on [how to make *Dionaea* log less](#logging) (interesting for environments with little space like a *Raspberry Pi*).
-
+* [Test Dionaea](#rest-dionaea)
+* [Configure Dionaea](#configure-dionaea)
 
 ## Run Dionaea
+
 The following describes how to run *Dionaea* using Docker. Read the [official documentation](http://dionaea.readthedocs.io/en/latest/installation.html) if you are interested in running it locally
 
-### Build Dionaea Docker Image
-```docker build . -t dio-local```
+### Run Docker container
 
-Searches in the provided directory (here ```.```) for a ```Dockerfile```. Builds the image locally. The finished image is tagged (option ```-t```) with 'dio'. The tag can then be used for referencing the image.
+Use the [run.sh](dionaea/run.sh) script to build and run a Docker container with dionaea installed and properly configured.
 
-### Run Docker Container
+You could also use a `docker-compose` file like explained [below](connector#with-docker).
 
-```docker run -p 21:21 -p 23:23 -p 53:53/udp -p 53:53 -p 80:80 -p 123:123/udp -p 443:443 -p 445:445 -p 3306:3306 --name dio --rm dio-local```
+### Manual build & run
 
-Instanciate a container by reading the image called ```dio-local```. Flag ```-p``` maps container ports to ports on localhost. Flag ```--name dio``` is the container name (not image!). Container names are unique. ```--rm``` means, the container is thrown away on shutdown.
-
-You could also use a `docker-compose` file like [this](connector#with-docker) one.
-
+With the command `docker build . -t dio-local` a Docker image called `dio-local` gets built from this folders sources. It can then be started with `docker run -p 80:80 --rm dio-local`. Please have a look at the [Dockerfile](dionaea/Dockerfile) to see all possibly exposable ports.
 
 ## Test Dionaea
 
-### Talk to Dionaea
+### Send incidents
 
-Using the above `run` command, you can talk to your machine - which is then forwarded to the container.
+If the `run.sh` script was used to start *Dionaea*, several ports of the container are now exposed to localhost. Below are some sample commands to interact with the honeypot:
 
 ```curl localhost```
 Calls localhost on port 80.
@@ -43,82 +39,58 @@ FTP login to localhost.
 ```mysql --host=127.0.0.1```
 MySQL login to localhost. Always use `127.0.0.1`. (Else MySQL will use the `lo` interface and cannot connect.)
 
-*Dionaea* will pick this up, log a JSON string and send that to the address you entered in the iHandler configuration.
+*Dionaea* will log a JSON string per event and send that to the address that is configured in the respective iHandler configuration.
 
-##### Try Exploits on Dionaea
+##### Exploits on Dionaea
 
-You could try exploiting *Dionaea* using [Metasploit](/METASPLOIT.md).
+Using using [Metasploit](/METASPLOIT.md) a bunch of predefined cyber attacks can be probed against *Dionaea*.
 
 ### Log ihandler Output (Start Python Dummy Logger)
-So far, the you have to adjust the ihandler configuration to make *Dionaea* send its logs via HTTP to `172.17.0.1:8080` to make them at the host machine available for the connector at `0.0.0.0:8080`. The logging dummy offers a rest endpoint for that port and writes everything into a file.
-The current setting is made to be working in a docker environment.
 
-```python logging-dummy.py```
-Use python3 here.
-
-You can find the *Dionaea* output in the `log.txt` file.
+A simple [python service](dionaea/logging-dummy.py) can be started to log all incoming POST messages. This way it is possible to conveniently inspect what the different *Dionaea* iHandlers are sending. An iHandler requires some address to send the data to, this has to be set to `172.17.0.1:8080` if *Dionaea* is run within a container, while the logger is running locally. The log output is then to be found at `log.txt`.
 
 
 ## Configure Dionaea
-### Add Custom Service / iHandler
+
+### Add custom service / iHandler
+
 
 Add whatever service or iHandler you want to ```services/``` or ```ihandlers/``` directory, respectively. 
-Then you have to re-run ```docker build . -t dio-local```. (That step will not take as long as the first time). 
-It will pick up the new files and copy them accordingly, to be used from within the container.
+Then you have to re-build the container. All new files in those directories with a `.yaml` extension will get copied into the container.
 
-### Disable iHandlers:
-So far, only those iHandlers and Services existing in our `services` and `ihandlers` folders are used.
-To enable an iHandler or Service, you have to put the right file in one of these folders and configure it properly.
 For example, the sqlite logging is disabled by default. You may want to [enable it](http://dionaea.readthedocs.io/en/latest/ihandler/log_sqlite.html).
+
+### Disable iHandlers
+
+Only those iHandlers and Services located in our `services` and `ihandlers` folders are used. Removing a file (or simply removing the `.yaml` extension) and rebuilding the container "disables" the feature.
 
 ### Logging
 
-**Hint:** If you use *Dionaea* in a Docker environment with our dockerfile,
-dionaea gets started by the following command:
-`dionaea -l all,-debug -L '*' -c /etc/dionaea/dionaea.conf`
-The first two parameters are for logging (level, domain) to the terminal.
-You could [save the output to a file on your host machine](https://git.informatik.uni-hamburg.de/iss/mp-ids/blob/master/server/milestone-deployments/dio-connector-bro-up.sh). 
-As a result you do not need to enter the container to read the
-`dionaea.log` end `dionaea-errors.log`. The order and formatting may differ, if
-you use compose file to start up various Docker containers, as the terminal
-output contains the output from all these containers.
+By default (inside the container) *Dionaea* gets started with the following command: `dionaea -l all,-debug -L '*' -c /etc/dionaea/dionaea.conf`. The configuration makes *Dionaea* write its logs to two files, `dionaea.log` and `dionaea-errors.log`. Furhtermore trigger the commandline arguments that all logs are written to `stdout`.
 
-Knowing this, you may decide to either remove `-l all,-debug -L '*'` from the 
-command if you write the output to a logfile or disable file logging, for not
-storing the same information twice.
+If you need to persist the *Dionaea* logs, it is recommended to use a mount volume from outside the container and have *Dionaea* log there.
 
-##### Stop Logging to Files
-If you want to prevent *Dionaea* from writing logs, 
-open the `dionaea.conf` file and remove all the lines in the `[logging]` section.
-Make sure though to leave the section header in place as Dionaea will crash otherwise.
+Logging can be configured in the [dionaea.conf](dionaea/dionaea.conf). Eg only log critical errors:
 
-If you still want *Dionaea* to log critical errors, you may change the settings accordingly:
-Go to the `dionaea` folder and open the `dionaea.conf` file with an editor.
-
-Change the logging levels to critical. As a result, there is almost nothing that
-should be logged (except for critical errors like trying to write to `/dev/null`):
 ```
 [logging]
 default.levels=critical
 errors.levels=critical
 ```
 
-##### Stop Downloading files
-In general, you should remove the `store.yaml` ihandler from the
-`ihandlers-enabled` folder, if you do not wish files to be downloaded by
-*Dionaea*. This ihandler is responsible for actually storing files.
-Be aware that you will no longer receive `dionaea.download.complete`
-incidents with hash values and information of the downloaded files.
+Removing all the lines in the `[logging]` section will disable logging entirely. Make sure to leave the section header in place as Dionaea will crash otherwise.
+
+##### Downloading files
+
+For the Beemaster project, *Dionaea* is configured to download malicious files for later analysis. This setting is backed by the [store.yaml](dionaea/ihandlers/store.yaml) iHandler. The iHandler triggers the event `dionaea.download.complete`. It may make sense for some setups to [disable](#disable-ihandlers) this iHandler.
 
 ###### FTP
-The FTP service let everyone write to the set FTP root folder. The only way to
-disable writing files, is to change the setting for the [FTP-service](dionaea/services/ftp.yaml)
-and disable the service at all.
 
-##### Persisting Downloaded Files 
-Since we're using Docker, downloaded files (f.e. via FTP) will be lost when the container is stopped. 
-If you wish to keep downloaded files, uncomment the two lines in the dionaea volumes section in 
-docker-compose.yaml, so that it looks like this: 
+The [FTP service](dionaea/services/ftp.yaml) is separated from the store iHandler. It lets everyone write to the configured FTP root folder. The only way to disable writing files is to disable the service.
+
+##### Persisting Downloaded Files
+
+When *Dionaea* is run inside a Docker container, downloaded files will be lost when the container is stopped. To persist those files, it is recommended to use a mount volume from the hostsystem. Eg. change the following lines in the [docker-compose.yaml](docker-compose.yaml):
 ```
 ...
   dionaea:
@@ -129,6 +101,6 @@ docker-compose.yaml, so that it looks like this:
       - /var/beemaster/dionaea/ftp:/var/dionaea/roots/ftp
 ...
 ```
-Please be aware that this might pose a security risk, as you're enabling anyone to upload files
+**Warning**: Please be aware that this might pose a security risk, as you're enabling anyone to upload files
 to your server, storing them persistently. Vulnerabilities in *Dionaea*, Docker or other software could
-very well lead to a compromise of the host system.
+very well lead to a compromise of the hostsystem.
