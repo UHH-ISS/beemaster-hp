@@ -6,7 +6,7 @@ Furthermore, it contains configuration files for *Dionaea* so it sends incident 
 
 *Dionaea* is used to provide a broad artificial attack vector. Whatever input is recoreded by *Dionaea* gets forwarded to the *Connector*. The *Connector* is configured to handle those events and transforms them into Broker messages. Messages are then sent via Broker to a peered Bro master or slave instance.
 
-If you are interested in how the *Connector* and *Dionaea* work together with the other *Beemaster* components, please have a look at the setup of the [integration test](https://git.informatik.uni-hamburg.de/iss/mp-ids/blob/master/Tests).
+If you are interested in how the *Connector* and *Dionaea* work together with the other *Beemaster* components, please have a look at the setup of the [integration test](https://git.informatik.uni-hamburg.de/iss/mp-ids/tree/master/tests).
 
 
 ## Generic *Connector*
