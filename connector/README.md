@@ -1,9 +1,9 @@
 Generic Connector
 =================
 
-This generic *Connector* accepts JSON-formatted input via HTTP, maps it to *Broker*-compatible data types and sends a *Broker*-message to a configurable endpoint.
+The generic *Connector* of Beemaster is responsible for connecting a honeypot with the Bro cluster. The *Connecter* generally accepts JSON-formatted input via HTTP, maps it to *Broker*-compatible data types and sends a *Broker*-message to a configurable endpoint.
 
-The following topics will be described here:
+The following topics are be discussed:
 * [Configuration of the *Connector*](#configuration)
 * [Usage with and without Docker](#usage)
 * [Setup development environment](#setup-development-environment)
@@ -48,11 +48,11 @@ broker:
 ```
 The values shown in the example above are the default that the connector falls back to, in case no arguments are passed to it.
 
-By default, the connector uses the hostname to identify itself. You can change it to whatever name you like, but it should be a unique name in your network:
+By default, the connector uses the hostname to identify itself. You can change it to whatever name you like, but it *must be a unique name in your network*:
 ```yaml
 connector_id: my_unique_connector_name       # Remove this to use the hostname by default
 ```
-
+<a name="logging" />
 Furthermore, the connector is able to write logs. Just let him know in what information you are interested in:
 ```yaml
 logging:
@@ -61,8 +61,7 @@ logging:
     datefmt: None
     format: "[ %(asctime)s | %(name)10s | %(levelname)8s ] %(message)s"
 ```
-Tip: Writing the `INFO` level to `stdout` or a file, mounted by the host to the docker container, makes it easier to
-  see the traffic throughput of the connector.
+Tip: Writing the `INFO` level to `stdout` or a file, mounted by the host to the docker container, makes it easier to see the traffic throughput of the connector.
 
 ### Mapping
 The mappings used by the connector are configurable via YAML files. Below is an example of a mapping for a Dionaea access event:
@@ -99,17 +98,17 @@ message:
     - protocol
 ```
 
-Once you create a mapping, be sure to create the corresponding event handler on the other side of the connection.
+Once you create a mapping, be sure to create the corresponding event handler on the Bro side of the connection.
 
 ## Usage
-The *Connector* can be used as a Docker container, or locally for testing.
+The *Connector* can be used within a Docker container or locally for testing.
 We advise you to run the *Connector* always on the same host as the *Dionaea* honeypot.
 
-### With Docker
+### Docker setup
 
 If you want to use the *Connector* in conjunction with *Dionaea*, you can use the following compose file (and make sure all directories are present, or change them accordingly).
 
-By default (inside the container), the contents of the `conf` directory are copied into the `src` directory. Thus the `connector.py` can be started by passing the config file name directly (see the docker-compose file example below):
+By default (inside the container), the contents of the `conf` directory are copied into the `src` directory. Thus the `connector.py` can be started by passing the config filename directly (see the docker-compose file example below):
 
 ```yaml
 version: '2'
@@ -133,9 +132,9 @@ services:
 
 Then run `docker-compose up --build`
 
-Be sure to expose only the ports of *Dionaea* you want to be accessable to attackers.
+Be sure to expose only those ports of *Dionaea* you want to be accessable for attackers.
 
-Instead of passing `config-docker.yaml` as an argument (which is a config adjusted for this Compose file), you could also pass your own values, e.g.: 
+Instead of passing `config-docker.yaml` as an argument (which is a config adjusted for this compose file), you could also pass your own values, e.g.:
 ```yaml
   connector:
     command: ["--sport","1337","--topic","leetevent/"]
@@ -149,21 +148,22 @@ docker run connector --sport 1337 --topic leetevent/
 ```
 
 **For testing purposes** you might want to run *Dionaea* and the *Connector* 
-together with Bro. To do so, use [this compose file](https://git.informatik.uni-hamburg.de/iss/mp-ids-bro/blob/master/docker-compose.yml).
+together with Bro. Have a look at the [compose file](https://git.informatik.uni-hamburg.de/iss/mp-ids-bro/blob/master/docker-compose.yml) of the Beemaster Bro repository. There you can find a simple Bro cluster setup.
 
 ### Without Docker
 
-Start the *Connector* via `python connector.py` and use the correct arguments for your environment. This repository holds a configuration file that can be used for local testing, which is identical to the default configuration, apart from sending to port `9999`. Don't forget to ensure that you still sourced your environment as described [here](https://git.informatik.uni-hamburg.de/iss/mp-ids-hp/blob/master/README.md) because the connector still needs to run on Python 2 and requires modules which aren't located in the `src` folder but included in the environment.
+Ensure that you sourced the virtual environment as described [here](https://git.informatik.uni-hamburg.de/iss/mp-ids-hp/blob/master/README.md). The *Connector* needs to run on Python 2 and requires modules which are not located in the `src` folder but included in the environment.
+
+Start the *Connector* via `python connector.py` and use the correct arguments for your environment. This repository holds a configuration file that can be used for local testing, which is identical to the default configuration, apart from sending to port `9999`.
 
 `python connector.py ../conf/config-local.yaml`
 
-It will receive on port `8080` and dump a little text output to the console.
-See [Dionaea Readme](dionaea/README.md#talk-to-dionaea) for information about how to communicate with it.
+It will bind to port `8080` and listen for JSON post input. See the [Dionaea Readme](dionaea/README.md#talk-to-dionaea) for information about how to communicate with it.
 
 
 ## Setup Development Environment
-The following Linux script can be used to set up an development environment as well as an environment for testing purposes.
-You find the script in the root folder of the repository.
+
+The [setup.sh](setup.sh) script can be used to set up a development and testing environment.
   
 ```sh
 ./setup.sh -h
@@ -193,4 +193,4 @@ environment.
 
 Source the environment with `. env/bin/activate` (or use the symlink, provided
 by `./setup.sh -s`). Be aware, that the activation only applies for the current
-shell. Other shells/terminals/sessions need to source the environment again.
+shell.

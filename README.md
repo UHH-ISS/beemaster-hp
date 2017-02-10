@@ -23,4 +23,4 @@ You find all information about using *Dionaea* in a Docker environment and ready
 
 ## Further documentation
 * [Dionaea](dionaea/README.md#stop-logging-to-files): Logs a lot by default.
-* [Connector](connector/README.md#connection): Does not log by default to a file. (Your start script may log the console output.)
+* [Connector](connector/README.md#logging): Does not log by default to a file. (Your start script may log the console output.)
