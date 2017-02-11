@@ -15,7 +15,7 @@ The following describes how to run *Dionaea* using Docker. Read the [official do
 
 Use the [run.sh](dionaea/run.sh) script to build and run a Docker container with *Dionaea* installed and properly configured.
 
-You could also use a `docker-compose` file like explained [below](connector#with-docker) to start *Dionaea* together with a properly configured *Connector*.
+You could also use a `docker-compose` file like explained [here](connector#docker-setup) to start *Dionaea* together with a properly configured *Connector*.
 
 ### Manual Build & Run
 
