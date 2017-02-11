@@ -26,7 +26,7 @@ elif [ "$1" == "dio" ]; then
     if [ "$2" == "start" ]; then
         info "Starting dionaea"
         docker build -f=dionaea/Dockerfile_Pi -t dio-local dionaea/
-        docker run -p 21:21 -p 80:80 -p 443:443 -p 3306:3306 -p 445:445 --name dio --rm dio-local
+        docker run -p 21:21 -p 23:23 -p 53:53 -p 80:80 -p 443:443 -p 445:445 -p 3306:3306 --name dio --rm dio-local
     elif [ "$2" == "stop" ]; then
         info "Stopping dionaea"
         docker kill dio
