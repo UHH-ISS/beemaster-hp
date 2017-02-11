@@ -138,7 +138,7 @@ Run `docker-compose up --build`.
 
 Be sure to expose only those ports of *Dionaea* you want to be accessible for attackers.
 
-Instead of passing `[config-docker.yaml](connector/conf/config-docker.yaml)` as an argument (which is a configuration adjusted for this compose file), you could also pass your own values, e.g.:
+Instead of passing [`config-docker.yaml`](connector/conf/config-docker.yaml) as an argument (which is a configuration adjusted for this compose file), you could also pass your own values, e.g.:
 ```yaml
   connector:
     command: ["--sport","1337","--topic","leetevent/"]
