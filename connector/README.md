@@ -1,7 +1,7 @@
 Generic Connector
 =================
 
-The generic *Connector* of Beemaster is responsible for connecting a honeypot with the Bro cluster. The *Connecter* generally accepts JSON-formatted input via HTTP, maps it to *Broker*-compatible data types and sends a *Broker*-message to a configurable endpoint.
+The generic *Connector* of *Beemaster* is responsible for connecting a honeypot with the *Bro* cluster. The *Connecter* generally accepts JSON-formatted input via HTTP, maps it to *Broker*-compatible data types and sends a *Broker*-message to a configurable endpoint.
 
 The following topics are be discussed:
 * [Configuration of the *Connector*](#configuration)
@@ -104,7 +104,7 @@ Once you create a mapping, be sure to create the corresponding event handler on 
 The *Connector* can be used within a Docker container or locally for testing.
 We advise you to run the *Connector* always on the same host as the *Dionaea* honeypot.
 
-### Docker setup
+### Docker Setup
 
 If you want to use the *Connector* in conjunction with *Dionaea*, you can use the following compose file (and make sure all directories are present, or change them accordingly).
 
@@ -186,7 +186,7 @@ Execute `./setup.sh -d` to setup all required environments. `flake8` will be
 accessible in the main directory so you do not necessarily need to source the
 environment to use the linter (if sourced, `flake8` will be in your `PATH`).
 
-#### Execution only
+#### Execution Only
 
 If you only need to run the code, use `./setup.sh` to install the minimal
 environment.

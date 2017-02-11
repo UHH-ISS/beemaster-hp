@@ -1,6 +1,6 @@
 # Dionaea
 
-We suggest using *Dionaea* in a dockerized environment. The following sections describe how to use *Dionaea* with the Dockerfiles provided in this repository.
+We suggest using *Dionaea* in a dockerized environment. The following sections describe how to use *Dionaea* with the Docker files provided in this repository.
 
 The following topics will be discussed:
 * [Run Dionaea](#run-dionaea)
@@ -17,7 +17,7 @@ Use the [run.sh](dionaea/run.sh) script to build and run a Docker container with
 
 You could also use a `docker-compose` file like explained [below](connector#with-docker).
 
-### Manual build & run
+### Manual Build & Run
 
 With the command `docker build . -t dio-local` a Docker image called `dio-local` gets built from this folders sources. It can then be started with `docker run -p 80:80 --rm dio-local`. Please have a look at the [Dockerfile](dionaea/Dockerfile) to see all possibly exposable ports.
 
@@ -80,7 +80,7 @@ errors.levels=critical
 
 Removing all the lines in the `[logging]` section will disable logging entirely. Make sure to leave the section header in place as Dionaea will crash otherwise.
 
-##### Downloading files
+##### Downloading Files
 
 For the Beemaster project, *Dionaea* is configured to download malicious files for later analysis. This setting is backed by the [store.yaml](dionaea/ihandlers/store.yaml) iHandler. The iHandler triggers the event `dionaea.download.complete`. It may make sense for some setups to [disable](#disable-ihandlers) this iHandler.
 
