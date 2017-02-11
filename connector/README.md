@@ -112,7 +112,7 @@ We advise you to run the *Connector* always on the same host as the *Dionaea* ho
 
 If you want to use the *Connector* in conjunction with *Dionaea*, you can use the following compose file (and make sure all directories are present, or change them accordingly).
 
-By default (inside the container), the contents of the `conf` directory are copied into the `src` directory. Thus the `connector.py` can be started by passing the configuration filename directly (see the `[docker-compose](docker-compose.yaml)` file example below):
+By default (inside the container), the contents of the `conf` directory are copied into the `src` directory. Thus the `connector.py` can be started by passing the configuration filename directly (see the [`docker-compose`](docker-compose.yaml) file example below):
 
 ```yaml
 version: '2'
