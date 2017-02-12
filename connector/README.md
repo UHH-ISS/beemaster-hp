@@ -10,6 +10,7 @@ The following topics are be discussed:
 * [Usage with and without Docker](#usage)
 * [Setup development environment](#setup-development-environment)
 
+
 ## Configuration
 ### Connection
 Connection-related settings of the *Connecter* can be configured by passing arguments at start or specifying a configuration file. The following arguments are supported:
@@ -107,6 +108,8 @@ The *Connector* can be used within a Docker container or locally for testing.
 We advise you to run the *Connector* always on the same host as the *Dionaea* honeypot.
 
 **Important:** Make sure that the configured *Broker* endpoint (send to) is available as the *Connector* will not accept data on its listening port (listen from) otherwise.
+
+*Note:* We provide a setup for a *Raspberry Pi*. The official [project documentation](https://git.informatik.uni-hamburg.de/iss/mp-ids/blob/master/dokumente/dokumentation/produktdoku/Dokumentation.pdf) (in German) describes the setup.
 
 ### Docker Setup
 
