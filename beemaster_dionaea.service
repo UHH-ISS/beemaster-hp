@@ -1,5 +1,5 @@
 [Unit]
-Description=Start dio
+Description=Beemaster Dionaea Honeypot
 Author=Beemaster
 After=docker.service
 

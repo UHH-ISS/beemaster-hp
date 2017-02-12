@@ -1,5 +1,5 @@
 [Unit]
-Description=Start Connector
+Description=Beemaster Connector
 Author=Beemaster
 After=docker.service
 
