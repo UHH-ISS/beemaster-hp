@@ -1,7 +1,7 @@
 Metasploit
 ==========
 
-Bezogen auf die Issues iss/mp-ids#132 und iss/mp-ids#121
+Mit Metasploit können Penetrationstests durchgeführt werden. Ferner können bekannte Exploits auf ein oder mehrere Zielsysteme durchgeführt werden.
 
 ### Voraussetzung
 
@@ -23,7 +23,7 @@ Danach die Optionen[^1] in der Konsole setzen:
 
 ```
 set PNAME XPSPrinter
-set RHOST 127.0.0.1
+set RHOST 0.0.0.0
 set RPORT 445
 ```
 
@@ -47,7 +47,7 @@ Ein weiterer Angriff, um MySQL zu testen, geht so: Man muss hier den Port `3306`
 exposen, in der `msfconsole` folgende Befehle eingeben:
 
 * `use windows/mysql/mysql_payload`
-* `set RHOST 127.0.0.1`[^1]
+* `set RHOST 0.0.0.0`[^1]
 * und dann wieder `exploit`.
 
 Da kann man auch überprüfen, ob unsere Fehlermeldung
@@ -74,16 +74,16 @@ Daten oder ein unerwarteter Typ).
 Für FTP kann beispielsweise folgendes Modul verwendet werden:
 
 * `use auxiliary/fuzzers/ftp/ftp_pre_post`
-* `set RHOSTS 0.0.0.0`
+* `set RHOSTS 0.0.0.0`[^1]
 * `run`
 
-**Achtung:** Bei Beibehaltung der Standardwerte läuft der fuzzer sehr lange 
+**Achtung:** Bei Beibehaltung der Standardwerte läuft der Fuzzer sehr lange 
 (in einer Test-VM (2 Kerne 3,4 GHz, 8 GB RAM, HDD) ca. 38h). 
 Im Bro-Log werden einige Hundert MB Logs angesammelt.
 
-Via des `info`-Befehls gibt es weitere Informationen - insbesondere zu den Parametern und:
+Via des `info`-Befehls gibt es weitere Informationen - insbesondere zu den Parametern - und:
  > This module will connect to a FTP server and perform pre- and post-authentication fuzzing
 
-[^1]: Die IP ggf. anpassen (z.B. `0.0.0.0`). Im Zweifelsfall gibt `docker ps` Auskunft über die
+[^1]: Die IP ggf. anpassen. Im Zweifelsfall gibt `docker ps` Auskunft über die
       korrekte IP / Portwahl.
 [^2]: Via `search type:auxiliary fuzzers` kann nach weiteren Fuzzers gesucht werden, z.B. auch für SMB usw.
