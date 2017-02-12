@@ -4,7 +4,7 @@ We suggest using *Dionaea* in a dockerized environment. The following sections d
 
 The following topics will be discussed:
 * [Run Dionaea](#run-dionaea)
-* [Test Dionaea](#rest-dionaea)
+* [Test Dionaea](#test-dionaea)
 * [Configure Dionaea](#configure-dionaea)
 
 ## Run Dionaea
