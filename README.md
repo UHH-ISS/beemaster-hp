@@ -24,3 +24,9 @@ You find all information about using *Dionaea* in a Docker environment and ready
 ## Further Documentation
 * [Dionaea](dionaea/README.md#stop-logging-to-files): Logs a lot by default.
 * [Connector](connector/README.md#logging): Does not log by default to a file. (Your start script may log the console output, though.)
+
+## License attribution
+
+The dionaea honeypot is licensed under the GPL v2 license ([Dionaea License](https://github.com/DinoTools/dionaea/blob/master/LICENSE)).
+
+Beemaster does solely use the Dionaea Honeypot without any modification of source code. All credits regarding Dionaea belong to the respective creator. Beemaster does not claim to own, modify or redistribute any of the used software components. The applied MIT license only regards the work done during the Beemaster project, including but not limitting to the creation of provided scripts, configuration files and the `connector` source files.
