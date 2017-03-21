@@ -115,7 +115,7 @@ We advise you to run the *Connector* always on the same host as the *Dionaea* ho
 
 If you want to use the *Connector* in conjunction with *Dionaea*, you can use the following compose file (and make sure all directories are present, or change them accordingly).
 
-By default (inside the container), the contents of the `conf` directory are copied into the `src` directory. Thus the `connector.py` can be started by passing the configuration filename directly (see the [`docker-compose`](docker-compose.yaml) file example below):
+By default (inside the container), the contents of the `conf` directory are copied into the `src` directory. Thus the `connector.py` can be started by passing the configuration filename directly (see the [`docker-compose`](../docker-compose.yaml) file example below):
 
 ```yaml
 version: '2'
@@ -141,7 +141,7 @@ Run `docker-compose up --build`.
 
 Be sure to expose only those ports of *Dionaea* you want to be accessible for attackers.
 
-Instead of passing [`config-docker.yaml`](connector/conf/config-docker.yaml) as an argument (which is a configuration adjusted for this compose file), you could also pass your own values, e.g.:
+Instead of passing [`config-docker.yaml`](conf/config-docker.yaml) as an argument (which is a configuration adjusted for this compose file), you could also pass your own values, e.g.:
 ```yaml
   connector:
     command: ["--sport","1337","--topic","leetevent/"]
@@ -161,16 +161,16 @@ together with *Bro*. Have a look at the [compose file](https://github.com/UHH-IS
 
 Ensure that you sourced the virtual environment as described [here](#setup-development-environment). The *Connector* needs to run on Python 2 and requires modules which are not located in the `src` folder but included in the environment.
 
-Start the *Connector* via `python connector.py` and use the correct arguments for your environment. This repository holds a configuration file that can be used for [local testing](connector/conf/config-local.yaml), which is identical to the default configuration, apart from sending to port `9999`.
+Start the *Connector* via `python connector.py` and use the correct arguments for your environment. This repository holds a configuration file that can be used for [local testing](conf/config-local.yaml), which is identical to the default configuration, apart from sending to port `9999`.
 
 `python connector.py ../conf/config-local.yaml`
 
-It will bind to port `8080` and listen for JSON post input. See the [*Dionaea* readme](dionaea/README.md#talk-to-dionaea) for information about how to communicate with it.
+It will bind to port `8080` and listen for JSON post input. See the [*Dionaea* readme](../dionaea/README.md#talk-to-dionaea) for information about how to communicate with it.
 
 
 ## Setup Development Environment
 
-The [setup.sh](setup.sh) script can be used to set up a development and testing environment.
+The [setup.sh](../setup.sh) script can be used to set up a development and testing environment.
   
 ```sh
 ./setup.sh -h
