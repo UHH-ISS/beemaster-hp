@@ -155,7 +155,7 @@ docker run connector --sport 1337 --topic leetevent/
 ```
 
 **For testing purposes**, you might want to run *Dionaea* and the *Connector* 
-together with *Bro*. Have a look at the [compose file](https://git.informatik.uni-hamburg.de/iss/mp-ids-bro/blob/master/docker-compose.yml) of the *Beemaster Bro* repository. There you can find a simple *Bro* cluster setup.
+together with *Bro*. Have a look at the [compose file](https://github.com/UHH-ISS/beemaster-bro/blob/master/docker-compose.yml) of the *Beemaster Bro* repository. There you can find a simple *Bro* cluster setup.
 
 ### Without Docker
 
