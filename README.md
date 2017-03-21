@@ -22,7 +22,7 @@ The following topics will be discussed:
 You find all information about using *Dionaea* in a Docker environment and ready to use configurations in the [dionaea](dionaea) folder.
 
 ## Further Documentation
-* [Dionaea](dionaea/README.md#stop-logging-to-files): Logs a lot by default.
+* [Dionaea](dionaea/README.md#logging): Logs a lot by default.
 * [Connector](connector/README.md#logging): Does not log by default to a file. (Your start script may log the console output, though.)
 
 ## License attribution
