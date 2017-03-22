@@ -55,7 +55,8 @@ By default, the *Connecter* uses the hostname to identify itself. You can change
 ```yaml
 connector_id: my_unique_connector_name       # Remove this to use the hostname by default
 ```
-<a name="logging" />
+
+<a name="logging" ></a>
 Furthermore, the *Connecter* is able to write logs. Just let him know in what information you are interested in:
 ```yaml
 logging:
