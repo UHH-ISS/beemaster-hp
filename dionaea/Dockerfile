@@ -65,7 +65,7 @@ RUN ./configure \
     --with-emu-include=/usr/include \
     --with-nl-lib=/usr/lib \
     --with-nl-include=/usr/include/libnl3
-COPY blackhole.py /opt/dionaea/modules/python/dionaea/blackhole.py
+RUN patch /opt/dionaea/modules/python/dionaea/blackhole.py blackhole.patch
 RUN make
 RUN make install
 

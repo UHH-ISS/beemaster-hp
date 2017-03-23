@@ -1,0 +1,10 @@
+4c4
+< from dionaea.core import connection
+---
+> from dionaea.core import connection, incident
+62a63,67
+>         icd = incident("dionaea.blackhole.data")
+>         icd.con = self
+>         icd.input = data
+>         icd.length = len(data)
+>         icd.report()
