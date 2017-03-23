@@ -1,5 +1,5 @@
-MP-IDS Honeypot
-===============
+Beemaster: Honeypot
+===================
 
 This repository contains the sources of a generic **Connector** with configuration files to be used in conjunction with the [Dionaea](https://github.com/DinoTools/dionaea) honeypot.
 Furthermore, it contains configuration files for *Dionaea* to make it send incidents to the *Connector*.
@@ -27,6 +27,6 @@ You find all information about using *Dionaea* in a Docker environment and ready
 
 ## License attribution
 
-The dionaea honeypot is licensed under the GPL v2 license ([Dionaea License](https://github.com/DinoTools/dionaea/blob/master/LICENSE)).
+The Dionaea honeypot is licensed under the GPL v2 license ([Dionaea License](https://github.com/DinoTools/dionaea/blob/master/LICENSE)).
 
-Beemaster does solely use the Dionaea Honeypot without any modification of source code. All credits regarding Dionaea belong to the respective creator. Beemaster does not claim to own, modify or redistribute any of the used software components. The applied MIT license only regards the work done during the Beemaster project, including but not limitting to the creation of provided scripts, configuration files and the `connector` source files.
+Beemaster does solely use the Dionaea honeypot without any modification of source code. All credits regarding Dionaea belong to the respective creator. Beemaster does not claim to own, modify or redistribute any of the used software components. The applied MIT license only regards the work done during the Beemaster project, including but not limitting to the creation of provided scripts, configuration files and the `connector` source files.
