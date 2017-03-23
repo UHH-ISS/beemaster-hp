@@ -1,3 +1,5 @@
+# adjusted copy of the orgiginal https://github.com/DinoTools/dionaea/blob/master/modules/python/dionaea/blackhole.py - a license information can be found there
+
 import logging
 
 from dionaea import ServiceLoader
